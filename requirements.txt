@@ -1,3 +1,10 @@
 s3fs
 xarray
 zarr
+numpy
+pandas
+loguru
+tqdm
+click
+cmocean
+hvplot
