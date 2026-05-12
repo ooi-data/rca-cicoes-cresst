@@ -34,13 +34,13 @@ Time coordinates are interchangeable with `profile_number` via `ds.swap_dims({"p
 
 | Variable | Instrument | Cast | Units |
 |----------|------------|------|-------|
-| `sea_water_temperature` | CTD (CTDPFA) | upcast | °C |
-| `sea_water_practical_salinity` | CTD (CTDPFA) | upcast | PSU |
-| `corrected_dissolved_oxygen` | CTD (CTDPFA) | upcast | µmol/kg |
+| `sea_water_temperature` | CTD (CTDPFA) | upcast |
+| `sea_water_practical_salinity` | CTD (CTDPFA) | upcast |
+| `corrected_dissolved_oxygen` | CTD (CTDPFA) | upcast |
 | `sea_water_density` | CTD (CTDPFA) | upcast | kg/m³ |
-| `salinity_corrected_nitrate` | Nitrate (NUTNRA) | upcast | µmol/L |
-| `ph_seawater` | pH (PHSENA) | downcast | total scale |
-| `pco2_seawater` | pCO₂ (PCO2WA) | downcast | µatm |
+| `salinity_corrected_nitrate` | Nitrate (NUTNRA) | upcast |
+| `ph_seawater` | pH (PHSENA) | downcast |
+| `pco2_seawater` | pCO₂ (PCO2WA) | downcast |
 
 CTD variables are sampled on the upcast. pH and pCO₂ are sampled on the downcast.
 
