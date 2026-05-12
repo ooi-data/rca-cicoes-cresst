@@ -17,7 +17,7 @@ A multi-instrument, pressure-gridded dataset derived from OOI Regional Cabled Ar
 | Dimension | Description |
 |-----------|-------------|
 | `profile_number` | Integer profile index from the OOI profile index CSV |
-| `sea_water_pressure` | Uniform pressure grid (dbar), default 0–220 at 0.25 dbar spacing |
+| `sea_water_pressure` | Uniform pressure grid (dbar), default 0–219 at 1 dbar spacing |
 
 ### Coordinates
 
@@ -59,7 +59,7 @@ Available formats: zarr (recommended for large datasets), NetCDF-4.
 
 ```bash
 python scripts/regrid_profiler.py oregon_shelf
-python scripts/regrid_profiler.py axial_base --grid 0 220 0.5 --format nc
+python scripts/regrid_profiler.py axial_base --grid 0 220 1 --format nc
 python scripts/regrid_profiler.py slope_base --format both
 ```
 
