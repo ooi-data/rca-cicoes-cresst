@@ -1,6 +1,6 @@
 # Data Products
 
-## Regridded Shallow Profiler Profiles
+## Regridded Shallow Profiler Mooring Profiles
 
 A multi-instrument, pressure-gridded dataset derived from OOI Regional Cabled Array (RCA) Shallow Profiler Mooring data. Raw time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), deduplicated on pressure, and interpolated onto a uniform pressure grid.
 
