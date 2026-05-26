@@ -44,6 +44,24 @@ PROFILER_SITES: dict[str, dict[str, str]] = {
         "pco2":      "RS03AXPS-SF03A-4F-PCO2WA301",
         "nutrients": "RS03AXPS-SF03A-4A-NUTNRA301",
     },
+    "oregon_shelf_deep": {
+        "ctd":    "CE04OSPD-DP01B-01-CTDPFL105",
+        "o2":     "CE04OSPD-DP01B-06-DOSTAD105",
+        "fluoro": "CE04OSPD-DP01B-04-FLNTUA103",
+        "cdom":   "CE04OSPD-DP01B-03-FLCDRA103",
+    },
+    "slope_base_deep": {
+        "ctd":    "RS01SBPD-DP01A-01-CTDPFL104",
+        "o2":     "RS01SBPD-DP01A-06-DOSTAD104",
+        "fluoro": "RS01SBPD-DP01A-04-FLNTUA102",
+        "cdom":   "RS01SBPD-DP01A-03-FLCDRA102",
+    },
+    "axial_base_deep": {
+        "ctd":    "RS03AXPD-DP03A-01-CTDPFL304",
+        "o2":     "RS03AXPD-DP03A-06-DOSTAD304",
+        "fluoro": "RS03AXPD-DP03A-03-FLNTUA302",
+        "cdom":   "RS03AXPD-DP03A-03-FLCDRA302",
+    },
 }
 
 DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
@@ -79,11 +97,9 @@ DEFAULT_PARAMS: list[str] = [
 ]
 
 
-
 QARTOD_EXCLUDE: dict[str, set[int]] = {
-    "basic": {2, 4},
+    "basic": {4},
 }
-
 
 
 def load_data(stream_name: str) -> xr.Dataset:
@@ -156,6 +172,7 @@ def regrid_profiles(
             for instr in instrument_datasets
         ]
         skipped = 0
+        flag_removed: dict[int, int] = {}
 
         for _, row in tqdm(year_indices.iterrows(), total=len(year_indices), desc=str(year)):
             profile_parts = []
@@ -176,7 +193,12 @@ def regrid_profiles(
                     bad = np.zeros(ds_cast.sizes["time"], dtype=bool)
                     for fv in instr["qartod_vars"]:
                         if fv in ds_cast:
-                            bad |= np.isin(ds_cast[fv].values, list(exclude_flags))
+                            flag_vals = ds_cast[fv].values
+                            for flag in exclude_flags:
+                                n = int(np.sum(flag_vals == flag))
+                                if n:
+                                    flag_removed[flag] = flag_removed.get(flag, 0) + n
+                            bad |= np.isin(flag_vals, list(exclude_flags))
                     ds_cast = ds_cast.isel(time=~bad).drop_vars(instr["qartod_vars"], errors="ignore")
                     if ds_cast.sizes["time"] < 2:
                         continue
@@ -211,6 +233,10 @@ def regrid_profiles(
 
         if skipped:
             logger.warning(f"{year}: {skipped}/{len(year_indices)} profiles skipped")
+        if flag_removed:
+            QARTOD_LABELS = {1: "pass", 2: "not_evaluated", 3: "suspect", 4: "fail", 9: "missing"}
+            for flag, count in sorted(flag_removed.items()):
+                logger.info(f"{year}: removed {count:,} points with flag {flag} ({QARTOD_LABELS.get(flag, '?')})")
 
     logger.info("concatenating")
     return xr.concat(pds, dim="profile_number")
