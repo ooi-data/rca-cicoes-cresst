@@ -84,8 +84,8 @@ Available formats: zarr (recommended for large datasets), NetCDF-4.
 
 ```bash
 # shallow profilers (~0–200 m)
-python scripts/regrid_profiler.py oregon_shelf --grid 0 200 1
-python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format nc
+python scripts/regrid_profiler.py oregon_shelf --grid 0 200 1 --format both
+python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter basic
 python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both
 
 # deep profilers (site-dependent depth range)

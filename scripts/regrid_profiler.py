@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import numpy as np
 import xarray as xr
 import pandas as pd
@@ -314,6 +315,10 @@ def main(
     """
     new_grid = np.arange(*grid)
 
+    os.makedirs("logs", exist_ok=True)
+    run_ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    _log_id = logger.add(f"logs/{site}_{run_ts}.log")
+
     site_dict = PROFILER_SITES[site]
     profile_type = "deep" if site.endswith("_deep") else "shallow"
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
@@ -330,6 +335,7 @@ def main(
             ds_profiles.to_netcdf(output_path)
 
     logger.info("done")
+    logger.remove(_log_id)
 
 
 if __name__ == "__main__":
