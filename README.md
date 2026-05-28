@@ -71,14 +71,45 @@ Time coordinates are interchangeable with `profile_number` via `ds.swap_dims({"p
 
 ### Output Files
 
-Files are named `<site>_profiles_<start>_<end>.<ext>`, e.g.:
+#### Regridded profiles (`regrid_profiler.py`)
 
 ```
-axial_base_profiles_20150107_20260511.nc
-oregon_shelf_profiles_20150101_20260508.zarr
+<site>_profiles_<start>_<end>[_qf<flags>].<ext>
 ```
 
-Available formats: zarr (recommended for large datasets), NetCDF-4.
+| Component | Description |
+|-----------|-------------|
+| `<site>` | Site key (e.g. `axial_base`) |
+| `<start>` / `<end>` | Date range of profiles in the file (`YYYYMMDD`) |
+| `_qf<flags>` | QARTOD flags removed, omitted when `--qaqc-filter none` |
+| `<ext>` | `zarr` or `nc` |
+
+Examples:
+
+```
+axial_base_profiles_20150107_20260511.zarr
+axial_base_profiles_20150107_20260511_qf4.nc
+```
+
+#### Binned profiles (`bin_dataset.py`)
+
+```
+<input_stem>_binned_<N>h.<ext>
+```
+
+Example:
+
+```
+axial_base_profiles_20150107_20260511_binned_24h.zarr
+```
+
+#### Logs
+
+One log file per run, written to `logs/`:
+
+```
+logs/<site>_<YYYYMMDD_HHMMSS>.log
+```
 
 ### Generating the Data Product
 

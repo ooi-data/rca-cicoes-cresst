@@ -12,4 +12,6 @@ __pycache__/
 # ai/vibe
 .claude
 
+# outputs
 /data
+/logs
