@@ -13,8 +13,14 @@ START_YEAR = 2015
 
 fs = s3fs.S3FileSystem(anon=True)
 
-SITES_DICT = (
+ACTIVE_DICT = (
     pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/sitesDictionary.csv")
+    .set_index("refDes")
+    .T.to_dict("series")
+)
+
+ARCHIVE_DICT = (
+    pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/archiveDictionary.csv")
     .set_index("refDes")
     .T.to_dict("series")
 )
@@ -68,10 +74,10 @@ DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
 
 PRES_PARAMS: list[str] = VARIABLE_MAP["pressure"]["variableNames"].strip('"').split(",")
 
-PARAM_TO_INSTRUMENT: dict[str, str] = {
+PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
     "sea_water_temperature":         "ctd",
     "sea_water_practical_salinity":  "ctd",
-    "corrected_dissolved_oxygen":    "ctd",
+    "corrected_dissolved_oxygen":    ["o2", "ctd"],  # deep: DOSTA, shallow: integrated
     "sea_water_density":             "ctd",
     "salinity_corrected_nitrate":    "nutrients",
     "nitrate_concentration":         "nutrients",
@@ -84,17 +90,28 @@ PARAM_TO_INSTRUMENT: dict[str, str] = {
     "par":                           "par",
     "beam_attenuation":              "optics",
     "optical_absorption":            "optics",
+    "flcdr_x_mmp_cds_fluorometric_cdom":  "cdom",
 }
 
-DEFAULT_PARAMS: list[str] = [
-    "sea_water_temperature",
-    "sea_water_practical_salinity",
-    "corrected_dissolved_oxygen",
-    "sea_water_density",
-    "salinity_corrected_nitrate",
-    "ph_seawater",
-    "pco2_seawater",
-]
+DEFAULT_PARAMS: dict[str, list[str]] = {
+    "shallow": [
+        "sea_water_temperature",
+        "sea_water_practical_salinity",
+        "corrected_dissolved_oxygen",
+        "sea_water_density",
+        "salinity_corrected_nitrate",
+        "ph_seawater",
+        "pco2_seawater",
+    ],
+    "deep": [
+        "sea_water_temperature",
+        "sea_water_practical_salinity",
+        "corrected_dissolved_oxygen",
+        "sea_water_density",
+        "fluorometric_chlorophyll_a",
+        "flcdr_x_mmp_cds_fluorometric_cdom",
+    ],
+}
 
 
 QARTOD_EXCLUDE: dict[str, set[int]] = {
@@ -110,6 +127,7 @@ def load_data(stream_name: str) -> xr.Dataset:
 def load_regridding_inputs(
     site_dict: dict[str, str],
     params: list[str],
+    sites_lookup: dict,
 ) -> tuple[list[dict], pd.DataFrame]:
     now = datetime.now(timezone.utc)
     current_year = now.year
@@ -119,16 +137,22 @@ def load_regridding_inputs(
 
     instrument_params: dict[str, list[str]] = {}
     for param in params:
-        instr_key = PARAM_TO_INSTRUMENT.get(param)
-        if instr_key is None:
+        instr_keys = PARAM_TO_INSTRUMENT.get(param)
+        if instr_keys is None:
             logger.warning(f"no instrument mapping for '{param}', skipping")
             continue
-        instrument_params.setdefault(instr_key, []).append(param)
+        if isinstance(instr_keys, str):
+            instr_keys = [instr_keys]
+        resolved = next((k for k in instr_keys if k in site_dict), None)
+        if resolved is None:
+            logger.warning(f"no available instrument for '{param}' at this site, skipping")
+            continue
+        instrument_params.setdefault(resolved, []).append(param)
 
     instrument_datasets: list[dict] = []
     for instr_key, instr_params in instrument_params.items():
         refdes = site_dict[instr_key]
-        stream_name = SITES_DICT[refdes]["zarrFile"]
+        stream_name = sites_lookup[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
         ds = load_data(stream_name)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
@@ -254,8 +278,7 @@ def build_output_path(site: str, ds: xr.Dataset, ext: str) -> str:
     "--grid",
     nargs=3,
     type=float,
-    default=(0.0, 220.0, 0.25),
-    show_default=True,
+    required=True,
     metavar="START STOP STEP",
     help="Pressure grid bounds and step (dbar)",
 )
@@ -288,7 +311,9 @@ def main(
     new_grid = np.arange(*grid)
 
     site_dict = PROFILER_SITES[site]
-    instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS)
+    profile_type = "deep" if site.endswith("_deep") else "shallow"
+    sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
+    instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup)
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter)
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
