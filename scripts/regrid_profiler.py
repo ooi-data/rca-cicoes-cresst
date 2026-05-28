@@ -266,10 +266,14 @@ def regrid_profiles(
     return xr.concat(pds, dim="profile_number")
 
 
-def build_output_path(site: str, ds: xr.Dataset, ext: str) -> str:
+def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> str:
     t_start = pd.Timestamp(ds.start_time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.end_time.values.max()).strftime("%Y%m%d")
-    return f"{site}_profiles_{t_start}_{t_end}.{ext}"
+    qc_suffix = ""
+    if qaqc_filter in QARTOD_EXCLUDE:
+        flags = "".join(str(f) for f in sorted(QARTOD_EXCLUDE[qaqc_filter]))
+        qc_suffix = f"_qf{flags}"
+    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix}.{ext}"
 
 
 @click.command()
@@ -318,7 +322,7 @@ def main(
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = build_output_path(site, ds_profiles, f)
+        output_path = build_output_path(site, ds_profiles, qaqc_filter, f)
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_profiles.to_zarr(output_path, mode="w")
