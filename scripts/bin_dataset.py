@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+import os
 import xarray as xr
 import click
 from pathlib import Path
 from loguru import logger
+
+OUTPUT_DIR = "data/binned"
 
 
 def load_dataset(path: str) -> xr.Dataset:
@@ -15,7 +18,7 @@ def load_dataset(path: str) -> xr.Dataset:
 def build_output_path(input_path: str, bin_hours: float, ext: str) -> str:
     stem = Path(input_path).stem
     label = f"{int(bin_hours)}h" if bin_hours == int(bin_hours) else f"{bin_hours}h"
-    return f"{stem}_binned_{label}.{ext}"
+    return os.path.join(OUTPUT_DIR, f"{stem}_binned_{label}.{ext}")
 
 
 @click.command()
@@ -44,6 +47,7 @@ def main(file: str, bin_hours: float, fmt: str) -> None:
     Example:
         python scripts/bin_dataset.py axial_base_profiles.zarr --bin 24
     """
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     logger.info(f"loading {file}")
     ds = load_dataset(file)
 
