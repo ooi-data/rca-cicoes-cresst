@@ -12,7 +12,7 @@ from tqdm.auto import tqdm
 RCA_S3_BUCKET = "ooi-data/"
 START_YEAR = 2015
 
-fs = s3fs.S3FileSystem(anon=True)
+fs = s3fs.S3FileSystem(anon=True, config_kwargs={"read_timeout": 300, "connect_timeout": 60})
 
 ACTIVE_DICT = (
     pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/sitesDictionary.csv")
