@@ -193,7 +193,7 @@ def regrid_profiles(
 
     for year, year_indices in subset.groupby(pd.to_datetime(subset["start"]).dt.year):
         year_datasets = [
-            {**instr, "ds_year": instr["ds"].sel(time=str(year)).compute()}
+            {**instr, "ds_year": instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()}
             for instr in instrument_datasets
         ]
         skipped = 0
