@@ -129,10 +129,11 @@ def load_regridding_inputs(
     site_dict: dict[str, str],
     params: list[str],
     sites_lookup: dict,
+    end_year: int | None = None,
 ) -> tuple[list[dict], pd.DataFrame]:
     now = datetime.now(timezone.utc)
     current_year = now.year
-    years = list(range(START_YEAR, current_year + 1))
+    years = list(range(START_YEAR, (end_year or current_year) + 1))
 
     site = site_dict["ctd"][:8]
 
@@ -322,7 +323,8 @@ def main(
     site_dict = PROFILER_SITES[site]
     profile_type = "deep" if site.endswith("_deep") else "shallow"
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
-    instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup)
+    end_year = 2025 if profile_type == "deep" else None
+    instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year)
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter)
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
