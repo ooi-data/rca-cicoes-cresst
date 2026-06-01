@@ -12,7 +12,7 @@ Science pod winched through the upper water column (~5–200 m) at 5 cm/s upcast
 
 | Key | Site | Depth Range | CTD Refdes |
 |-----|------|-------------|------------|
-| `oregon_shelf` | Coastal Endurance Oregon Offshore | 5–200 m | CE04OSPS-SF01B-2A-CTDPFA107 |
+| `oregon_offshore` | Coastal Endurance Oregon Offshore | 5–200 m | CE04OSPS-SF01B-2A-CTDPFA107 |
 | `slope_base` | Oregon Slope Base | 5–200 m | RS01SBPS-SF01A-2A-CTDPFA102 |
 | `axial_base` | Axial Base | 5–200 m | RS03AXPS-SF03A-2A-CTDPFA302 |
 
@@ -22,7 +22,7 @@ Wire-following McLane profiler at ~25 cm/s.
 
 | Key | Site | Depth Range | Water Depth | CTD Refdes |
 |-----|------|-------------|-------------|------------|
-| `oregon_shelf_deep` | Coastal Endurance Oregon Offshore | 175–500 m | 576 m | CE04OSPD-DP01B-01-CTDPFL105 |
+| `oregon_offshore_deep` | Coastal Endurance Oregon Offshore | 175–500 m | 576 m | CE04OSPD-DP01B-01-CTDPFL105 |
 | `slope_base_deep` | Oregon Slope Base | 150–2,900 m | 2,900 m | RS01SBPD-DP01A-01-CTDPFL104 |
 | `axial_base_deep` | Axial Base | 150–2,465 m | 2,604 m | RS03AXPD-DP03A-01-CTDPFL304 |
 
@@ -115,14 +115,14 @@ logs/<site>_<YYYYMMDD_HHMMSS>.log
 
 ```bash
 # shallow profilers (~0–200 m)
-python scripts/regrid_profiler.py oregon_shelf --grid 0 200 1 --format both
+python scripts/regrid_profiler.py oregon_offshore --grid 0 200 1 --format both
 python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter basic
 python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both
 
 # deep profilers (site-dependent depth range)
-python scripts/regrid_profiler.py oregon_shelf_deep --grid 175 500 1 --format both --qaqc-filter basic
+python scripts/regrid_profiler.py oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter basic
 python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both --qaqc-filter basic
-python scripts/regrid_profiler.py axial_base_deep --grid 150 2465 1 --format both --qaqc-filter basic
+python scripts/regrid_profiler.py axial_base_deep --grid 150 2600 1 --format both --qaqc-filter basic
 ```
 
 See `scripts/regrid_profiler.py --help` for full options.

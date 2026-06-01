@@ -33,7 +33,7 @@ VARIABLE_MAP = (
 )
 
 PROFILER_SITES: dict[str, dict[str, str]] = {
-    "oregon_shelf": {
+    "oregon_offshore": {
         "ctd":       "CE04OSPS-SF01B-2A-CTDPFA107",
         "ph":        "CE04OSPS-SF01B-2B-PHSENA108",
         "pco2":      "CE04OSPS-SF01B-4F-PCO2WA102",
@@ -51,7 +51,7 @@ PROFILER_SITES: dict[str, dict[str, str]] = {
         "pco2":      "RS03AXPS-SF03A-4F-PCO2WA301",
         "nutrients": "RS03AXPS-SF03A-4A-NUTNRA301",
     },
-    "oregon_shelf_deep": {
+    "oregon_offshore_deep": {
         "ctd":    "CE04OSPD-DP01B-01-CTDPFL105",
         "o2":     "CE04OSPD-DP01B-06-DOSTAD105",
         "fluoro": "CE04OSPD-DP01B-04-FLNTUA103",
@@ -310,7 +310,7 @@ def main(
     """Regrid RCA shallow profiler data to a uniform pressure grid.
 
     Output is saved to <site>_profiles_<start>_<end>.<ext> in the current directory.
-    Example: oregon_shelf_profiles_20150101_20260508.zarr
+    Example: oregon_offshore_profiles_20150101_20260508.zarr
     With --format both, saves zarr and nc versions with the same base name.
     """
     new_grid = np.arange(*grid)
