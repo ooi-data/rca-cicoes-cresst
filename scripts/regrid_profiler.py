@@ -168,16 +168,15 @@ def load_regridding_inputs(
         })
 
     logger.info("loading profile indices")
-    all_indices = pd.concat(
-        [
-            pd.read_csv(
+    frames = []
+    for year in years:
+        try:
+            frames.append(pd.read_csv(
                 f"https://raw.githubusercontent.com/OOI-CabledArray/profileIndices/refs/heads/main/{site}_profiles_{year}.csv"
-            )
-            for year in years
-        ],
-        axis=0,
-        ignore_index=True,
-    )
+            ))
+        except Exception:
+            logger.warning(f"{site}: no profile index for {year}, skipping")
+    all_indices = pd.concat(frames, axis=0, ignore_index=True)
 
     return instrument_datasets, all_indices
 
