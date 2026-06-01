@@ -120,9 +120,9 @@ python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc
 python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both
 
 # deep profilers (site-dependent depth range)
-python scripts/regrid_profiler.py oregon_shelf_deep --grid 175 500 1 --format both
-python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both
-python scripts/regrid_profiler.py axial_base_deep --grid 150 2465 1 --format both
+python scripts/regrid_profiler.py oregon_shelf_deep --grid 175 500 1 --format both --qaqc-filter basic
+python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both --qaqc-filter basic
+python scripts/regrid_profiler.py axial_base_deep --grid 150 2465 1 --format both --qaqc-filter basic
 ```
 
 See `scripts/regrid_profiler.py --help` for full options.
