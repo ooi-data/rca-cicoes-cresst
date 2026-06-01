@@ -116,7 +116,7 @@ DEFAULT_PARAMS: dict[str, list[str]] = {
 
 
 QARTOD_EXCLUDE: dict[str, set[int]] = {
-    "basic": {4},
+    "basic": {4, 9},
 }
 
 
