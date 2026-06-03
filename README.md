@@ -111,6 +111,22 @@ One log file per run, written to `logs/`:
 logs/<site>_<YYYYMMDD_HHMMSS>.log
 ```
 
+### HITL Annotations
+
+Raw annotations are harvested from the OOI M2M API and saved to `annotations/<SUBSITE>.csv`.
+Curated annotations (data-quality relevant only, with `parameters_affected`) live in `annotations/curated/`.
+
+Requires `OOI_USERNAME` and `OOI_TOKEN` in `.env`.
+
+```bash
+# harvest one site (accepts site key or raw subsite code)
+python scripts/harvest_annotations.py oregon_offshore
+python scripts/harvest_annotations.py CE04OSPS
+
+# harvest all profiler sites
+python scripts/harvest_annotations.py --all
+```
+
 ### Generating the Data Product
 
 ```bash

@@ -12,6 +12,11 @@ __pycache__/
 # ai/vibe
 .claude
 
+# credentials
+.env
+
 # outputs
 /data
 /logs
+
+.ipynb_checkpoints
