@@ -127,6 +127,14 @@ python scripts/harvest_annotations.py CE04OSPS
 python scripts/harvest_annotations.py --all
 ```
 
+Curate with qcFlag filtering:
+
+```bash
+python scripts/curate.py CE04OSPS --qc-flag fail --qc-flag suspect
+python scripts/curate.py CE04OSPS --node SF01B --qc-flag fail --qc-flag suspect
+```
+
+
 ### Generating the Data Product
 
 ```bash
