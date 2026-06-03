@@ -1,0 +1,2 @@
+@class,id,subsite,node,sensor,method,stream,beginDT,endDT,annotation,exclusionFlag,source,qcFlag,parameters
+.AnnotationRecord,18,RS01SBPD,DP01A,06-DOSTAD104,,,2016-08-09 00:00:00+00:00,2017-08-09 00:00:00+00:00,"EDIT: Due to errors during vendor calibration, there were issues with the onboard-calculated O2 products during this deployment. The calibration files have been corrected, and the O2 values derived using the external OOI Stern-Volmer-Uchida algorithm [DO from Phase (L1 product) and DO from Phase - Corrected (L2 product)] should be considered valid.",False,,suspect,[]
