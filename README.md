@@ -89,18 +89,6 @@ axial_base_profiles_20150107_20260511.zarr
 axial_base_profiles_20150107_20260511_qf4.nc
 ```
 
-#### Binned profiles (`bin_dataset.py`)
-
-```
-<input_stem>_binned_<N>h.<ext>
-```
-
-Example:
-
-```
-axial_base_profiles_20150107_20260511_binned_24h.zarr
-```
-
 #### Logs
 
 One log file per run, written to `logs/`:
@@ -137,7 +125,7 @@ python scripts/curate.py CE04OSPS --node SF01B --qc-flag fail --qc-flag suspect
 
 ```bash
 # shallow profilers (~0–200 m)
-python scripts/regrid_profiler.py oregon_offshore --grid 0 200 1 --format both
+python scripts/regrid_profiler.py oregon_offshore --grid 0 200 1 --format both --qaqc-filter highest
 python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter basic
 python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both
 
@@ -148,3 +136,22 @@ python scripts/regrid_profiler.py axial_base_deep --grid 150 2600 1 --format bot
 ```
 
 See `scripts/regrid_profiler.py --help` for full options.
+
+#### Binned profiles (`bin_dataset.py`)
+
+```
+<input_stem>_binned_<N>h.<ext>
+```
+
+Example:
+
+```
+axial_base_profiles_20150107_20260511_binned_24h.zarr
+```
+
+```bash
+python scripts/bin_dataset.py axial_base_profiles_20150107_20260511.zarr --bin 24
+python scripts/bin_dataset.py axial_base_profiles_20150107_20260511.zarr --bin 24 --format both
+```
+
+Output is written to `data/binned/`. See `scripts/bin_dataset.py --help` for full options.

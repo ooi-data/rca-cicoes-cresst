@@ -18,5 +18,6 @@ __pycache__/
 # outputs
 /data
 /logs
+/archive
 
 .ipynb_checkpoints
