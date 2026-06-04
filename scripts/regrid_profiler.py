@@ -154,7 +154,7 @@ def mask_annotation_windows(
             continue
 
         begin = row["beginDT"].to_datetime64()
-        end = row["endDT"].to_datetime64()
+        end = ds.time.values[-1] if pd.isna(row["endDT"]) else row["endDT"].to_datetime64()
         in_window = (ds.time >= begin) & (ds.time <= end)
 
         if not bool(in_window.any()):
