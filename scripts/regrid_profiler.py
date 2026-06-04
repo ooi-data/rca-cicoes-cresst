@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+import ast
 import os
+from pathlib import Path
+
 import numpy as np
 import xarray as xr
 import pandas as pd
@@ -116,8 +119,64 @@ DEFAULT_PARAMS: dict[str, list[str]] = {
 
 
 QARTOD_EXCLUDE: dict[str, set[int]] = {
-    "basic": {4, 9},
+    "basic":    {4, 9},
+    "highest":  {4, 9},
 }
+
+
+def load_annotations(site: str, annotations_dir: str) -> pd.DataFrame | None:
+    """Load curated _llm annotations for a site. Returns None if file not found."""
+    subsite = list(PROFILER_SITES[site].values())[0][:8]
+    ann_path = Path(annotations_dir) / f"{subsite}_llm.csv"
+    if not ann_path.exists():
+        logger.warning(f"no annotation file at {ann_path}, skipping annotation masking")
+        return None
+    annotations = pd.read_csv(ann_path)
+    annotations["beginDT"] = pd.to_datetime(annotations["beginDT"], format="ISO8601", utc=True)
+    annotations["endDT"] = pd.to_datetime(annotations["endDT"], format="ISO8601", utc=True)
+    logger.info(f"loaded {len(annotations)} curated annotations from {ann_path}")
+    return annotations
+
+
+def mask_annotation_windows(
+    ds: xr.Dataset,
+    params: list[str],
+    annotations: pd.DataFrame,
+) -> xr.Dataset:
+    """NaN out affected parameters in a raw time-series for each annotation window."""
+    combined_mask = xr.zeros_like(ds.time, dtype=bool)
+
+    for _, row in annotations.iterrows():
+        affected = ast.literal_eval(row["parameters_affected"])
+
+        overlap = [p for p in affected if p in params and p in ds]
+        if not overlap:
+            continue
+
+        begin = row["beginDT"].to_datetime64()
+        end = row["endDT"].to_datetime64()
+        in_window = (ds.time >= begin) & (ds.time <= end)
+
+        if not bool(in_window.any()):
+            continue
+
+        combined_mask = combined_mask | in_window
+
+        for param in overlap:
+            ds[param] = ds[param].where(~in_window)
+
+        logger.info(
+            f"annotation id={row['id']}: masked {int(in_window.sum())} time points "
+            f"({row['beginDT'].date()} → {row['endDT'].date()}) params={overlap}"
+        )
+
+    if bool(combined_mask.any()):
+        n_masked = int(combined_mask.sum())
+        mean_dt = float(np.diff(ds.time.values).mean())  # nanoseconds
+        total_duration = pd.Timedelta(int(n_masked * mean_dt))
+        logger.info(f"params={params}: ~{total_duration} total masked ({n_masked} points)")
+
+    return ds
 
 
 def load_data(stream_name: str) -> xr.Dataset:
@@ -186,16 +245,19 @@ def regrid_profiles(
     indices: pd.DataFrame,
     new_grid: np.ndarray,
     qaqc_filter: str = "none",
+    annotations: pd.DataFrame | None = None,
 ) -> xr.Dataset:
     pds = []
 
     subset = indices.sort_values("start").reset_index(drop=True)
 
     for year, year_indices in subset.groupby(pd.to_datetime(subset["start"]).dt.year):
-        year_datasets = [
-            {**instr, "ds_year": instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()}
-            for instr in instrument_datasets
-        ]
+        year_datasets = []
+        for instr in instrument_datasets:
+            ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()
+            if annotations is not None:
+                ds_year = mask_annotation_windows(ds_year, instr["params"], annotations)
+            year_datasets.append({**instr, "ds_year": ds_year})
         skipped = 0
         flag_removed: dict[int, int] = {}
 
@@ -274,6 +336,8 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> 
     if qaqc_filter in QARTOD_EXCLUDE:
         flags = "".join(str(f) for f in sorted(QARTOD_EXCLUDE[qaqc_filter]))
         qc_suffix = f"_qf{flags}"
+    if qaqc_filter == "highest":
+        qc_suffix += "_HITL"
     return f"{site}_profiles_{t_start}_{t_end}{qc_suffix}.{ext}"
 
 
@@ -296,16 +360,26 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> 
 )
 @click.option(
     "--qaqc-filter",
-    type=click.Choice(["none", "basic"]),
+    type=click.Choice(["none", "basic", "highest"]),
     default="none",
     show_default=True,
-    help="QARTOD filter level. 'basic' excludes not-evaluated (2) and fail (4) flags.",
+    help=(
+        "QARTOD filter level. 'basic' excludes fail (4) and missing (9) flags. "
+        "'highest' applies 'basic' plus masks parameters flagged in curated HITL annotations."
+    ),
+)
+@click.option(
+    "--annotations-dir",
+    default="annotations/curated",
+    show_default=True,
+    help="Directory containing curated annotation CSVs (used with --qaqc-filter highest).",
 )
 def main(
     site: str,
     grid: tuple[float, float, float],
     fmt: str,
     qaqc_filter: str,
+    annotations_dir: str,
 ) -> None:
     """Regrid RCA shallow profiler data to a uniform pressure grid.
 
@@ -324,7 +398,9 @@ def main(
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
     end_year = 2025 if profile_type == "deep" else None
     instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year)
-    ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter)
+
+    annotations = load_annotations(site, annotations_dir) if qaqc_filter == "highest" else None
+    ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter, annotations)
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
