@@ -126,13 +126,13 @@ python scripts/curate.py CE04OSPS --node SF01B --qc-flag fail --qc-flag suspect
 ```bash
 # shallow profilers (~0–200 m)
 python scripts/regrid_profiler.py oregon_offshore --grid 0 200 1 --format both --qaqc-filter highest
-python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter basic
-python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both
+python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter highest
+python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both --qaqc-filter highest
 
 # deep profilers (site-dependent depth range)
-python scripts/regrid_profiler.py oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter basic
-python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both --qaqc-filter basic
-python scripts/regrid_profiler.py axial_base_deep --grid 150 2600 1 --format both --qaqc-filter basic
+python scripts/regrid_profiler.py oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter highest
+python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both --qaqc-filter highest
+python scripts/regrid_profiler.py axial_base_deep --grid 150 2600 1 --format both --qaqc-filter highest
 ```
 
 See `scripts/regrid_profiler.py --help` for full options.
