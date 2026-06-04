@@ -18,8 +18,6 @@ Science pod winched through the upper water column (~5–200 m) at 5 cm/s upcast
 
 #### Deep Profilers
 
-Wire-following McLane profiler at ~25 cm/s.
-
 | Key | Site | Depth Range | Water Depth | CTD Refdes |
 |-----|------|-------------|-------------|------------|
 | `oregon_offshore_deep` | Coastal Endurance Oregon Offshore | 175–500 m | 576 m | CE04OSPD-DP01B-01-CTDPFL105 |
