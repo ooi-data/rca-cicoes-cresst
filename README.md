@@ -72,29 +72,23 @@ Time coordinates are interchangeable with `profile_number` via `ds.swap_dims({"p
 #### Regridded profiles (`regrid_profiler.py`)
 
 ```
-<site>_profiles_<start>_<end>[_qf<flags>].<ext>
+<site>_profiles_<start>_<end>[_qf<flags>][_HITL].<ext>
 ```
 
 | Component | Description |
 |-----------|-------------|
 | `<site>` | Site key (e.g. `axial_base`) |
 | `<start>` / `<end>` | Date range of profiles in the file (`YYYYMMDD`) |
-| `_qf<flags>` | QARTOD flags removed, omitted when `--qaqc-filter none` |
+| `_qf<flags>` | QARTOD flags removed (`49` = fail + missing); omitted when `--qaqc-filter none` |
+| `_HITL` | Curated HITL annotation masking applied; present only with `--qaqc-filter highest` |
 | `<ext>` | `zarr` or `nc` |
 
 Examples:
 
 ```
 axial_base_profiles_20150107_20260511.zarr
-axial_base_profiles_20150107_20260511_qf4.nc
-```
-
-#### Logs
-
-One log file per run, written to `logs/`:
-
-```
-logs/<site>_<YYYYMMDD_HHMMSS>.log
+axial_base_profiles_20150107_20260511_qf49.nc
+axial_base_profiles_20150107_20260511_qf49_HITL.zarr
 ```
 
 ### HITL Annotations
