@@ -8,7 +8,7 @@ A multi-instrument, pressure-gridded dataset derived from OOI Regional Cabled Ar
 
 #### Shallow Profilers
 
-Science pod winched through the upper water column (~5–200 m) at 5 cm/s upcast, 10 cm/s downcast. ~9 profiles/day.
+Science pod winched through the upper water column. ~9 profiles/day.
 
 | Key | Site | Depth Range | CTD Refdes |
 |-----|------|-------------|------------|
