@@ -1,38 +1,26 @@
 #!/usr/bin/env python3
-import ast
 import os
-from pathlib import Path
 
 import numpy as np
 import xarray as xr
 import pandas as pd
-import s3fs
 import click
 from datetime import datetime, timezone
 from loguru import logger
 from tqdm.auto import tqdm
 
-RCA_S3_BUCKET = "ooi-data/"
-START_YEAR = 2015
-
-fs = s3fs.S3FileSystem(anon=True, config_kwargs={"read_timeout": 300, "connect_timeout": 60})
-
-ACTIVE_DICT = (
-    pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/sitesDictionary.csv")
-    .set_index("refDes")
-    .T.to_dict("series")
-)
-
-ARCHIVE_DICT = (
-    pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/archiveDictionary.csv")
-    .set_index("refDes")
-    .T.to_dict("series")
-)
-
-VARIABLE_MAP = (
-    pd.read_csv("https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params/variableMap.csv")
-    .set_index("parameter")
-    .T.to_dict("series")
+from rca_cicoes_cresst.common import (
+    ACTIVE_DICT,
+    ARCHIVE_DICT,
+    PRES_PARAMS,
+    QARTOD_EXCLUDE,
+    QARTOD_LABELS,
+    START_YEAR,
+    group_params_by_instrument,
+    load_annotations,
+    load_data,
+    mask_annotation_windows,
+    qc_suffix,
 )
 
 PROFILER_SITES: dict[str, dict[str, str]] = {
@@ -76,27 +64,6 @@ PROFILER_SITES: dict[str, dict[str, str]] = {
 
 DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
 
-PRES_PARAMS: list[str] = VARIABLE_MAP["pressure"]["variableNames"].strip('"').split(",")
-
-PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
-    "sea_water_temperature":         "ctd",
-    "sea_water_practical_salinity":  "ctd",
-    "corrected_dissolved_oxygen":    ["o2", "ctd"],  # deep: DOSTA, shallow: integrated
-    "sea_water_density":             "ctd",
-    "salinity_corrected_nitrate":    "nutrients",
-    "nitrate_concentration":         "nutrients",
-    "ph_seawater":                   "ph",
-    "pco2_seawater":                 "pco2",
-    "partial_pressure_co2_ssw":      "pco2",
-    "xco2_atm":                      "pco2",
-    "fluorometric_chlorophyll_a":    "fluoro",
-    "optical_backscatter":           "fluoro",
-    "par":                           "par",
-    "beam_attenuation":              "optics",
-    "optical_absorption":            "optics",
-    "flcdr_x_mmp_cds_fluorometric_cdom":  "cdom",
-}
-
 DEFAULT_PARAMS: dict[str, list[str]] = {
     "shallow": [
         "sea_water_temperature",
@@ -118,72 +85,6 @@ DEFAULT_PARAMS: dict[str, list[str]] = {
 }
 
 
-QARTOD_EXCLUDE: dict[str, set[int]] = {
-    "basic":    {4, 9},
-    "highest":  {4, 9},
-}
-
-
-def load_annotations(site: str, annotations_dir: str) -> pd.DataFrame | None:
-    """Load curated _llm annotations for a site. Returns None if file not found."""
-    subsite = list(PROFILER_SITES[site].values())[0][:8]
-    ann_path = Path(annotations_dir) / f"{subsite}_llm.csv"
-    if not ann_path.exists():
-        logger.warning(f"no annotation file at {ann_path}, skipping annotation masking")
-        return None
-    annotations = pd.read_csv(ann_path)
-    annotations["beginDT"] = pd.to_datetime(annotations["beginDT"], format="ISO8601", utc=True)
-    annotations["endDT"] = pd.to_datetime(annotations["endDT"], format="ISO8601", utc=True)
-    logger.info(f"loaded {len(annotations)} curated annotations from {ann_path}")
-    return annotations
-
-
-def mask_annotation_windows(
-    ds: xr.Dataset,
-    params: list[str],
-    annotations: pd.DataFrame,
-) -> xr.Dataset:
-    """NaN out affected parameters in a raw time-series for each annotation window."""
-    combined_mask = xr.zeros_like(ds.time, dtype=bool)
-
-    for _, row in annotations.iterrows():
-        affected = ast.literal_eval(row["parameters_affected"])
-
-        overlap = [p for p in affected if p in params and p in ds]
-        if not overlap:
-            continue
-
-        begin = row["beginDT"].to_datetime64()
-        end = ds.time.values[-1] if pd.isna(row["endDT"]) else row["endDT"].to_datetime64()
-        in_window = (ds.time >= begin) & (ds.time <= end)
-
-        if not bool(in_window.any()):
-            continue
-
-        combined_mask = combined_mask | in_window
-
-        for param in overlap:
-            ds[param] = ds[param].where(~in_window)
-
-        logger.info(
-            f"annotation id={row['id']}: masked {int(in_window.sum())} time points "
-            f"({row['beginDT'].date()} → {row['endDT'].date()}) params={overlap}"
-        )
-
-    if bool(combined_mask.any()):
-        n_masked = int(combined_mask.sum())
-        mean_dt = float(np.diff(ds.time.values).mean())  # nanoseconds
-        total_duration = pd.Timedelta(int(n_masked * mean_dt))
-        logger.info(f"params={params}: ~{total_duration} total masked ({n_masked} points)")
-
-    return ds
-
-
-def load_data(stream_name: str) -> xr.Dataset:
-    zarr_store = fs.get_mapper(RCA_S3_BUCKET + stream_name)
-    return xr.open_zarr(zarr_store, consolidated=True)
-
-
 def load_regridding_inputs(
     site_dict: dict[str, str],
     params: list[str],
@@ -196,19 +97,7 @@ def load_regridding_inputs(
 
     site = site_dict["ctd"][:8]
 
-    instrument_params: dict[str, list[str]] = {}
-    for param in params:
-        instr_keys = PARAM_TO_INSTRUMENT.get(param)
-        if instr_keys is None:
-            logger.warning(f"no instrument mapping for '{param}', skipping")
-            continue
-        if isinstance(instr_keys, str):
-            instr_keys = [instr_keys]
-        resolved = next((k for k in instr_keys if k in site_dict), None)
-        if resolved is None:
-            logger.warning(f"no available instrument for '{param}' at this site, skipping")
-            continue
-        instrument_params.setdefault(resolved, []).append(param)
+    instrument_params = group_params_by_instrument(params, site_dict)
 
     instrument_datasets: list[dict] = []
     for instr_key, instr_params in instrument_params.items():
@@ -321,7 +210,6 @@ def regrid_profiles(
         if skipped:
             logger.warning(f"{year}: {skipped}/{len(year_indices)} profiles skipped")
         if flag_removed:
-            QARTOD_LABELS = {1: "pass", 2: "not_evaluated", 3: "suspect", 4: "fail", 9: "missing"}
             for flag, count in sorted(flag_removed.items()):
                 logger.info(f"{year}: removed {count:,} points with flag {flag} ({QARTOD_LABELS.get(flag, '?')})")
 
@@ -332,13 +220,7 @@ def regrid_profiles(
 def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> str:
     t_start = pd.Timestamp(ds.start_time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.end_time.values.max()).strftime("%Y%m%d")
-    qc_suffix = ""
-    if qaqc_filter in QARTOD_EXCLUDE:
-        flags = "".join(str(f) for f in sorted(QARTOD_EXCLUDE[qaqc_filter]))
-        qc_suffix = f"_qf{flags}"
-    if qaqc_filter == "highest":
-        qc_suffix += "_HITL"
-    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix}.{ext}"
+    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix(qaqc_filter)}.{ext}"
 
 
 @click.command()
@@ -399,7 +281,8 @@ def main(
     end_year = 2025 if profile_type == "deep" else None
     instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year)
 
-    annotations = load_annotations(site, annotations_dir) if qaqc_filter == "highest" else None
+    nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
+    annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter, annotations)
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]

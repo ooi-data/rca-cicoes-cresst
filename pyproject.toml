@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rca-cicoes-cresst"
+version = "0.1.0"
+description = "QAQC'd data products from OOI Regional Cabled Array profiler moorings for CICOES/CRESST modelers"
+requires-python = ">=3.10"
+dependencies = [
+    "s3fs",
+    "xarray",
+    "zarr",
+    "numpy",
+    "pandas",
+    "loguru",
+    "tqdm",
+    "click",
+    "requests",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+curate = ["anthropic"]
+viz = ["cmocean", "hvplot"]
+
+[project.scripts]
+regrid-profiler = "rca_cicoes_cresst.regrid_profiler:main"
+fixed-mooring = "rca_cicoes_cresst.fixed_mooring:main"
+bin-dataset = "rca_cicoes_cresst.bin_dataset:main"
+harvest-annotations = "rca_cicoes_cresst.harvest_annotations:main"
+curate-annotations = "rca_cicoes_cresst.curate:main"
+
+[tool.setuptools]
+packages = ["rca_cicoes_cresst"]

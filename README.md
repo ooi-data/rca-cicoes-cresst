@@ -1,8 +1,10 @@
 # Data Products
 
+QAQC'd data products from OOI Regional Cabled Array (RCA) profiler moorings.
+
 ## Regridded Profiler Mooring Profiles
 
-A multi-instrument, pressure-gridded dataset derived from OOI Regional Cabled Array (RCA) profiler mooring data. Time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), deduplicated on pressure, and interpolated onto a uniform pressure grid.
+A multi-instrument, pressure-gridded dataset derived from RCA profiler mooring data. Time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), deduplicated on pressure, and interpolated onto a uniform pressure grid.
 
 ### Sites
 
@@ -67,9 +69,21 @@ Time coordinates are interchangeable with `profile_number` via `ds.swap_dims({"p
 | `fluorometric_chlorophyll_a` | Fluorometer (FLNTUA) | upcast |
 | `flcdr_x_mmp_cds_fluorometric_cdom` | CDOM (FLCDRA) | upcast |
 
-### Output Files
+### Generating the Data Product
 
-#### Regridded profiles (`regrid_profiler.py`)
+```bash
+# shallow profilers (~0–200 m)
+regrid-profiler oregon_offshore --grid 0 200 1 --format both --qaqc-filter highest
+regrid-profiler axial_base --grid 0 200 1 --format both --qaqc-filter highest
+regrid-profiler slope_base --grid 0 200 1 --format both --qaqc-filter highest
+
+# deep profilers (site-dependent depth range)
+regrid-profiler oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter highest
+regrid-profiler slope_base_deep --grid 150 2900 1 --format both --qaqc-filter highest
+regrid-profiler axial_base_deep --grid 150 2600 1 --format both --qaqc-filter highest
+```
+
+Output naming:
 
 ```
 <site>_profiles_<start>_<end>[_qf<flags>][_HITL].<ext>
@@ -91,47 +105,86 @@ axial_base_profiles_20150107_20260511_qf49.nc
 axial_base_profiles_20150107_20260511_qf49_HITL.zarr
 ```
 
-### HITL Annotations
+See `regrid-profiler --help` for full options.
+
+## Fixed 200 m Platform Time Series
+
+Time-series datasets from the fixed instruments on the shallow profiler mooring 200 m platforms (PC nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL annotation masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
+
+### Sites and Instruments
+
+| Key | Platform | CTD (T/S/ρ/DO) | pH (PHSENA) | pCO₂ (PCO2WA) | Fluorometer (FLORDD) |
+|-----|----------|-----|----|------|-------------|
+| `oregon_offshore` | CE04OSPS-PC01B | ✓ | ✓ | ✓ | — |
+| `slope_base` | RS01SBPS-PC01A | ✓ | ✓ | — | ✓ |
+| `axial_base` | RS03AXPS-PC03A | ✓ | ✓ | — | ✓ |
+
+### Data Variables
+
+`sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` (CTD); `ph_seawater` (PHSENA); `pco2_seawater` (PCO2WA, Oregon Offshore only); `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter` (FLORDD, Slope Base / Axial Base only).
+
+All variables share a single `time` dimension (bin left edges). Bins with no data are NaN.
+
+### Generating the Data Product
+
+```bash
+fixed-mooring slope_base --format both --qaqc-filter highest
+fixed-mooring oregon_offshore --format both --qaqc-filter highest
+fixed-mooring axial_base --format both --qaqc-filter highest
+
+# custom bin width or year range
+fixed-mooring axial_base --resample 30min --start-year 2020 --end-year 2024
+```
+
+Output naming:
+
+```
+<site>_fixed_<start>_<end>_<freq>[_qf<flags>][_HITL].<ext>
+```
+
+Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL.nc`
+
+See `fixed-mooring --help` for full options.
+
+## HITL Annotations
 
 Raw annotations are harvested from the OOI M2M API and saved to `annotations/<SUBSITE>.csv`.
-Curated annotations (data-quality relevant only, with `parameters_affected`) live in `annotations/curated/`.
+Curated annotations (data-quality relevant only, with `parameters_affected`) live in `annotations/curated/<SUBSITE>_llm.csv`. Curation runs for different nodes merge into the same file (deduplicated by annotation id); the pipelines filter annotations to the nodes they process.
 
-Requires `OOI_USERNAME` and `OOI_TOKEN` in `.env`.
+Requires `OOI_USERNAME` and `OOI_TOKEN` in `.env` (and `ANTHROPIC_API_KEY` for LLM curation).
 
 ```bash
 # harvest one site (accepts site key or raw subsite code)
-python scripts/harvest_annotations.py oregon_offshore
-python scripts/harvest_annotations.py CE04OSPS
+harvest-annotations oregon_offshore
+harvest-annotations CE04OSPS
 
 # harvest all profiler sites
-python scripts/harvest_annotations.py --all
+harvest-annotations --all
 ```
 
 Curate with qcFlag filtering:
 
 ```bash
-python scripts/curate.py CE04OSPS --qc-flag fail --qc-flag suspect
-python scripts/curate.py CE04OSPS --node SF01B --qc-flag fail --qc-flag suspect
+curate-annotations CE04OSPS --qc-flag fail --qc-flag suspect
 ```
 
-
-### Generating the Data Product
+LLM curation (per node, mapping sensor codes to instrument keys):
 
 ```bash
-# shallow profilers (~0–200 m)
-python scripts/regrid_profiler.py oregon_offshore --grid 0 200 1 --format both --qaqc-filter highest
-python scripts/regrid_profiler.py axial_base --grid 0 200 1 --format both --qaqc-filter highest
-python scripts/regrid_profiler.py slope_base --grid 0 200 1 --format both --qaqc-filter highest
+# science pod (shallow profiler)
+curate-annotations CE04OSPS --node SF01B \
+    --sensor 2A-CTDPFA107:ctd --sensor 2B-PHSENA108:ph \
+    --sensor 4F-PCO2WA102:pco2 --sensor 4A-NUTNRA102:nutrients
 
-# deep profilers (site-dependent depth range)
-python scripts/regrid_profiler.py oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter highest
-python scripts/regrid_profiler.py slope_base_deep --grid 150 2900 1 --format both --qaqc-filter highest
-python scripts/regrid_profiler.py axial_base_deep --grid 150 2600 1 --format both --qaqc-filter highest
+# fixed 200 m platform
+curate-annotations CE04OSPS --node PC01B \
+    --sensor 4A-CTDPFA109:ctd --sensor 4A-DOSTAD109:o2 \
+    --sensor 4B-PHSENA106:ph --sensor 4D-PCO2WA105:pco2
 ```
 
-See `scripts/regrid_profiler.py --help` for full options.
+## Binned Profiles (`bin-dataset`)
 
-#### Binned profiles (`bin_dataset.py`)
+Bin a pressure-gridded profiler dataset along the time axis:
 
 ```
 <input_stem>_binned_<N>h.<ext>
@@ -144,8 +197,8 @@ axial_base_profiles_20150107_20260511_binned_24h.zarr
 ```
 
 ```bash
-python scripts/bin_dataset.py axial_base_profiles_20150107_20260511.zarr --bin 24
-python scripts/bin_dataset.py axial_base_profiles_20150107_20260511.zarr --bin 24 --format both
+bin-dataset axial_base_profiles_20150107_20260511.zarr --bin 24
+bin-dataset axial_base_profiles_20150107_20260511.zarr --bin 24 --format both
 ```
 
-Output is written to `data/binned/`. See `scripts/bin_dataset.py --help` for full options.
+Output is written to `data/binned/`. See `bin-dataset --help` for full options.

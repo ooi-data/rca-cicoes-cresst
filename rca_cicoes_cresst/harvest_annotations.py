@@ -4,9 +4,9 @@
 Saves raw annotations to annotations/<SUBSITE>.csv.
 
 Usage:
-    python scripts/harvest_annotations.py oregon_offshore
-    python scripts/harvest_annotations.py CE04OSPS
-    python scripts/harvest_annotations.py --all
+    harvest-annotations oregon_offshore
+    harvest-annotations CE04OSPS
+    harvest-annotations --all
 """
 import os
 import sys

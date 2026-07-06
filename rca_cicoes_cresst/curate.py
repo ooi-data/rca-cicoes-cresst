@@ -10,10 +10,10 @@ Two curation modes:
 
 Usage:
     # rule-based — keep fail and suspect flags only
-    python scripts/curate.py CE04OSPS --qc-flag fail --qc-flag suspect
+    curate-annotations CE04OSPS --qc-flag fail --qc-flag suspect
 
     # LLM-based
-    python scripts/curate.py CE04OSPS \
+    curate-annotations CE04OSPS \
         --sensor 2A-CTDPFA107:ctd \
         --sensor 2B-PHSENA108:ph \
         --sensor 4F-PCO2WA102:pco2 \
@@ -36,7 +36,7 @@ INSTRUMENT_TO_PARAMS: dict[str, list[str]] = {
     "pco2":      ["pco2_seawater", "partial_pressure_co2_ssw", "xco2_atm"],
     "nutrients": ["salinity_corrected_nitrate", "nitrate_concentration"],
     "o2":        ["corrected_dissolved_oxygen"],
-    "fluoro":    ["fluorometric_chlorophyll_a", "optical_backscatter"],
+    "fluoro":    ["fluorometric_chlorophyll_a", "fluorometric_cdom", "optical_backscatter"],
     "cdom":      ["flcdr_x_mmp_cds_fluorometric_cdom"],
 }
 
@@ -222,8 +222,17 @@ def main(
         return
 
     out_path = out_dir / f"{subsite}_llm.csv"
+    if out_path.exists():
+        # merge with prior curation runs (e.g. other nodes); new results win on id
+        existing = pd.read_csv(out_path)
+        logger.info(f"merging with {len(existing)} existing curated annotations in {out_path}")
+        curated = (
+            pd.concat([existing, curated], ignore_index=True)
+            .drop_duplicates(subset="id", keep="last")
+            .sort_values("beginDT")
+        )
     curated.to_csv(out_path, index=False)
-    logger.info(f"Saved {len(curated)}/{len(results)} curated annotations to {out_path}")
+    logger.info(f"classified {len(results)} annotations; {out_path} now has {len(curated)} curated rows")
 
 
 if __name__ == "__main__":
