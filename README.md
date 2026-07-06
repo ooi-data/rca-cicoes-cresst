@@ -1,6 +1,6 @@
 # Data Products
 
-QAQC'd data products from OOI Regional Cabled Array (RCA) profiler moorings.
+Curated data products from OOI Regional Cabled Array (RCA) profiler moorings.
 
 ## Regridded Profiler Mooring Profiles
 
