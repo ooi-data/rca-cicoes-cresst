@@ -46,28 +46,19 @@ Time coordinates are interchangeable with `profile_number` via `ds.swap_dims({"p
 
 ### Data Variables
 
-#### Shallow profiler defaults
+All variables are sampled on the upcast except `ph_seawater` and `pco2_seawater` (downcast).
 
-| Variable | Instrument | Cast |
-|----------|------------|------|
-| `sea_water_temperature` | CTD (CTDPFA) | upcast |
-| `sea_water_practical_salinity` | CTD (CTDPFA) | upcast |
-| `corrected_dissolved_oxygen` | CTD (CTDPFA) | upcast |
-| `sea_water_density` | CTD (CTDPFA) | upcast |
-| `salinity_corrected_nitrate` | Nitrate (NUTNRA) | upcast |
-| `ph_seawater` | pH (PHSENA) | downcast |
-| `pco2_seawater` | pCO₂ (PCO2WA) | downcast |
-
-#### Deep profiler defaults
-
-| Variable | Instrument | Cast |
-|----------|------------|------|
-| `sea_water_temperature` | CTD (CTDPFL) | upcast |
-| `sea_water_practical_salinity` | CTD (CTDPFL) | upcast |
-| `corrected_dissolved_oxygen` | Oxygen (DOSTAD) | upcast |
-| `sea_water_density` | CTD (CTDPFL) | upcast |
-| `fluorometric_chlorophyll_a` | Fluorometer (FLNTUA) | upcast |
-| `flcdr_x_mmp_cds_fluorometric_cdom` | CDOM (FLCDRA) | upcast |
+| Variable | Shallow | Deep |
+|----------|---------|------|
+| `sea_water_temperature` | CTD (CTDPFA) | CTD (CTDPFL) |
+| `sea_water_practical_salinity` | CTD (CTDPFA) | CTD (CTDPFL) |
+| `corrected_dissolved_oxygen` | CTD (CTDPFA) | Oxygen (DOSTAD) |
+| `sea_water_density` | CTD (CTDPFA) | CTD (CTDPFL) |
+| `salinity_corrected_nitrate` | Nitrate (NUTNRA) | — |
+| `ph_seawater` | pH (PHSENA) | — |
+| `pco2_seawater` | pCO₂ (PCO2WA) | — |
+| `fluorometric_chlorophyll_a` | — | Fluorometer (FLNTUA) |
+| `flcdr_x_mmp_cds_fluorometric_cdom` | — | CDOM (FLCDRA) |
 
 ### Generating the Data Product
 
@@ -121,9 +112,9 @@ Time-series datasets from the fixed instruments on the shallow profiler mooring 
 
 ### Data Variables
 
-`sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` (CTD); `ph_seawater` (PHSENA); `pco2_seawater` (PCO2WA, Oregon Offshore only); `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter` (FLORDD, Slope Base / Axial Base only).
+CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · PHSENA: `ph_seawater` · PCO2WA: `pco2_seawater` · FLORDD: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Instrument availability per site is in the table above. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
-All variables share a single `time` dimension (bin left edges). Bins with no data are NaN.
+**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_mooring.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute; small seam offsets are possible (different calibration paths).
 
 ### Generating the Data Product
 

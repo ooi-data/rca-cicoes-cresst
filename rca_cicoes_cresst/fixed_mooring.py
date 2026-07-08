@@ -58,8 +58,44 @@ DEFAULT_PARAMS: list[str] = [
     "optical_backscatter",
 ]
 
+# An optode DAC firmware bug injected noise into the analog (phase-derived)
+# output during these windows; per the OOI annotations the onboard-calculated
+# 'dissolved_oxygen' product is the one to use. Splice it (and its QARTOD
+# flags) into 'corrected_dissolved_oxygen' to keep the DO record continuous.
+# Windows are the exact begin/end of the OOI annotations and are a fixed
+# property of the served data. Cal paths differ, so small offsets at the
+# seams are possible.
+DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
+    "oregon_offshore": ("2017-07-29T05:24:00", "2020-08-18T01:24:00"),
+    "slope_base":      ("2017-08-04T19:30:00", "2021-08-04T20:20:00"),
+    "axial_base":      ("2017-07-31T04:00:00", "2021-08-03T01:26:00"),
+}
 
-def load_fixed_inputs(site_dict: dict[str, str], params: list[str]) -> list[dict]:
+# curated annotation ids that flagged these windows, superseded by the splice
+DO_SPLICE_SUPERSEDED_IDS: set[int] = {4341, 4345, 4346, 4348, 4350, 4351}
+
+
+def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
+    """Substitute the onboard DO product for the phase-derived one inside window."""
+    begin, end = (pd.Timestamp(t).to_datetime64() for t in window)
+    in_window = (ds.time >= begin) & (ds.time <= end)
+    ds["corrected_dissolved_oxygen"] = ds["corrected_dissolved_oxygen"].where(~in_window, ds["dissolved_oxygen"])
+    if "dissolved_oxygen_qartod_results" in ds and "corrected_dissolved_oxygen_qartod_results" in ds:
+        ds["corrected_dissolved_oxygen_qartod_results"] = (
+            ds["corrected_dissolved_oxygen_qartod_results"].where(~in_window, ds["dissolved_oxygen_qartod_results"])
+        )
+    ds["corrected_dissolved_oxygen"].attrs["source_note"] = (
+        f"onboard-calculated 'dissolved_oxygen' substituted for the phase-derived product "
+        f"from {window[0]} to {window[1]} (optode DAC firmware noise, OOI annotations)"
+    )
+    return ds.drop_vars(["dissolved_oxygen", "dissolved_oxygen_qartod_results"], errors="ignore")
+
+
+def load_fixed_inputs(
+    site_dict: dict[str, str],
+    params: list[str],
+    do_splice: tuple[str, str] | None = None,
+) -> list[dict]:
     instrument_params = group_params_by_instrument(params, site_dict)
 
     instrument_datasets: list[dict] = []
@@ -73,9 +109,15 @@ def load_fixed_inputs(site_dict: dict[str, str], params: list[str]) -> list[dict
         # carry a duplicate int_ctd_pressure that would collide on merge
         pres_vars = [v for v in PRES_PARAMS if v in ds] if instr_key == "ctd" else []
         available = [v for v in pres_vars + instr_params + qartod_vars if v in ds]
+        if do_splice and instr_key == "ctd" and "corrected_dissolved_oxygen" in available and "dissolved_oxygen" in ds:
+            onboard = [v for v in ("dissolved_oxygen", "dissolved_oxygen_qartod_results") if v in ds]
+            ds = splice_onboard_do(ds[available + onboard], do_splice)
+            logger.info(f"splicing onboard DO into corrected_dissolved_oxygen for {do_splice[0]} → {do_splice[1]}")
+        else:
+            ds = ds[available]
         instrument_datasets.append({
             "instrument": instr_key,
-            "ds": ds[available],
+            "ds": ds,
             "params": [p for p in instr_params if p in ds],
             "qartod_vars": qartod_vars,
         })
@@ -207,9 +249,14 @@ def main(
     site_dict = FIXED_SITES[site]
     end_year = end_year or datetime.now(timezone.utc).year
 
-    instrument_datasets = load_fixed_inputs(site_dict, DEFAULT_PARAMS)
+    instrument_datasets = load_fixed_inputs(site_dict, DEFAULT_PARAMS, do_splice=DO_SPLICE_WINDOWS.get(site))
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
+    if annotations is not None:
+        superseded = annotations["id"].isin(DO_SPLICE_SUPERSEDED_IDS)
+        if superseded.any():
+            logger.info(f"skipping annotations superseded by onboard-DO splice: {sorted(annotations.loc[superseded, 'id'])}")
+            annotations = annotations[~superseded]
     ds_fixed = resample_fixed(instrument_datasets, resample, start_year, end_year, qaqc_filter, annotations)
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
