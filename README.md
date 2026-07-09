@@ -112,9 +112,9 @@ Time-series datasets from the fixed instruments on the shallow profiler mooring 
 
 ### Data Variables
 
-CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · PHSENA: `ph_seawater` · PCO2WA: `pco2_seawater` · FLORDD: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Instrument availability per site is in the table above. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
+CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · PHSENA: `ph_seawater` · PCO2WA: `pco2_seawater` · FLORDD: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
-**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_mooring.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute; small seam offsets are possible (different calibration paths).
+**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_mooring.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute.
 
 ### Generating the Data Product
 
