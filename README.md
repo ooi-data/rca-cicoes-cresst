@@ -98,44 +98,59 @@ axial_base_profiles_20150107_20260511_qf49_HITL.zarr
 
 See `regrid-profiler --help` for full options.
 
-## Fixed 200 m Platform Time Series
+## Fixed Instrument Time Series
 
-Time-series datasets from the fixed instruments on the shallow profiler mooring 200 m platforms (PC nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL annotation masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
+Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL annotation masking, plus optional advanced pH masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
 
 ### Sites and Instruments
 
-| Key | Platform | CTD (T/S/ρ/DO) | pH (PHSENA) | pCO₂ (PCO2WA) | Fluorometer (FLORDD) |
-|-----|----------|-----|----|------|-------------|
-| `oregon_offshore` | CE04OSPS-PC01B | ✓ | ✓ | ✓ | — |
-| `slope_base` | RS01SBPS-PC01A | ✓ | ✓ | — | ✓ |
-| `axial_base` | RS03AXPS-PC03A | ✓ | ✓ | — | ✓ |
+| Key | Platform | Depth | CTD (T/S/ρ/DO) | pH | pCO₂ | Fluorometer |
+|-----|----------|-------|-----|----|------|-------------|
+| `oregon_offshore` | CE04OSPS-PC01B | 200 m | ✓ | ✓ | ✓ | — |
+| `slope_base` | RS01SBPS-PC01A | 200 m | ✓ | ✓ | — | ✓ |
+| `axial_base` | RS03AXPS-PC03A | 200 m | ✓ | ✓ | — | ✓ |
+| `oregon_offshore_bep` | CE04OSBP-LJ01C | ~580 m | ✓ | ✓ | ✓ | — |
+| `oregon_shelf_bep` | CE02SHBP-LJ01D | ~80 m | ✓ | ✓ *(total)* | ✓ | — |
+| `slope_base_ctd` | RS01SLBS-LJ01A | ~2900 m | ✓ | — | — | — |
+| `axial_base_ctd` | RS03AXBS-LJ03A | ~2600 m | ✓ | — | — | — |
+
+The two Oregon Coastal Endurance BEPs (`*_bep`) carry the full carbon suite (CTD, pH, pCO₂). The two deep cabled seafloor packages (`*_ctd`) carry only a CTD in this product — they also host OPTAA, ADCP, and HPIES, but no pH/pCO₂/fluorometer. The CTDs at all fixed sites report DO through the CTD stream (integrated optode), unlike the deep profilers which use a standalone DOSTA. OPTAA (spectral absorption/attenuation) is excluded from this product.
 
 ### Data Variables
 
-CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · PHSENA: `ph_seawater` · PCO2WA: `pco2_seawater` · FLORDD: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
+CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (PHSEN) or `ph_total` (PHSENH at Oregon Shelf) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
-**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_mooring.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute.
+**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_instruments.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute. Applies to the PC platforms only.
 
 ### Generating the Data Product
 
 ```bash
-fixed-mooring slope_base --format both --qaqc-filter highest
-fixed-mooring oregon_offshore --format both --qaqc-filter highest
-fixed-mooring axial_base --format both --qaqc-filter highest
+# PC platforms (200 m)
+fixed-instruments slope_base --format both --qaqc-filter highest --ph-advanced
+fixed-instruments oregon_offshore --format both --qaqc-filter highest --ph-advanced
+fixed-instruments axial_base --format both --qaqc-filter highest --ph-advanced
+
+# seafloor BEPs — Oregon carbon suite
+fixed-instruments oregon_offshore_bep --format both --qaqc-filter highest
+fixed-instruments oregon_shelf_bep --format both --qaqc-filter highest
+
+# deep cabled seafloor CTDs
+fixed-instruments slope_base_ctd --format both --qaqc-filter highest
+fixed-instruments axial_base_ctd --format both --qaqc-filter highest
 
 # custom bin width or year range
-fixed-mooring axial_base --resample 30min --start-year 2020 --end-year 2024
+fixed-instruments axial_base --resample 30min --start-year 2020 --end-year 2024
 ```
 
 Output naming:
 
 ```
-<site>_fixed_<start>_<end>_<freq>[_qf<flags>][_HITL].<ext>
+<site>_fixed_<start>_<end>_<freq>[_qf<flags>][_HITL][_phadv].<ext>
 ```
 
-Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL.nc`
+Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL_phadv.nc`
 
-See `fixed-mooring --help` for full options.
+See `fixed-instruments --help` for full options.
 
 ## HITL Annotations
 
@@ -172,6 +187,30 @@ curate-annotations CE04OSPS --node PC01B \
     --sensor 4A-CTDPFA109:ctd --sensor 4A-DOSTAD109:o2 \
     --sensor 4B-PHSENA106:ph --sensor 4D-PCO2WA105:pco2
 ```
+
+## Advanced pH QC
+
+An optional extra masking layer for pH, driven by the precomputed advanced pH flags
+in the `rca-advanced-qaqc` S3 bucket (from `rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags`).
+Each raw sample carries a positional flag string, one digit per test (`1` pass / `3` fail):
+
+| Test | Meaning |
+|------|---------|
+| `low_indicator_signal` | indicator signal getting low (possible pump/flow issue) |
+| `flat_indicator_signal` | flat indicator signal (pump starting to fail) |
+| `erratic_reference` | erratic reference measurements |
+| `failed_blank` | DI blank saturated or too low |
+| `failed_intensity` | signal intensity saturated or too low |
+| `flat_intensity` | flat signal intensity (pump not working / flow cell obstructed) |
+
+Passing `--ph-advanced` NaNs `ph_seawater` wherever **any** test fails (the flag string
+contains a `3`), per science-lead guidance. This is aggressive — the `low_indicator_signal`
+test alone fires on a large fraction of samples — so expect substantial pH data loss; it is
+opt-in for that reason.
+
+Available for the PC-platform and profiler PHSEN sensors (where the flag products exist); the flag
+is a no-op for the seafloor BEP pH. Works on both `fixed-instruments` and `regrid-profiler`; the
+output filename gets a `_phadv` suffix.
 
 ## Binned Profiles (`bin-dataset`)
 

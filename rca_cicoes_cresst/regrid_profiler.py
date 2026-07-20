@@ -20,6 +20,7 @@ from rca_cicoes_cresst.common import (
     load_annotations,
     load_data,
     mask_annotation_windows,
+    mask_ph_advanced,
     qc_suffix,
 )
 
@@ -90,6 +91,7 @@ def load_regridding_inputs(
     params: list[str],
     sites_lookup: dict,
     end_year: int | None = None,
+    ph_advanced: bool = False,
 ) -> tuple[list[dict], pd.DataFrame]:
     now = datetime.now(timezone.utc)
     current_year = now.year
@@ -105,6 +107,8 @@ def load_regridding_inputs(
         stream_name = sites_lookup[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
         ds = load_data(stream_name)
+        if ph_advanced and instr_key == "ph":
+            ds = mask_ph_advanced(ds, stream_name)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
         available = [v for v in PRES_PARAMS + instr_params + qartod_vars if v in ds]
         instrument_datasets.append({
@@ -217,10 +221,10 @@ def regrid_profiles(
     return xr.concat(pds, dim="profile_number")
 
 
-def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> str:
+def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: bool, ext: str) -> str:
     t_start = pd.Timestamp(ds.start_time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.end_time.values.max()).strftime("%Y%m%d")
-    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix(qaqc_filter)}.{ext}"
+    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix(qaqc_filter, ph_advanced)}.{ext}"
 
 
 @click.command()
@@ -256,12 +260,21 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> 
     show_default=True,
     help="Directory containing curated annotation CSVs (used with --qaqc-filter highest).",
 )
+@click.option(
+    "--ph-advanced",
+    is_flag=True,
+    default=False,
+    help=(
+        "Also mask ph_seawater where any advanced pH QC test failed (flag string contains a 3)."
+    ),
+)
 def main(
     site: str,
     grid: tuple[float, float, float],
     fmt: str,
     qaqc_filter: str,
     annotations_dir: str,
+    ph_advanced: bool,
 ) -> None:
     """Regrid RCA shallow profiler data to a uniform pressure grid.
 
@@ -279,7 +292,9 @@ def main(
     profile_type = "deep" if site.endswith("_deep") else "shallow"
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
     end_year = 2025 if profile_type == "deep" else None
-    instrument_datasets, indices = load_regridding_inputs(site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year)
+    instrument_datasets, indices = load_regridding_inputs(
+        site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year, ph_advanced=ph_advanced
+    )
 
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
@@ -287,7 +302,7 @@ def main(
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = build_output_path(site, ds_profiles, qaqc_filter, f)
+        output_path = build_output_path(site, ds_profiles, qaqc_filter, ph_advanced, f)
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_profiles.to_zarr(output_path, mode="w")

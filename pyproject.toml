@@ -26,7 +26,7 @@ viz = ["cmocean", "hvplot"]
 
 [project.scripts]
 regrid-profiler = "rca_cicoes_cresst.regrid_profiler:main"
-fixed-mooring = "rca_cicoes_cresst.fixed_mooring:main"
+fixed-instruments = "rca_cicoes_cresst.fixed_instruments:main"
 bin-dataset = "rca_cicoes_cresst.bin_dataset:main"
 harvest-annotations = "rca_cicoes_cresst.harvest_annotations:main"
 curate-annotations = "rca_cicoes_cresst.curate:main"

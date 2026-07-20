@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build resampled time-series datasets from fixed instruments on the shallow
-profiler mooring 200 m platforms (PC nodes).
+"""Build resampled time-series datasets from fixed (non-profiling) instruments:
+the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic
+Experiment Packages (BEP / LJ nodes).
 
 Same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL
-annotation masking), but no profile slicing or pressure regridding: instruments
-are masked at native resolution, resampled to a common time grid (default
-hourly means), and merged into one dataset per site.
+annotation masking, plus optional advanced pH masking), but no profile slicing
+or pressure regridding: instruments are masked at native resolution, resampled
+to a common time grid (default hourly means), and merged into one dataset per site.
 """
 import os
 
@@ -25,9 +26,13 @@ from rca_cicoes_cresst.common import (
     load_annotations,
     load_data,
     mask_annotation_windows,
+    mask_ph_advanced,
     qc_suffix,
 )
 
+# PC = 200 m platform on the shallow profiler mooring; BEP = seafloor benthic
+# experiment package. Both are fixed-depth. The deep RS seafloor BEPs carry
+# only a CTD (with integrated optode); the CE BEPs add pH and pCO2.
 FIXED_SITES: dict[str, dict[str, str]] = {
     "oregon_offshore": {
         "ctd":    "CE04OSPS-PC01B-4A-CTDPFA109",
@@ -44,6 +49,22 @@ FIXED_SITES: dict[str, dict[str, str]] = {
         "ph":     "RS03AXPS-PC03A-4B-PHSENA302",
         "fluoro": "RS03AXPS-PC03A-4C-FLORDD303",
     },
+    "oregon_offshore_bep": {
+        "ctd":    "CE04OSBP-LJ01C-06-CTDBPO108",
+        "ph":     "CE04OSBP-LJ01C-10-PHSEND107",
+        "pco2":   "CE04OSBP-LJ01C-09-PCO2WB104",
+    },
+    "oregon_shelf_bep": {
+        "ctd":    "CE02SHBP-LJ01D-06-CTDBPN106",
+        "ph":     "CE02SHBP-LJ01D-10-PHSENH110",  # reports ph_total, not ph_seawater
+        "pco2":   "CE02SHBP-LJ01D-09-PCO2WB103",
+    },
+    "slope_base_ctd": {  # deep seafloor BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
+        "ctd":    "RS01SLBS-LJ01A-12-CTDPFB101",
+    },
+    "axial_base_ctd": {  # deep seafloor BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
+        "ctd":    "RS03AXBS-LJ03A-12-CTDPFB301",
+    },
 }
 
 DEFAULT_PARAMS: list[str] = [
@@ -52,6 +73,7 @@ DEFAULT_PARAMS: list[str] = [
     "corrected_dissolved_oxygen",
     "sea_water_density",
     "ph_seawater",
+    "ph_total",
     "pco2_seawater",
     "fluorometric_chlorophyll_a",
     "fluorometric_cdom",
@@ -95,6 +117,7 @@ def load_fixed_inputs(
     site_dict: dict[str, str],
     params: list[str],
     do_splice: tuple[str, str] | None = None,
+    ph_advanced: bool = False,
 ) -> list[dict]:
     instrument_params = group_params_by_instrument(params, site_dict)
 
@@ -115,6 +138,8 @@ def load_fixed_inputs(
             logger.info(f"splicing onboard DO into corrected_dissolved_oxygen for {do_splice[0]} → {do_splice[1]}")
         else:
             ds = ds[available]
+        if ph_advanced and instr_key == "ph":
+            ds = mask_ph_advanced(ds, stream_name)
         instrument_datasets.append({
             "instrument": instr_key,
             "ds": ds,
@@ -176,10 +201,10 @@ def resample_fixed(
     return xr.merge(resampled)
 
 
-def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str, ext: str) -> str:
+def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str, ph_advanced: bool, ext: str) -> str:
     t_start = pd.Timestamp(ds.time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.time.values.max()).strftime("%Y%m%d")
-    return f"{site}_fixed_{t_start}_{t_end}_{resample}{qc_suffix(qaqc_filter)}.{ext}"
+    return f"{site}_fixed_{t_start}_{t_end}_{resample}{qc_suffix(qaqc_filter, ph_advanced)}.{ext}"
 
 
 @click.command()
@@ -227,6 +252,15 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
     show_default=True,
     help="Directory containing curated annotation CSVs (used with --qaqc-filter highest).",
 )
+@click.option(
+    "--ph-advanced",
+    is_flag=True,
+    default=False,
+    help=(
+        "Also mask ph_seawater where any advanced pH QC test failed (flag string "
+        "contains a 3). Flags exist only for the PC-platform pH sensors, not the seafloor BEPs."
+    ),
+)
 def main(
     site: str,
     resample: str,
@@ -235,8 +269,9 @@ def main(
     fmt: str,
     qaqc_filter: str,
     annotations_dir: str,
+    ph_advanced: bool,
 ) -> None:
-    """Resample fixed 200 m platform instrument data to a common time grid.
+    """Resample fixed-instrument data (PC platforms and seafloor BEPs) to a common time grid.
 
     Output is saved to <site>_fixed_<start>_<end>_<freq>.<ext> in the current
     directory.  Example: slope_base_fixed_20150101_20260630_1h_qf49_HITL.zarr
@@ -249,7 +284,9 @@ def main(
     site_dict = FIXED_SITES[site]
     end_year = end_year or datetime.now(timezone.utc).year
 
-    instrument_datasets = load_fixed_inputs(site_dict, DEFAULT_PARAMS, do_splice=DO_SPLICE_WINDOWS.get(site))
+    instrument_datasets = load_fixed_inputs(
+        site_dict, DEFAULT_PARAMS, do_splice=DO_SPLICE_WINDOWS.get(site), ph_advanced=ph_advanced
+    )
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
     if annotations is not None:
@@ -261,7 +298,7 @@ def main(
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = build_output_path(site, ds_fixed, resample, qaqc_filter, f)
+        output_path = build_output_path(site, ds_fixed, resample, qaqc_filter, ph_advanced, f)
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_fixed.to_zarr(output_path, mode="w")
