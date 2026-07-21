@@ -88,13 +88,18 @@ DEFAULT_PARAMS: list[str] = [
 # property of the served data. Cal paths differ, so small offsets at the
 # seams are possible.
 DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
-    "oregon_offshore": ("2017-07-29T05:24:00", "2020-08-18T01:24:00"),
-    "slope_base":      ("2017-08-04T19:30:00", "2021-08-04T20:20:00"),
-    "axial_base":      ("2017-07-31T04:00:00", "2021-08-03T01:26:00"),
+    "oregon_offshore":     ("2017-07-29T05:24:00", "2020-08-18T01:24:00"),
+    "slope_base":          ("2017-08-04T19:30:00", "2021-08-04T20:20:00"),
+    "axial_base":          ("2017-07-31T04:00:00", "2021-08-03T01:26:00"),
+    "oregon_offshore_bep": ("2017-08-10T19:22:00", "2020-08-18T01:24:00"),
+    "oregon_shelf_bep":    ("2017-09-10T15:51:00", "2020-08-12T21:24:00"),
+    "slope_base_ctd":      ("2017-07-29T19:19:00", "2021-08-04T20:20:00"),
+    "axial_base_ctd":      ("2017-07-31T22:38:00", "2021-08-03T20:43:00"),
 }
 
 # curated annotation ids that flagged these windows, superseded by the splice
-DO_SPLICE_SUPERSEDED_IDS: set[int] = {4341, 4345, 4346, 4348, 4350, 4351}
+DO_SPLICE_SUPERSEDED_IDS: set[int] = {4341, 4345, 4346, 4348, 4350, 4351,  # PC platforms
+                                      4349, 4347, 4353, 4352}              # BEP CTDs
 
 
 def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
