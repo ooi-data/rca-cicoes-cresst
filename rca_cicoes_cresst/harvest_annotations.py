@@ -22,13 +22,17 @@ load_dotenv()
 
 ANNOTATIONS_ENDPOINT = "https://ooinet.oceanobservatories.org/api/m2m/12580/anno/find"
 
-PROFILER_SITES: dict[str, str] = {
+SITES: dict[str, str] = {
     "oregon_offshore":      "CE04OSPS",
     "oregon_offshore_deep": "CE04OSPD",
     "slope_base":           "RS01SBPS",
     "slope_base_deep":      "RS01SBPD",
     "axial_base":           "RS03AXPS",
     "axial_base_deep":      "RS03AXPD",
+    "oregon_offshore_bep":  "CE04OSBP",
+    "oregon_shelf_bep":     "CE02SHBP",
+    "slope_base_ctd":       "RS01SLBS",
+    "axial_base_ctd":       "RS03AXBS",
 }
 
 
@@ -69,7 +73,7 @@ def harvest(subsite: str, out_dir: Path) -> Path:
 @click.option(
     "--all", "harvest_all",
     is_flag=True,
-    help="Harvest all sites in PROFILER_SITES.",
+    help="Harvest every site in SITES (profiler moorings + BEP/seafloor subsites).",
 )
 @click.option(
     "--out-dir", default="annotations",
@@ -79,7 +83,7 @@ def harvest(subsite: str, out_dir: Path) -> Path:
 def main(site: str | None, harvest_all: bool, out_dir: str) -> None:
     """Harvest HITL annotations for SITE (site key or raw subsite code).
 
-    SITE can be a key from PROFILER_SITES (e.g. 'oregon_offshore') or a raw
+    SITE can be a key from SITES (e.g. 'oregon_offshore') or a raw
     OOI subsite code (e.g. 'CE04OSPS').  Use --all to harvest every site.
     """
     if not site and not harvest_all:
@@ -88,13 +92,13 @@ def main(site: str | None, harvest_all: bool, out_dir: str) -> None:
     out_path = Path(out_dir)
 
     if harvest_all:
-        for key, subsite in PROFILER_SITES.items():
+        for key, subsite in SITES.items():
             try:
                 harvest(subsite, out_path)
             except Exception as e:
                 logger.error(f"{subsite}: {e}")
     else:
-        subsite = PROFILER_SITES.get(site, site)
+        subsite = SITES.get(site, site)
         harvest(subsite, out_path)
 
 

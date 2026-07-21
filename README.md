@@ -1,6 +1,38 @@
 # Data Products
 
-Curated data products from OOI Regional Cabled Array (RCA) profiler moorings.
+Curated data products from OOI Regional Cabled Array (RCA) profiler moorings and seafloor benthic packages.
+
+## Contents
+
+- [Setup](#setup)
+- [Command overview](#command-overview)
+- [Regridded Profiler Mooring Profiles](#regridded-profiler-mooring-profiles) (`regrid-profiler`)
+- [Fixed Instrument Time Series](#fixed-instrument-time-series) (`fixed-instruments`)
+- [HITL Annotations](#hitl-annotations) (`harvest-annotations`, `curate-annotations`)
+- [Advanced pH QC](#advanced-ph-qc)
+- [Binned Profiles](#binned-profiles-bin-dataset) (`bin-dataset`)
+- [Syncing Products](#syncing-products-sync-cresst) (`sync-cresst`)
+
+## Setup
+
+```bash
+pip install -e .
+```
+
+Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, loguru) install automatically; LLM curation additionally needs `anthropic` (`pip install -e ".[curate]"`). Reading OOI/RCA S3 data is anonymous — no credentials needed. Credentials are required only for: harvesting/curating annotations (`OOI_USERNAME`, `OOI_TOKEN`, and `ANTHROPIC_API_KEY` for LLM curation, in a local `.env`) and writing with `sync-cresst` (AWS credentials).
+
+**Outputs & layout.** `regrid-profiler` and `fixed-instruments` write to the **current directory** and logs to `logs/`; `bin-dataset` writes to `data/binned/`. The convention is to keep finished products under `data/` — run the generators from `data/` (or move outputs there), since `sync-cresst` mirrors `data/` to S3.
+
+## Command overview
+
+| Command | Purpose |
+|---------|---------|
+| `regrid-profiler` | Regrid shallow/deep profiler data onto a uniform pressure grid |
+| `fixed-instruments` | Resample fixed-instrument (PC platform + seafloor BEP) data to a common time grid |
+| `bin-dataset` | Bin a regridded profiler dataset along the time axis |
+| `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
+| `curate-annotations` | Filter annotations to the data-quality-relevant set (rule- or LLM-based) |
+| `sync-cresst` | Push local products in `data/` to the `rca-advanced-qaqc/cresst` S3 prefix |
 
 ## Regridded Profiler Mooring Profiles
 
@@ -91,9 +123,9 @@ Output naming:
 Examples:
 
 ```
-axial_base_profiles_20150107_20260511.zarr
-axial_base_profiles_20150107_20260511_qf49.nc
-axial_base_profiles_20150107_20260511_qf49_HITL.zarr
+axial_base_profiles_20150107_20260604.zarr
+axial_base_profiles_20150107_20260604_qf49.nc
+axial_base_profiles_20150107_20260604_qf49_HITL.zarr
 ```
 
 See `regrid-profiler --help` for full options.
@@ -120,7 +152,7 @@ The two Oregon Coastal Endurance BEPs (`*_bep`) carry the full carbon suite (CTD
 
 CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (PHSEN) or `ph_total` (PHSENH at Oregon Shelf) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
-**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_instruments.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute. Applies to the PC platforms only.
+**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_instruments.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute. Applies to the PC platforms and the BEP/seafloor CTDs (every fixed site with the integrated optode).
 
 ### Generating the Data Product
 
@@ -223,12 +255,12 @@ Bin a pressure-gridded profiler dataset along the time axis:
 Example:
 
 ```
-axial_base_profiles_20150107_20260511_binned_24h.zarr
+axial_base_profiles_20150107_20260604_qf49_HITL_binned_24h.zarr
 ```
 
 ```bash
-bin-dataset axial_base_profiles_20150107_20260511.zarr --bin 24
-bin-dataset axial_base_profiles_20150107_20260511.zarr --bin 24 --format both
+bin-dataset data/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24
+bin-dataset data/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24 --format both
 ```
 
 Output is written to `data/binned/`. See `bin-dataset --help` for full options.
