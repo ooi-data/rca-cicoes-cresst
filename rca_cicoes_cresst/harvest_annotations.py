@@ -29,10 +29,10 @@ SITES: dict[str, str] = {
     "slope_base_deep":      "RS01SBPD",
     "axial_base":           "RS03AXPS",
     "axial_base_deep":      "RS03AXPD",
-    "oregon_offshore_bep":  "CE04OSBP",
-    "oregon_shelf_bep":     "CE02SHBP",
-    "slope_base_ctd":       "RS01SLBS",
-    "axial_base_ctd":       "RS03AXBS",
+    "oregon_offshore_seafloor": "CE04OSBP",
+    "oregon_shelf_seafloor":    "CE02SHBP",
+    "slope_base_seafloor":      "RS01SLBS",
+    "axial_base_seafloor":      "RS03AXBS",
 }
 
 

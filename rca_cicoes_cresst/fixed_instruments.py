@@ -49,20 +49,20 @@ FIXED_SITES: dict[str, dict[str, str]] = {
         "ph":     "RS03AXPS-PC03A-4B-PHSENA302",
         "fluoro": "RS03AXPS-PC03A-4C-FLORDD303",
     },
-    "oregon_offshore_bep": {
+    "oregon_offshore_seafloor": {
         "ctd":    "CE04OSBP-LJ01C-06-CTDBPO108",
         "ph":     "CE04OSBP-LJ01C-10-PHSEND107",
         "pco2":   "CE04OSBP-LJ01C-09-PCO2WB104",
     },
-    "oregon_shelf_bep": {
+    "oregon_shelf_seafloor": {
         "ctd":    "CE02SHBP-LJ01D-06-CTDBPN106",
         "ph":     "CE02SHBP-LJ01D-10-PHSENH110",  # reports ph_total, not ph_seawater
         "pco2":   "CE02SHBP-LJ01D-09-PCO2WB103",
     },
-    "slope_base_ctd": {  # deep seafloor BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
+    "slope_base_seafloor": {  # deep BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
         "ctd":    "RS01SLBS-LJ01A-12-CTDPFB101",
     },
-    "axial_base_ctd": {  # deep seafloor BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
+    "axial_base_seafloor": {  # deep BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
         "ctd":    "RS03AXBS-LJ03A-12-CTDPFB301",
     },
 }
@@ -91,10 +91,10 @@ DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
     "oregon_offshore":     ("2017-07-29T05:24:00", "2020-08-18T01:24:00"),
     "slope_base":          ("2017-08-04T19:30:00", "2021-08-04T20:20:00"),
     "axial_base":          ("2017-07-31T04:00:00", "2021-08-03T01:26:00"),
-    "oregon_offshore_bep": ("2017-08-10T19:22:00", "2020-08-18T01:24:00"),
-    "oregon_shelf_bep":    ("2017-09-10T15:51:00", "2020-08-12T21:24:00"),
-    "slope_base_ctd":      ("2017-07-29T19:19:00", "2021-08-04T20:20:00"),
-    "axial_base_ctd":      ("2017-07-31T22:38:00", "2021-08-03T20:43:00"),
+    "oregon_offshore_seafloor": ("2017-08-10T19:22:00", "2020-08-18T01:24:00"),
+    "oregon_shelf_seafloor":    ("2017-09-10T15:51:00", "2020-08-12T21:24:00"),
+    "slope_base_seafloor":      ("2017-07-29T19:19:00", "2021-08-04T20:20:00"),
+    "axial_base_seafloor":      ("2017-07-31T22:38:00", "2021-08-03T20:43:00"),
 }
 
 # curated annotation ids that flagged these windows, superseded by the splice

@@ -141,12 +141,12 @@ Time-series datasets from fixed (non-profiling) instruments: the shallow profile
 | `oregon_offshore` | CE04OSPS-PC01B | 200 m | ✓ | ✓ | ✓ | — |
 | `slope_base` | RS01SBPS-PC01A | 200 m | ✓ | ✓ | — | ✓ |
 | `axial_base` | RS03AXPS-PC03A | 200 m | ✓ | ✓ | — | ✓ |
-| `oregon_offshore_bep` | CE04OSBP-LJ01C | ~580 m | ✓ | ✓ | ✓ | — |
-| `oregon_shelf_bep` | CE02SHBP-LJ01D | ~80 m | ✓ | ✓ *(total)* | ✓ | — |
-| `slope_base_ctd` | RS01SLBS-LJ01A | ~2900 m | ✓ | — | — | — |
-| `axial_base_ctd` | RS03AXBS-LJ03A | ~2600 m | ✓ | — | — | — |
+| `oregon_offshore_seafloor` | CE04OSBP-LJ01C | ~580 m | ✓ | ✓ | ✓ | — |
+| `oregon_shelf_seafloor` | CE02SHBP-LJ01D | ~80 m | ✓ | ✓ *(total)* | ✓ | — |
+| `slope_base_seafloor` | RS01SLBS-LJ01A | ~2900 m | ✓ | — | — | — |
+| `axial_base_seafloor` | RS03AXBS-LJ03A | ~2600 m | ✓ | — | — | — |
 
-The two Oregon Coastal Endurance BEPs (`*_bep`) carry the full carbon suite (CTD, pH, pCO₂). The two deep cabled seafloor packages (`*_ctd`) carry only a CTD in this product — they also host OPTAA, ADCP, and HPIES, but no pH/pCO₂/fluorometer. The CTDs at all fixed sites report DO through the CTD stream (integrated optode), unlike the deep profilers which use a standalone DOSTA. OPTAA (spectral absorption/attenuation) is excluded from this product.
+All four `*_seafloor` sites are Benthic Experiment Packages (BEPs). The two Oregon Coastal Endurance BEPs carry the full carbon suite (CTD, pH, pCO₂); the two deep cabled packages (Slope Base, Axial Base) carry only a CTD in this product — they also host OPTAA, ADCP, and HPIES, but no pH/pCO₂/fluorometer. The CTDs at all fixed sites report DO through the CTD stream (integrated optode), unlike the deep profilers which use a standalone DOSTA. OPTAA (spectral absorption/attenuation) is excluded from this product.
 
 ### Data Variables
 
@@ -162,13 +162,13 @@ fixed-instruments slope_base --format both --qaqc-filter highest --ph-advanced
 fixed-instruments oregon_offshore --format both --qaqc-filter highest --ph-advanced
 fixed-instruments axial_base --format both --qaqc-filter highest --ph-advanced
 
-# seafloor BEPs — Oregon carbon suite
-fixed-instruments oregon_offshore_bep --format both --qaqc-filter highest
-fixed-instruments oregon_shelf_bep --format both --qaqc-filter highest
+# seafloor BEPs — Oregon carbon suite (CTD + pH + pCO₂)
+fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter highest
+fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter highest
 
-# deep cabled seafloor CTDs
-fixed-instruments slope_base_ctd --format both --qaqc-filter highest
-fixed-instruments axial_base_ctd --format both --qaqc-filter highest
+# deep cabled seafloor BEPs (CTD only)
+fixed-instruments slope_base_seafloor --format both --qaqc-filter highest
+fixed-instruments axial_base_seafloor --format both --qaqc-filter highest
 
 # custom bin width or year range
 fixed-instruments axial_base --resample 30min --start-year 2020 --end-year 2024
