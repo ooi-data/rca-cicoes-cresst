@@ -203,7 +203,7 @@ def resample_fixed(
         resampled.append(xr.concat(year_parts, dim="time"))
 
     logger.info("merging instruments")
-    return xr.merge(resampled)
+    return xr.merge(resampled, join="outer")  # union the instruments' hourly grids; empty bins NaN
 
 
 def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str, ph_advanced: bool, ext: str) -> str:
