@@ -53,12 +53,14 @@ FIXED_SITES: dict[str, dict[str, str]] = {
     "oregon_offshore_seafloor": {
         "ctd":    "CE04OSBP-LJ01C-06-CTDBPO108",
         "ph":     "CE04OSBP-LJ01C-10-PHSEND107",
-        "pco2":   "CE04OSBP-LJ01C-09-PCO2WB104",
+        # pco2 CE04OSBP-LJ01C-09-PCO2WB104 excluded: pCO2 requires offsetting and
+        # SME review prior to inclusion in this curated product (2026-08-03).
     },
     "oregon_shelf_seafloor": {
         "ctd":    "CE02SHBP-LJ01D-06-CTDBPN106",
         "ph":     "CE02SHBP-LJ01D-10-PHSENH110",  # reports ph_total, not ph_seawater
-        "pco2":   "CE02SHBP-LJ01D-09-PCO2WB103",
+        # pco2 CE02SHBP-LJ01D-09-PCO2WB103 excluded: pCO2 requires offsetting and
+        # SME review prior to inclusion in this curated product (2026-08-03).
     },
     "slope_base_seafloor": {  # deep BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
         "ctd":    "RS01SLBS-LJ01A-12-CTDPFB101",
