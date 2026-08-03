@@ -18,6 +18,7 @@ from loguru import logger
 
 from rca_cicoes_cresst.common import (
     ACTIVE_DICT,
+    ARCHIVE_DICT,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
     QARTOD_LABELS,
@@ -101,6 +102,16 @@ DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
 DO_SPLICE_SUPERSEDED_IDS: set[int] = {4341, 4345, 4346, 4348, 4350, 4351,  # PC platforms
                                       4349, 4347, 4353, 4352}              # BEP CTDs
 
+# Sites whose current pH sensor superseded an older one at the same node, whose
+# archived record we concatenate ahead of the active sensor to extend the pH
+# series. Value is the OLD reference designator
+# SCALE NOTE: the old PHSEND sensors report ph_seawater (seawater/free scale)
+# and the current PHSENH reports ph_total (total scale). Per science lead
+# (2026-08-03) the two are concatenated WITHOUT scale conversion
+PH_STITCH: dict[str, str] = {
+    "oregon_shelf_seafloor": "CE02SHBP-LJ01D-10-PHSEND103",
+}
+
 
 def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
     """Substitute the onboard DO product for the phase-derived one inside window."""
@@ -118,10 +129,43 @@ def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
     return ds.drop_vars(["dissolved_oxygen", "dissolved_oxygen_qartod_results"], errors="ignore")
 
 
+def stitch_archived_ph(ds_active: xr.Dataset, archive_refdes: str) -> xr.Dataset:
+    """Concatenate an archived pH sensor's record ahead of the active sensor's.
+
+    See PH_STITCH: the active sensor reports ph_total (total scale) and the
+    archived sensor ph_seawater (seawater scale). They are concatenated in time
+    WITHOUT scale conversion into a single ph_seawater variable to keep the
+    record continuous -- a small offset is possible at the swap seam.
+    """
+    archive_ds = load_data(ARCHIVE_DICT[archive_refdes]["zarrFile"])
+    logger.info(f"stitching archived pH {archive_refdes} ahead of the active sensor")
+
+    active_ph = ds_active["ph_total"].rename("ph_seawater")  # naive concat, see PH_STITCH note
+    ph = xr.concat([archive_ds["ph_seawater"], active_ph], dim="time").sortby("time").drop_duplicates("time")
+    ph.attrs["source_note"] = (
+        f"stitched without scale conversion: {archive_refdes} (ph_seawater, seawater scale) "
+        f"then the active PHSENH sensor (ph_total, total scale); small offset possible at the seam"
+    )
+    out = ph.to_dataset()
+
+    # keep whichever sensor has QARTOD; the PHSENH stream currently ships none,
+    # so fill its period with flag 2 (not_evaluated) rather than drop the 11 yr
+    # of real flags on the archived sensor.
+    aq, nq = "ph_seawater_qartod_results", "ph_total_qartod_results"
+    if aq in archive_ds or nq in ds_active:
+        old_q = archive_ds[aq] if aq in archive_ds else xr.full_like(archive_ds["ph_seawater"], 2, dtype="int32")
+        new_q = ds_active[nq] if nq in ds_active else xr.full_like(active_ph, 2, dtype="int32")
+        out[aq] = xr.concat([old_q.rename(aq), new_q.rename(aq)], dim="time").sortby("time").drop_duplicates("time")
+        if aq not in archive_ds or nq not in ds_active:
+            logger.info("stitched pH QARTOD: filled the un-flagged sensor's period with flag 2 (not_evaluated)")
+    return out
+
+
 def load_fixed_inputs(
     site_dict: dict[str, str],
     params: list[str],
     do_splice: tuple[str, str] | None = None,
+    ph_stitch: str | None = None,
     ph_advanced: bool = False,
 ) -> list[dict]:
     instrument_params = group_params_by_instrument(params, site_dict)
@@ -132,6 +176,9 @@ def load_fixed_inputs(
         stream_name = ACTIVE_DICT[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
         ds = load_data(stream_name)
+        if instr_key == "ph" and ph_stitch:
+            ds = stitch_archived_ph(ds, ph_stitch)
+            instr_params = ["ph_seawater"]  # unified stitched variable (see PH_STITCH)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
         # only keep the platform pressure from the CTD; the other instruments
         # carry a duplicate int_ctd_pressure that would collide on merge
@@ -290,7 +337,10 @@ def main(
     end_year = end_year or datetime.now(timezone.utc).year
 
     instrument_datasets = load_fixed_inputs(
-        site_dict, DEFAULT_PARAMS, do_splice=DO_SPLICE_WINDOWS.get(site), ph_advanced=ph_advanced
+        site_dict, DEFAULT_PARAMS,
+        do_splice=DO_SPLICE_WINDOWS.get(site),
+        ph_stitch=PH_STITCH.get(site),
+        ph_advanced=ph_advanced,
     )
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
