@@ -131,19 +131,39 @@ def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
     return ds.drop_vars(["dissolved_oxygen", "dissolved_oxygen_qartod_results"], errors="ignore")
 
 
-def stitch_archived_ph(ds_active: xr.Dataset, archive_refdes: str) -> xr.Dataset:
+def stitch_archived_ph(
+    ds_active: xr.Dataset,
+    archive_refdes: str,
+    active_stream: str,
+    ph_advanced: bool = False,
+) -> xr.Dataset:
     """Concatenate an archived pH sensor's record ahead of the active sensor's.
 
     See PH_STITCH: the active sensor reports ph_total (total scale) and the
     archived sensor ph_seawater (seawater scale). They are concatenated in time
     WITHOUT scale conversion into a single ph_seawater variable to keep the
     record continuous -- a small offset is possible at the swap seam.
+
+    Advanced pH flags are keyed per stream, so when ph_advanced is set each
+    source is masked with its OWN stream before the concat (the archived PHSEND
+    sensor carries advanced flags; the active PHSENH stream currently does not,
+    so it no-ops).
     """
-    archive_ds = load_data(ARCHIVE_DICT[archive_refdes]["zarrFile"])
+    archive_stream = ARCHIVE_DICT[archive_refdes]["zarrFile"]
+    archive_ds = load_data(archive_stream)
     logger.info(f"stitching archived pH {archive_refdes} ahead of the active sensor")
 
-    active_ph = ds_active["ph_total"].rename("ph_seawater")  # naive concat, see PH_STITCH note
-    ph = xr.concat([archive_ds["ph_seawater"], active_ph], dim="time").sortby("time").drop_duplicates("time")
+    # active reports ph_total; rename so both sources share the ph_seawater name
+    rename = {"ph_total": "ph_seawater"}
+    if "ph_total_qartod_results" in ds_active:
+        rename["ph_total_qartod_results"] = "ph_seawater_qartod_results"
+    active_ds = ds_active.rename(rename)
+
+    if ph_advanced:  # mask each source with its own stream's flags (see docstring)
+        archive_ds = mask_ph_advanced(archive_ds, archive_stream)
+        active_ds = mask_ph_advanced(active_ds, active_stream)
+
+    ph = xr.concat([archive_ds["ph_seawater"], active_ds["ph_seawater"]], dim="time").sortby("time").drop_duplicates("time")
     ph.attrs["source_note"] = (
         f"stitched without scale conversion: {archive_refdes} (ph_seawater, seawater scale) "
         f"then the active PHSENH sensor (ph_total, total scale); small offset possible at the seam"
@@ -153,12 +173,12 @@ def stitch_archived_ph(ds_active: xr.Dataset, archive_refdes: str) -> xr.Dataset
     # keep whichever sensor has QARTOD; the PHSENH stream currently ships none,
     # so fill its period with flag 2 (not_evaluated) rather than drop the 11 yr
     # of real flags on the archived sensor.
-    aq, nq = "ph_seawater_qartod_results", "ph_total_qartod_results"
-    if aq in archive_ds or nq in ds_active:
-        old_q = archive_ds[aq] if aq in archive_ds else xr.full_like(archive_ds["ph_seawater"], 2, dtype="int32")
-        new_q = ds_active[nq] if nq in ds_active else xr.full_like(active_ph, 2, dtype="int32")
-        out[aq] = xr.concat([old_q.rename(aq), new_q.rename(aq)], dim="time").sortby("time").drop_duplicates("time")
-        if aq not in archive_ds or nq not in ds_active:
+    q = "ph_seawater_qartod_results"
+    if q in archive_ds or q in active_ds:
+        old_q = archive_ds[q] if q in archive_ds else xr.full_like(archive_ds["ph_seawater"], 2, dtype="int32")
+        new_q = active_ds[q] if q in active_ds else xr.full_like(active_ds["ph_seawater"], 2, dtype="int32")
+        out[q] = xr.concat([old_q.rename(q), new_q.rename(q)], dim="time").sortby("time").drop_duplicates("time")
+        if q not in archive_ds or q not in active_ds:
             logger.info("stitched pH QARTOD: filled the un-flagged sensor's period with flag 2 (not_evaluated)")
     return out
 
@@ -179,7 +199,7 @@ def load_fixed_inputs(
         logger.info(f"loading zarr: {instr_key} ({refdes})")
         ds = load_data(stream_name)
         if instr_key == "ph" and ph_stitch:
-            ds = stitch_archived_ph(ds, ph_stitch)
+            ds = stitch_archived_ph(ds, ph_stitch, stream_name, ph_advanced=ph_advanced)
             instr_params = ["ph_seawater"]  # unified stitched variable (see PH_STITCH)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
         # only keep the platform pressure from the CTD; the other instruments
@@ -192,7 +212,8 @@ def load_fixed_inputs(
             logger.info(f"splicing onboard DO into corrected_dissolved_oxygen for {do_splice[0]} → {do_splice[1]}")
         else:
             ds = ds[available]
-        if ph_advanced and instr_key == "ph":
+        # stitched pH masks per-source inside stitch_archived_ph (streams differ)
+        if ph_advanced and instr_key == "ph" and not ph_stitch:
             ds = mask_ph_advanced(ds, stream_name)
         instrument_datasets.append({
             "instrument": instr_key,
@@ -312,7 +333,8 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
     default=False,
     help=(
         "Also mask ph_seawater where any advanced pH QC test failed (flag string "
-        "contains a 3). Flags exist only for the PC-platform pH sensors, not the seafloor BEPs."
+        "contains a 3). Advanced flags exist per-stream for some pH sensors (PC "
+        "platforms and the archived shelf BEP); applied where present, skipped otherwise."
     ),
 )
 def main(
