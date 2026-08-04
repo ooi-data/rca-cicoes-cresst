@@ -60,6 +60,11 @@ PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
     "flcdr_x_mmp_cds_fluorometric_cdom":  "cdom",
 }
 
+# Annotation parameter aliases: the shelf PHSENH reports ph_total, but the
+# pipeline always serves pH as ph_seawater (via the shelf stitch rename), so
+# ph_total annotations must match the unified ph_seawater variable.
+PARAM_ALIASES: dict[str, str] = {"ph_total": "ph_seawater"}
+
 QARTOD_EXCLUDE: dict[str, set[int]] = {
     "basic":    {4, 9},
     "highest":  {4, 9},
@@ -120,7 +125,7 @@ def mask_annotation_windows(
     combined_mask = xr.zeros_like(ds.time, dtype=bool)
 
     for _, row in annotations.iterrows():
-        affected = ast.literal_eval(row["parameters_affected"])
+        affected = [PARAM_ALIASES.get(p, p) for p in ast.literal_eval(row["parameters_affected"])]
 
         overlap = [p for p in affected if p in params and p in ds]
         if not overlap:
