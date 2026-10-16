@@ -34,6 +34,8 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `curate-annotations` | Filter annotations to the data-quality-relevant set (rule- or LLM-based) |
 | `sync-cresst` | Push local products in `data/` to the `rca-advanced-qaqc/cresst` S3 prefix |
 
+> **Harvest annotations before building `--qaqc-filter highest` products.** OOI edits annotations after the fact (e.g. closing open-ended windows). Stale annotations mask the wrong time ranges. See [HITL Annotations](#hitl-annotations).
+
 ## Regridded Profiler Mooring Profiles
 
 A multi-instrument, pressure-gridded dataset derived from RCA profiler mooring data. Time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), deduplicated on pressure, and interpolated onto a uniform pressure grid.
@@ -190,6 +192,14 @@ Raw annotations are harvested from the OOI M2M API and saved to `annotations/<SU
 Curated annotations (data-quality relevant only, with `parameters_affected`) live in `annotations/curated/<SUBSITE>_llm.csv`. Curation runs for different nodes merge into the same file (deduplicated by annotation id); the pipelines filter annotations to the nodes they process.
 
 Requires `OOI_USERNAME` and `OOI_TOKEN` in `.env` (and `ANTHROPIC_API_KEY` for LLM curation).
+
+**Before every product build:**
+
+1. Harvest (`harvest-annotations --all`).
+2. Refresh the curated files. The pipelines read `beginDT`/`endDT` from `annotations/curated/<SUBSITE>_llm.csv`, which keeps the window from curation time. A fresh harvest alone won't update it. Copy updated windows from the raw files by `id`, and curate any new ids.
+3. Review open-ended annotations (`endDT` empty). They mask to the end of the data, including later deployments.
+
+Example: annotation 6794 (shelf SeapHOx) was open-ended in our 2026-07-20 harvest. It masks good pH from the instrument's next deployment (2026-08-18 onward).
 
 ```bash
 # harvest one site (accepts site key or raw subsite code)

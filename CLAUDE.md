@@ -14,14 +14,25 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
 - Null node/sensor/method/stream = wildcard for everything beneath it.
 
 ## Curation rules
+- Harvest annotations, then refresh `beginDT`/`endDT` in `annotations/curated/*_llm.csv`
+  from the raw files by `id`, before building `--qaqc-filter highest` products. Curated
+  files keep the window from curation time, so a stale window masks the wrong range.
 - Official `parameters`, when present, take precedence over LLM `parameters_affected`.
+- Shallow-profiler platform blowdowns are real ocean events, not data-quality problems: never
+  curate them, even if flagged suspect or described as anomalous. Mooring failures (e.g. 181,
+  anchor leg pulled to 400 m, "data suspect") are different and stay curated.
 - Optode DAC firmware-noise annotations (2017–2021) are superseded by the DO splice
   (`DO_SPLICE_SUPERSEDED_IDS`); don't re-curate them as masks.
 - Masking matches node + parameter name, so a DOSTA annotation also masks the CTD's
   integrated DO on that node. Curate DOSTA rows only if CTD DO is affected too.
-- If the text describes a different sensor than the one annotated (e.g. 6794),
-  flag it for review instead of masking.
-- Open-ended annotations mask to the end of the data; re-check them each release.
+- Integrated packages carry several sensors in one stream. PHSENH is a SeapHOx: SBE 37
+  CTD + SBE 63 optode + SeaFET pH on one pumped flow path. An annotation about one channel
+  can be correctly attached and still affect the others (6794: O2 phase delay pinned and
+  pH drifted to ~6.5 together). Check the data before masking or dismissing.
+- Open-ended annotations mask to the end of the data, including later deployments.
+  Usually OOI has since closed them (6794 was open-ended in our 2026-07-20 harvest;
+  deployment 1 ended 2026-08-08). Re-harvest first; if still open and the next
+  deployment looks good, end them at the deployment end.
 
 ## Parameter inheritance (CTD conductivity problems)
 OOI computes other instruments' products from the co-located CTD's practical salinity

@@ -81,7 +81,8 @@ DATA QUALITY RELEVANT (data_quality_relevant=true):
 - Measurements are inaccurate, suspect, or should not be used in analysis
 - Instrument malfunction affecting measurement values (pump failure, clogged conductivity cell, sensor drift)
 - HITL or automated QC flagged data as fail or suspect
-- Calibration errors that produced incorrect derived data products
+- Calibration errors that produced incorrect derived data products, unless the annotation says
+  the calibrations or coefficients have since been corrected (then the served data is good)
 - Physical events that corrupted measurements (biofouling, debris)
 
 NOT DATA QUALITY RELEVANT (data_quality_relevant=false):
