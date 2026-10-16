@@ -32,7 +32,7 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
 | `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
-| `sync-cresst` | Push local products in `data/` to the `rca-advanced-qaqc/cresst` S3 prefix |
+| `sync-cresst` | Push local products in `data/` to an S3 prefix (default `rca-advanced-qaqc/cresst`) |
 
 > **Before building `--qaqc-filter highest` products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
 
@@ -294,10 +294,11 @@ Output is written to `data/binned/`. See `bin-dataset --help` for full options.
 
 ## Syncing Products (`sync-cresst`)
 
-Push local products in `data/` up to the `rca-advanced-qaqc/cresst` S3 prefix, matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
+Push local products in `data/` up to an S3 prefix (default `rca-advanced-qaqc/cresst`, change with `--bucket`), matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
 
 ```bash
 sync-cresst                                   # preview the plan
 sync-cresst --apply                           # upload + remove superseded same-identity copies
 sync-cresst --apply --delete-remote-only-data # also delete bucket-only files
+sync-cresst --bucket my-bucket/cresst-test     # preview against another bucket/prefix
 ```

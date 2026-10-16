@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resync local data products to the rca-advanced-qaqc/cresst S3 prefix.
+"""Resync local data products to an S3 prefix (default rca-advanced-qaqc/cresst).
 
 Products are matched by *identity* — the filename with its <start>_<end> date
 pair stripped — so a local file supersedes its bucket counterpart across date
@@ -9,7 +9,8 @@ Local supersedes the bucket when its end date is newer, or (same end date) its
 size differs (a same-range re-QAQC). On upload, older-end-date copies of the
 same identity are removed. Nothing else in the bucket is touched.
 
-Dry-run by default; pass --apply to write. Writing needs AWS credentials.
+Dry-run by default; pass --apply to write. Writing needs AWS credentials; listing
+is anonymous for public buckets and falls back to credentials for private ones.
 """
 import re
 from pathlib import Path
@@ -20,7 +21,7 @@ from loguru import logger
 
 from rca_cicoes_cresst.common import fs as anon_fs  # anonymous, read-only
 
-BUCKET = "rca-advanced-qaqc/cresst"
+DEFAULT_BUCKET = "rca-advanced-qaqc/cresst"
 DATE_PAIR = re.compile(r"\d{8}_\d{8}")
 
 
@@ -51,10 +52,20 @@ def local_products(data_dir: Path) -> dict[str, list[tuple[Path, str, int]]]:
     return out
 
 
-def bucket_products() -> dict[str, list[tuple[str, str]]]:
-    """identity -> [(bucket_path, end_date)] under the cresst prefix."""
+def read_fs(bucket: str) -> s3fs.S3FileSystem:
+    """Anonymous filesystem if the bucket is publicly listable, else credentialed."""
+    try:
+        anon_fs.ls(bucket)
+        return anon_fs
+    except PermissionError:
+        logger.info(f"{bucket} is not publicly listable; using AWS credentials")
+        return s3fs.S3FileSystem()
+
+
+def bucket_products(fs: s3fs.S3FileSystem, bucket: str) -> dict[str, list[tuple[str, str]]]:
+    """identity -> [(bucket_path, end_date)] under the bucket prefix."""
     out: dict[str, list[tuple[str, str]]] = {}
-    for path in anon_fs.ls(BUCKET):
+    for path in fs.ls(bucket):
         name = path.rsplit("/", 1)[-1]
         if not name:
             continue
@@ -67,13 +78,16 @@ def bucket_products() -> dict[str, list[tuple[str, str]]]:
 
 @click.command()
 @click.option("--data-dir", default="data", show_default=True, help="Local product directory.")
+@click.option("--bucket", default=DEFAULT_BUCKET, show_default=True, help="Destination S3 bucket/prefix.")
 @click.option("--apply", "apply_", is_flag=True, help="Actually upload/delete (default is dry-run).")
 @click.option("--delete-remote-only-data", "delete_remote_only", is_flag=True,
               help="Also delete bucket files that have no local counterpart.")
-def main(data_dir: str, apply_: bool, delete_remote_only: bool) -> None:
-    """Sync local data products up to rca-advanced-qaqc/cresst."""
+def main(data_dir: str, bucket: str, apply_: bool, delete_remote_only: bool) -> None:
+    """Sync local data products up to an S3 bucket/prefix."""
+    bucket = bucket.removeprefix("s3://").rstrip("/")
+    fs = read_fs(bucket)
     local = local_products(Path(data_dir))
-    bucket = bucket_products()
+    remote = bucket_products(fs, bucket)
     write_fs = s3fs.S3FileSystem() if apply_ else None
 
     uploads: list[tuple[Path, str]] = []   # (local_path, bucket_path)
@@ -81,9 +95,9 @@ def main(data_dir: str, apply_: bool, delete_remote_only: bool) -> None:
 
     for ident, versions in sorted(local.items()):
         path, end, size = max(versions, key=lambda v: v[1])  # newest local of this identity
-        bkt = bucket.get(ident, [])
+        bkt = remote.get(ident, [])
         bkt_end = max((e for _, e in bkt), default=None)
-        target = f"{BUCKET}/{path.name}"
+        target = f"{bucket}/{path.name}"
 
         if bkt_end is None:
             uploads.append((path, target)); logger.info(f"UPLOAD  {path.name}  (new)")
@@ -92,7 +106,7 @@ def main(data_dir: str, apply_: bool, delete_remote_only: bool) -> None:
         elif end < bkt_end:
             logger.warning(f"SKIP    {path.name}  (bucket end {bkt_end} is NEWER — not downgrading)")
         else:  # same end date — compare size
-            bsize = anon_fs.du(f"{BUCKET}/{path.name}")
+            bsize = fs.du(f"{bucket}/{path.name}")
             if bsize != size:
                 uploads.append((path, target)); logger.info(f"UPLOAD  {path.name}  (changed: {size:,}B vs bucket {bsize:,}B)")
             else:
@@ -104,15 +118,15 @@ def main(data_dir: str, apply_: bool, delete_remote_only: bool) -> None:
                 if bend < end:
                     deletes.append(bpath); logger.info(f"  SUPERSEDE-DELETE {bpath.rsplit('/',1)[-1]}  (end {bend})")
 
-    for ident in sorted(set(bucket) - set(local)):
-        for bpath, _ in bucket[ident]:
+    for ident in sorted(set(remote) - set(local)):
+        for bpath, _ in remote[ident]:
             name = bpath.rsplit("/", 1)[-1]
             if delete_remote_only:
                 deletes.append(bpath); logger.info(f"DELETE-REMOTE-ONLY {name}  (no local counterpart)")
             else:
                 logger.info(f"BUCKET-ONLY {name}  (no local counterpart — leaving)")
 
-    logger.info(f"\nplan: {len(uploads)} upload(s), {len(deletes)} delete(s)")
+    logger.info(f"\nplan for {bucket}: {len(uploads)} upload(s), {len(deletes)} delete(s)")
     if not apply_:
         logger.info("dry-run; re-run with --apply to execute")
         return
