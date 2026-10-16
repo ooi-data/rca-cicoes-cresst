@@ -1,5 +1,6 @@
 """Shared loading, QAQC, and annotation-masking logic for RCA data pipelines."""
 import ast
+import hashlib
 from pathlib import Path
 
 import numpy as np
@@ -96,24 +97,97 @@ def group_params_by_instrument(params: list[str], site_dict: dict[str, str]) -> 
     return instrument_params
 
 
-def load_annotations(subsite: str, annotations_dir: str, nodes: set[str] | None = None) -> pd.DataFrame | None:
-    """Load curated _llm annotations for a subsite. Returns None if file not found.
+ANNOTATIONS_DIR = "annotations"
+LEDGER_FILE = "ledger.csv"
+HARVEST_MANIFEST = "harvest_manifest.csv"
+HARVEST_MAX_AGE_DAYS = 30
+
+# The shelf PHSENH (reports ph_total from its own CTD salinity) replaced PHSEND103 here;
+# before this date the stitched pH is PHSEND, which is insensitive to salinity.
+SHELF_PHSENH_START = pd.Timestamp("2025-08-28", tz="UTC")
+
+
+def content_hash(row: pd.Series) -> str:
+    """Fingerprint of the annotation fields a decision depends on (not its window)."""
+    params = sorted(ast.literal_eval(row["parameters"])) if isinstance(row["parameters"], str) else []
+    key = "|".join(str(row[c]) for c in ("subsite", "node", "sensor", "annotation", "qcFlag")) + f"|{params}"
+    return hashlib.sha1(key.encode()).hexdigest()[:10]
+
+
+def inherit_params(params: set[str], node, end) -> set[str]:
+    """Add products OOI computes from a CTD's practical salinity (see CLAUDE.md)."""
+    params = set(params)
+    if "sea_water_practical_salinity" in params:
+        params.add("corrected_dissolved_oxygen")
+        if str(node).startswith("SF"):
+            params.add("salinity_corrected_nitrate")
+        if node == "LJ01D" and (pd.isna(end) or end > SHELF_PHSENH_START):
+            params.add("ph_total")
+    return params
+
+
+def read_raw_annotations(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
+    raw = pd.read_csv(Path(annotations_dir) / f"{subsite}.csv")
+    raw["beginDT"] = pd.to_datetime(raw["beginDT"], format="ISO8601", utc=True)
+    raw["endDT"] = pd.to_datetime(raw["endDT"], format="ISO8601", utc=True)
+    return raw
+
+
+def read_ledger(annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
+    return pd.read_csv(Path(annotations_dir) / LEDGER_FILE, dtype={"reviewed_at": str, "content_hash": str})
+
+
+def harvest_time(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> pd.Timestamp | None:
+    path = Path(annotations_dir) / HARVEST_MANIFEST
+    if not path.exists():
+        return None
+    m = pd.read_csv(path).set_index("subsite")
+    return pd.Timestamp(m.at[subsite, "harvested_at"]) if subsite in m.index else None
+
+
+def load_annotations(subsite: str, nodes: set[str] | None = None, annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
+    """Approved `mask` decisions from the ledger, with windows from the latest harvest.
 
     Annotation masking matches on parameter name, and instruments on different
     nodes of the same mooring share parameter names — so filter to the nodes
     actually being processed (node-null annotations are subsite-wide and kept).
     """
-    ann_path = Path(annotations_dir) / f"{subsite}_llm.csv"
-    if not ann_path.exists():
-        logger.warning(f"no annotation file at {ann_path}, skipping annotation masking")
-        return None
-    annotations = pd.read_csv(ann_path)
-    annotations["beginDT"] = pd.to_datetime(annotations["beginDT"], format="ISO8601", utc=True)
-    annotations["endDT"] = pd.to_datetime(annotations["endDT"], format="ISO8601", utc=True)
+    raw = read_raw_annotations(subsite, annotations_dir)
     if nodes is not None:
-        annotations = annotations[annotations["node"].isin(nodes) | annotations["node"].isna()]
-    logger.info(f"loaded {len(annotations)} curated annotations from {ann_path} (nodes={nodes})")
+        raw = raw[raw["node"].isin(nodes) | raw["node"].isna()]
+    ledger = read_ledger(annotations_dir).set_index("id")
+
+    harvested = harvest_time(subsite, annotations_dir)
+    if harvested is None or (pd.Timestamp.now(tz="UTC") - harvested).days > HARVEST_MAX_AGE_DAYS:
+        logger.warning(f"{subsite}: annotations harvested {harvested or 'at unknown time'}; run harvest-annotations")
+    unreviewed = raw[~raw["id"].isin(ledger.index)]
+    if len(unreviewed):
+        logger.warning(f"{subsite}: {len(unreviewed)} annotations not in ledger, run curate-annotations: {sorted(unreviewed['id'])}")
+    known = raw[raw["id"].isin(ledger.index)]
+    changed = known[known.apply(content_hash, axis=1).values != ledger.loc[known["id"], "content_hash"].values]
+    if len(changed):
+        logger.warning(f"{subsite}: {len(changed)} annotations edited by OOI since review, run curate-annotations: {sorted(changed['id'])}")
+    proposed = ledger.loc[known["id"]].query("status != 'approved'")
+    if len(proposed):
+        logger.warning(f"{subsite}: {len(proposed)} proposed decisions not applied until approved: {sorted(proposed.index)}")
+
+    masks = ledger[(ledger["decision"] == "mask") & (ledger["status"] == "approved")]
+    unknown = {p for s in masks["parameters_affected"] for p in ast.literal_eval(s)} - set(PARAM_TO_INSTRUMENT)
+    if unknown:
+        logger.warning(f"ledger names unknown parameters (typo?), they mask nothing: {sorted(unknown)}")
+    annotations = raw[raw["id"].isin(masks.index)].copy()
+    annotations["parameters_affected"] = [
+        sorted(inherit_params(ast.literal_eval(masks.at[i, "parameters_affected"]), node, end))
+        for i, node, end in zip(annotations["id"], annotations["node"], annotations["endDT"])
+    ]
+    logger.info(f"{subsite}: {len(annotations)} approved mask annotations (nodes={nodes}, harvested {harvested})")
     return annotations
+
+
+def annotation_provenance(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> dict[str, str]:
+    """Global attrs recording which harvest and ledger version masked a product."""
+    ledger_sha = hashlib.sha1((Path(annotations_dir) / LEDGER_FILE).read_bytes()).hexdigest()[:10]
+    return {"hitl_annotations_harvested": str(harvest_time(subsite, annotations_dir)), "hitl_ledger_sha1": ledger_sha}
 
 
 def mask_annotation_windows(
@@ -125,7 +199,7 @@ def mask_annotation_windows(
     combined_mask = xr.zeros_like(ds.time, dtype=bool)
 
     for _, row in annotations.iterrows():
-        affected = [PARAM_ALIASES.get(p, p) for p in ast.literal_eval(row["parameters_affected"])]
+        affected = [PARAM_ALIASES.get(p, p) for p in row["parameters_affected"]]
 
         overlap = [p for p in affected if p in params and p in ds]
         if not overlap:

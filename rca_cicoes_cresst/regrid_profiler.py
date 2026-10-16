@@ -11,7 +11,9 @@ from tqdm.auto import tqdm
 
 from rca_cicoes_cresst.common import (
     ACTIVE_DICT,
+    ANNOTATIONS_DIR,
     ARCHIVE_DICT,
+    annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
     QARTOD_LABELS,
@@ -251,14 +253,14 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: 
     show_default=True,
     help=(
         "QARTOD filter level. 'basic' excludes fail (4) and missing (9) flags. "
-        "'highest' applies 'basic' plus masks parameters flagged in curated HITL annotations."
+        "'highest' applies 'basic' plus masks approved HITL annotations from the ledger."
     ),
 )
 @click.option(
     "--annotations-dir",
-    default="annotations/curated",
+    default=ANNOTATIONS_DIR,
     show_default=True,
-    help="Directory containing curated annotation CSVs (used with --qaqc-filter highest).",
+    help="Directory with harvested annotation CSVs and ledger.csv (used with --qaqc-filter highest).",
 )
 @click.option(
     "--ph-advanced",
@@ -297,8 +299,11 @@ def main(
     )
 
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
-    annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
+    subsite = site_dict["ctd"][:8]
+    annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter, annotations)
+    if annotations is not None:
+        ds_profiles.attrs.update(annotation_provenance(subsite, annotations_dir))
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:

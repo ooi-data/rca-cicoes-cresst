@@ -18,7 +18,9 @@ from loguru import logger
 
 from rca_cicoes_cresst.common import (
     ACTIVE_DICT,
+    ANNOTATIONS_DIR,
     ARCHIVE_DICT,
+    annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
     QARTOD_LABELS,
@@ -99,10 +101,6 @@ DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
     "slope_base_seafloor":      ("2017-07-29T19:19:00", "2021-08-04T20:20:00"),
     "axial_base_seafloor":      ("2017-07-31T22:38:00", "2021-08-03T20:43:00"),
 }
-
-# curated annotation ids that flagged these windows, superseded by the splice
-DO_SPLICE_SUPERSEDED_IDS: set[int] = {4341, 4345, 4346, 4348, 4350, 4351,  # PC platforms
-                                      4349, 4347, 4353, 4352}              # BEP CTDs
 
 # Sites whose current pH sensor superseded an older one at the same node, whose
 # archived record we concatenate ahead of the active sensor to extend the pH
@@ -318,14 +316,14 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
     show_default=True,
     help=(
         "QARTOD filter level. 'basic' excludes fail (4) and missing (9) flags. "
-        "'highest' applies 'basic' plus masks parameters flagged in curated HITL annotations."
+        "'highest' applies 'basic' plus masks approved HITL annotations from the ledger."
     ),
 )
 @click.option(
     "--annotations-dir",
-    default="annotations/curated",
+    default=ANNOTATIONS_DIR,
     show_default=True,
-    help="Directory containing curated annotation CSVs (used with --qaqc-filter highest).",
+    help="Directory with harvested annotation CSVs and ledger.csv (used with --qaqc-filter highest).",
 )
 @click.option(
     "--ph-advanced",
@@ -367,13 +365,11 @@ def main(
         ph_advanced=ph_advanced,
     )
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
-    annotations = load_annotations(site_dict["ctd"][:8], annotations_dir, nodes) if qaqc_filter == "highest" else None
-    if annotations is not None:
-        superseded = annotations["id"].isin(DO_SPLICE_SUPERSEDED_IDS)
-        if superseded.any():
-            logger.info(f"skipping annotations superseded by onboard-DO splice: {sorted(annotations.loc[superseded, 'id'])}")
-            annotations = annotations[~superseded]
+    subsite = site_dict["ctd"][:8]
+    annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
     ds_fixed = resample_fixed(instrument_datasets, resample, start_year, end_year, qaqc_filter, annotations)
+    if annotations is not None:
+        ds_fixed.attrs.update(annotation_provenance(subsite, annotations_dir))
 
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:

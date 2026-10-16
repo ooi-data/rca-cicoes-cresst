@@ -45,7 +45,7 @@ def main(file: str, bin_hours: float, fmt: str) -> None:
     Output dimensions: (peak_time, sea_water_pressure).
 
     Example:
-        python scripts/bin_dataset.py axial_base_profiles.zarr --bin 24
+        bin-dataset axial_base_profiles.zarr --bin 24
     """
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     logger.info(f"loading {file}")

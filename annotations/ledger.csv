@@ -1,0 +1,1427 @@
+id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,status,reviewed_at,content_hash
+91,CE02SHBP,mask,['pco2_seawater'],llm,Incorrect calibration values under investigation; pCO2 suspect.,llm (pre-ledger),approved,,118741e891
+201,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5ee344edbf
+268,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c5158f77ba
+330,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c4d1e04a31
+941,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8903927287
+942,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cced415a57
+943,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7945a7e59c
+944,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8fcb5f6e10
+945,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d26e462ab
+946,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cf4c1acd12
+947,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f04efef9de
+948,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8a4e9054f8
+949,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ebc37ffca6
+950,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d1c016a377
+951,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f7d2c5932c
+952,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,68dff50a22
+953,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f7f2801188
+954,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,da771b0e45
+955,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e6df83ed6b
+956,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3f2479b4ef
+957,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,835fa0fb10
+958,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+959,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,79b4337238
+960,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cf8ebaa276
+961,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+962,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+963,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+964,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+965,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+966,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb7616fcb1
+967,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,871c9119c0
+968,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7ed068d14f
+969,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,86479208fe
+970,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,aaf30598ae
+1482,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,837171a0c8
+1548,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,d2bc17a448
+1817,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,ddbfdae1aa
+2333,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1162ba6de6
+2354,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c7e29ff84c
+2471,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,80679194e9
+2527,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7b75dbe63c
+2630,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3a13b549d0
+3247,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,ad03dcc3d9
+3266,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1d51a89d55
+3304,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,95f8f6154f
+3305,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d7abb339e3
+3780,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3781,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3782,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3783,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3784,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3785,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3786,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3787,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3788,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3789,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3790,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3791,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3792,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3793,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3794,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3795,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3796,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3797,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3798,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3799,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3800,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3801,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3802,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3803,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3804,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3805,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3806,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3807,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3808,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3809,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3810,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3811,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3812,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3813,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3814,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3815,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3816,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3817,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3818,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3819,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3820,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3821,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3822,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3823,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3824,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3825,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3826,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3827,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3828,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3829,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+3830,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
+4229,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,52709c0745
+4326,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,8f544f9943
+4342,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,200eed7ede
+4352,CE02SHBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,aada7ec6f9
+4387,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,071fac4a11
+4388,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,502fe488ea
+4538,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d7320aad6
+4551,CE02SHBP,mask,['corrected_dissolved_oxygen'],llm,Both onboard and phase-derived oxygen incorrect; do not use.,llm (pre-ledger),approved,,ac4e9a1b04
+4552,CE02SHBP,mask,['corrected_dissolved_oxygen'],llm,Both onboard and phase-derived oxygen incorrect; do not use.,llm (pre-ledger),approved,,ac4e9a1b04
+4553,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,43147a293f
+4554,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,43147a293f
+4606,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,e37afd3705
+4607,CE02SHBP,mask,['corrected_dissolved_oxygen'],llm,Phase-derived (analog) DO suspect due to CTD ground fault; onboard good but phase product masked here.,llm (pre-ledger),approved,,5ae5bba1a7
+4618,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0550a9f21c
+4619,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,e6d3162c7b
+4622,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,23642c03cb
+4701,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,e23ea7f1f3
+4721,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c21dbf8c01
+4733,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,9141018118
+4764,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1c8f334564
+4791,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d603a61d90
+4814,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7b517e6eac
+4837,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4838,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4839,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4840,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4841,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4842,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4843,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4844,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4845,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4846,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4847,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4848,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4849,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4850,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4851,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4866,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,fdff39cbd0
+4867,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b237e19397
+4868,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,9b78801a91
+4869,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d366ba02a4
+4874,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,faecba7924
+4889,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,52bc58742f
+4890,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ce3d1f9b33
+4965,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,f4f6ea8a7d
+5133,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,bb873d37ab
+5205,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,bebe09bd4c
+5208,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c8fd5bcbdb
+5209,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,f7f64f679a
+5223,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,77f9825c0c
+5283,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,257c05ef8e
+5388,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b7c3eb4739
+5401,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c12b47ef09
+5419,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,a5733984df
+5449,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,fd52b1a2f4
+5468,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+5475,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b4e829926d
+5478,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,203a5aaf4f
+5501,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+5556,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ba21819f83
+5608,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,16767add97
+5609,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d31982ebd9
+5610,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,31fddf0ccf
+5611,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,ffefed7670
+5612,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,f4be4198d5
+5613,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,af3c0e454e
+5614,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,ff9b79d915
+5615,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,693a078ee0
+5616,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c77d3bf9d5
+5620,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b7d6b37267
+5629,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d745d86387
+5659,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,e880e52bed
+5688,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5177362da7
+5716,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,8241561db9
+5728,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,75140be637
+5729,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b722031039
+5730,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b554a49843
+5793,CE02SHBP,mask,['pco2_seawater'],llm,Deployed without pump; sediment found on recovery; suspect.,llm (pre-ledger),approved,,b9b01dbacd
+5803,CE02SHBP,mask,['pco2_seawater'],llm,"pCO2 exceeded valid range then dropped, likely pump clogging; do not use.",llm (pre-ledger),approved,,17374d95e0
+5805,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,db40d40dd5
+5813,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,06a3b5cadb
+5819,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,a1989d8adc
+5826,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6f78e42c01
+5878,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,4e4a9db874
+5933,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,cd4b201cbe
+5938,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2c0b11836a
+5966,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,923b20fd3c
+5982,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0862d13ffd
+6174,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,009f451b62
+6296,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,3bdde8aa12
+6316,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b29c9d9f24
+6341,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,f89a89d0ec
+6390,CE02SHBP,mask,['pco2_seawater'],llm,HITL review found unusually noisy data during this period.,llm (pre-ledger),approved,,27c6201066
+6391,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,12468a32e8
+6392,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d7a283b1f1
+6393,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,0665883450
+6397,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,a854174413
+6539,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,3c65422420
+6570,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,3c65422420
+6598,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,8e9a3a3fce
+6604,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,5cf371e54a
+6624,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d24dd53798
+6633,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e9d1234307
+6634,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,51b6ca7a33
+6758,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,e19b366b8c
+6793,CE02SHBP,mask,['ph_total'],llm,Anomalous oxygen phase delay; other parameters incl. pH may be affected.,llm (pre-ledger),approved,,3c6ef2e717
+6794,CE02SHBP,mask,['ph_total'],llm,Anomalous oxygen phase delay; other parameters incl. pH may be affected.,llm (pre-ledger),approved,,3c6ef2e717
+6838,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c7e7084da7
+6841,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,1d07b9b028
+6919,CE02SHBP,mask,"['corrected_dissolved_oxygen', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Conductivity clog; salinity/density bad, DO inherits CTD salinity (overlaps 4889).",claude (in-session review),approved,2026-10-16,96fcf97e78
+6925,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,4ab1d4b677
+6931,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,93a636f02e
+6934,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,baf0373008
+6963,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,cb4b4ff4c2
+6969,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,980ce4da51
+6972,CE02SHBP,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,8205d59f70
+6982,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,3c65422420
+90,CE04OSBP,mask,['pco2_seawater'],llm,Calibration values under review; pCO2 suspect.,llm (pre-ledger),approved,,084a1a2cb4
+199,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2d762b6c31
+225,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3911b927e5
+269,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,b31986bdd2
+322,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2686742e99
+971,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,46fdf08097
+972,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,24bc8127b3
+973,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7805e728ca
+974,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a656404443
+975,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,29ded4f1b8
+981,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fbcac780fa
+982,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8c08944c65
+983,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e9913ab51a
+984,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,43dc0e296f
+985,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,be3b612169
+986,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bf7c712536
+987,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7a0b6bbfd5
+988,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bc82faffa5
+989,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0af3191bfa
+990,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,81f1c53514
+991,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,82b327dffa
+995,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0f90914cb3
+997,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,aa0bc27400
+998,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,aa0bc27400
+999,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,aa0bc27400
+1000,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,9932db0ea3
+1013,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1014,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1015,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1016,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1017,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1018,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1019,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1020,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c331fabae6
+1483,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ab12234e2a
+2334,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e774cde433
+2355,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5659bae8b3
+2469,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7725cfae58
+2528,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cbf39bd455
+2631,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,10aef90a53
+3267,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,15184f8bac
+3306,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3ffcb2d547
+3768,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,958105dac5
+3769,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0e759edf05
+3831,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3832,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3833,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3834,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3835,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3836,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3837,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3838,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3839,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3840,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3841,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3842,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3843,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3844,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3845,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3846,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3847,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3848,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3849,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3850,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3851,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3852,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3853,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3854,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3855,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3856,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,a52c189e3f
+3857,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3858,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3859,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3860,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3861,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3862,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3863,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3864,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3865,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3866,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3867,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3868,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3869,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3870,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3871,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+3872,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+4230,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,72bb2bbe29
+4327,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,5e17f6f789
+4343,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,af69e083a0
+4353,CE04OSBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,4b162ba808
+4539,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,92d4fc4568
+4556,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3812adcbea
+4604,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,e177288a7d
+4605,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,6c53fe5ddd
+4623,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,80dad19feb
+4664,CE04OSBP,mask,['pco2_seawater'],llm,Abnormally low pCO2 with persistent spikes/fall-offs after redeployment.,llm (pre-ledger),approved,,fad3c1eb5c
+4665,CE04OSBP,mask,['pco2_seawater'],llm,pCO2 spike then slow decline immediately following BEP deployment.,llm (pre-ledger),approved,,7c3eb632d8
+4666,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,Anomalously low conductivity after DAS shutdown; conductivity-derived params suspect.,llm (pre-ledger),approved,,9274600a88
+4667,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+4668,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,457c2547f4
+4700,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,e3b90a86c9
+4765,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b185de5331
+4815,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2c11aecf60
+4860,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fffee4c29d
+5284,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c295a5fe63
+5330,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,c919021506
+5389,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,babc0ffb6e
+5439,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,1817876913
+5472,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,0285355a72
+5479,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3f0dd39d77
+5504,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,e88385c8b7
+5557,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d849766e49
+5621,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,da61b9c769
+5630,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2b49279c40
+5674,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,d9163cda14
+5689,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e34bb45e88
+5706,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,d9163cda14
+5711,CE04OSBP,mask,['ph_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,15f01ccca4
+5820,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,9185b9d5f2
+5827,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f90efb8e97
+5967,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fdba44daf1
+5983,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8369d73d41
+5998,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,5d5590a471
+6198,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,d42d108ab2
+6242,CE04OSBP,mask,['ph_seawater'],llm,HITL review found unusually noisy data during this period.,llm (pre-ledger),approved,,d75583b407
+6317,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e1fa0f02c6
+6394,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,e92d9656be
+6448,CE04OSBP,mask,['ph_seawater'],llm,HITL review found unusually noisy data during this period.,llm (pre-ledger),approved,,d75583b407
+6482,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,256d5d11ea
+6547,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6568,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6571,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,bf38af66da
+6576,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6606,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6622,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,f1034a58ed
+6623,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6630,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6635,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,0ee772edf5
+6733,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6739,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6744,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6772,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6801,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6805,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,5a11dc71bc
+6816,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3dccc0b1f7
+6896,CE04OSBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,Persistent positive salinity drift; salinity/density/DO suspect.,llm (pre-ledger),approved,,12743dc0f0
+6929,CE04OSBP,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,a2641db3e9
+6940,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,30ba75c940
+6962,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,c404d5db60
+6970,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,8fc3b6d8c9
+6978,CE04OSBP,mask,"['corrected_dissolved_oxygen', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Conductivity drop/clog from 2026-09-17 (open-ended); salinity/density bad, DO inherits.",claude (in-session review),approved,2026-10-16,bf38af66da
+17,CE04OSPD,ignore,,,Calibration files corrected; served L2 DO valid per annotation text.,human,approved,2026-10-16,7a5cdd8c56
+1021,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a600a752ac
+1022,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c36d3e6760
+1023,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,251a70b1c8
+1024,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bd73a6a6d4
+1025,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c1657d30ff
+1026,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a89c3a114d
+1027,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,59643986a9
+1028,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d850d473cb
+1029,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,315cba2d60
+1030,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a649394bb9
+1484,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,40962210cd
+2336,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,559792a611
+2356,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bca8eb16e7
+2519,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0f17b89b00
+2529,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,384c7b8aa7
+2633,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bb02f6bfc1
+3269,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,917c36d340
+3308,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b21156ea94
+3626,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,26500757b0
+4021,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,52bae231e3
+4232,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,eab670eba4
+4243,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,270c2ea373
+4396,CE04OSPD,ignore,,,Not a product instrument.,rule,approved,,16edb25ecb
+4541,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2b1a823702
+4600,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9422660258
+4634,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b5f200b706
+4657,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,914839f8b2
+4774,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,036c0efcfa
+4817,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b23c73b56c
+4882,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7a25e08eb7
+5225,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,953a5e854e
+5837,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bf46b4cbd5
+5920,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,89ec5fba16
+5956,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e9d37e7a86
+5969,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9f4df11c99
+5985,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,071bf27a32
+6196,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,24bf8c08af
+6222,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9db17d3d06
+6244,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,49964b2ba7
+6256,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8feb523ff7
+6319,CE04OSPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ec9eae60e6
+181,CE04OSPS,mask,"['sea_water_temperature', 'sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density', 'ph_seawater', 'pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm', 'salinity_corrected_nitrate', 'nitrate_concentration']",llm,Site-level suspect flag: overcurrent/anchor-leg event corrupted platform data while depth changed uncontrollably.,llm (pre-ledger),approved,,5ded3183f5
+200,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e2b9337a70
+205,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f509fc5d41
+206,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ede616470
+207,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4e2e2fa9a3
+221,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fa9b2114cb
+289,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d50570318d
+802,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,1c8166e0ed
+1031,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2868acef77
+1032,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2868acef77
+1033,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,de23da66a5
+1034,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c18c8451a1
+1035,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,88515f4d01
+1036,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1bad2cc3ae
+1037,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e4a963d02c
+1038,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1b91fc50d4
+1039,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d1e0ba4d58
+1040,CE04OSPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity', 'sea_water_temperature']",llm+inherited,All CTD data this deployment flagged suspect due to flow issues indicating a possible pump failure.,claude (in-session review),approved,2026-10-16,14bfa7ec68
+1041,CE04OSPS,mask,['corrected_dissolved_oxygen'],llm,Oxygen values too high at start of deployment (exceeded 400 umol); annotation names oxygen parameters only.,llm (pre-ledger),approved,,d4dc987ad3
+1042,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a933ed1736
+1043,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,409499982b
+1044,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d6d1464c5
+1045,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,adaea0ceea
+1046,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,adaea0ceea
+1047,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7b9853e22e
+1048,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ec008ff5bd
+1049,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,74f51c54c5
+1050,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a7d7ddf884
+1051,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c42a3ccc4e
+1052,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6a0329f26f
+1053,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5b0adafa95
+1054,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6efad56361
+1055,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ae59c687ea
+1056,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,48add9bf74
+1057,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ebf0bb51bd
+1058,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,697b7aa8b6
+1059,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bba4245e25
+1060,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6efad56361
+1061,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9bf3c61a49
+1062,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ae59c687ea
+1063,CE04OSPS,mask,['corrected_dissolved_oxygen'],llm,Corrected dissolved oxygen flagged suspect due to possible sensor malfunction.,llm (pre-ledger),approved,,b275c513e3
+1064,CE04OSPS,mask,['corrected_dissolved_oxygen'],llm,Corrected dissolved oxygen flagged suspect due to a possible calibration data issue.,llm (pre-ledger),approved,,079481eac5
+1485,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2a5801e283
+1545,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bc94e8afef
+2326,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9b7a8f57eb
+2335,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8cbf0531f9
+2357,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,34d64a2c92
+2470,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,ce2ef456b9
+2478,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a1530b168d
+2518,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,baf0d4bd24
+2522,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a1d8962dc5
+2632,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4a294a9f1a
+3268,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bb68f757d2
+3307,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,84d322f921
+3359,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6201e4177d
+3360,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d7481750dd
+3361,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,327ee7425c
+3621,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,3f4698cff7
+3770,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fa245adbb2
+3771,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4cae9be8e0
+3772,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5bb71a0b14
+3873,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3874,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3875,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3876,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3877,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3878,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3879,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3880,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3881,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3882,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3883,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3884,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3885,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3886,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3887,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3888,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3889,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3890,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3891,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3892,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3893,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3894,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3895,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3896,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+3897,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3898,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3899,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3900,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3901,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3902,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3903,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3904,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3905,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3906,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3907,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3908,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3909,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3910,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3911,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3912,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3913,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3914,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3915,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3916,CE04OSPS,mask,['pco2_seawater'],llm,HITL review and automated QC determined pCO2 data are inaccurate during this period.,llm (pre-ledger),approved,,830bcc8d35
+3917,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3918,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3919,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3920,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3921,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3922,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3923,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3924,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3925,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3926,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3927,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3928,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3929,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3930,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3931,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+3932,CE04OSPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,pCO2 data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,49a28d537b
+3933,CE04OSPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,pCO2 data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,49a28d537b
+4083,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,12f8c948bd
+4111,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,14f91c318e
+4121,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,dfa952059d
+4125,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dce925aaa7
+4135,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,322b4879d0
+4211,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,49a4f07c50
+4231,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8bf628bd71
+4325,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,2eb5d6bba3
+4341,CE04OSPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,abc4e1a2af
+4348,CE04OSPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,349747291e
+4393,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a944d01717
+4540,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3af349f004
+4562,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8115c369ab
+4563,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cdb6c93025
+4564,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,58ebed8253
+4597,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6217ae2df5
+4598,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,86df699240
+4599,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b620666cbe
+4624,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6cce35e73f
+4706,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4707,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4708,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4709,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4713,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4714,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,92e529c82e
+4719,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e03a59cf39
+4720,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,12fc5ff2b6
+4766,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5eaa44d651
+4816,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1bd11120d9
+4827,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,785ccc9218
+4828,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,014e60b0be
+4829,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,16b2bdbc63
+4834,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+4835,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged fail; HITL and automated QC determined values are inaccurate.,llm (pre-ledger),approved,,74199e7b6e
+4864,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,5f5c137104
+4865,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,dfb140fa0f
+4870,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,7f3d7c476a
+4873,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,f48df03596
+4875,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,ab2fb7ac70
+4887,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e3051b2304
+4888,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8774849db5
+4966,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,350631f3ec
+5132,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,6f5ef9fdce
+5206,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,cf17a7a833
+5207,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,ffcb789a41
+5210,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,b115427e07
+5252,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9c4db3bea2
+5285,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ebfaec7537
+5331,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d9ebe98b5d
+5390,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ed5979d70f
+5402,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,4124fb94b8
+5421,CE04OSPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Low DO caused by a short conductivity drop; salinity and density also affected, DO inherits.",claude (in-session review),approved,2026-10-16,3e1579b56e
+5422,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,5253198efe
+5427,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,605d693ad1
+5435,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,18de001edc
+5480,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f352925167
+5491,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e28044ba9a
+5492,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,8efc58ef08
+5493,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,9453a0a529
+5494,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,815c3b2cab
+5495,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,adf31ebef3
+5496,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3221e9dd9b
+5503,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,e9bb6ac54d
+5558,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6296856a81
+5569,CE04OSPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,c835551a70
+5606,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9a4e1be0cf
+5631,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ae4120f7d9
+5672,CE04OSPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,c835551a70
+5690,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0c65da8578
+5757,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cb6c300cf9
+5767,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,0405f376c4
+5800,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,f050a31567
+5801,CE04OSPS,mask,['pco2_seawater'],llm,Instrument sampling irregularly with a ground fault; data became inconsistent and then invalid.,llm (pre-ledger),approved,,a5895d6f8e
+5802,CE04OSPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,pCO2 data flagged suspect and out of range due to possible sensor malfunction.,llm (pre-ledger),approved,,bae26a7cfa
+5815,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,163f646993
+5828,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6e03864605
+5877,CE04OSPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,4efe7440a8
+5881,CE04OSPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,Persistent conductivity drop makes salinity- and density-derived products suspect.,claude (in-session review),approved,2026-10-16,0c3fccee7a
+5924,CE04OSPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,Annotation states pCO2 data are invalid and out of valid ranges since deployment despite not_operational flag.,llm (pre-ledger),approved,,c90f2ad1a6
+5947,CE04OSPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,dc222bccb2
+5952,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,ed9e7c37a2
+5968,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0ce4419a70
+5984,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8f84db5bbb
+5996,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,1755308dbc
+6177,CE04OSPS,mask,['pco2_seawater'],llm,Data declared invalid; large ground fault preceding instrument power-down.,llm (pre-ledger),approved,,d1e524f903
+6188,CE04OSPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,Conductivity clog; salinity/density per OOI; DO inherits CTD salinity.,claude (in-session review),approved,2026-10-16,d7502c2c97
+6194,CE04OSPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,d922053685
+6195,CE04OSPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,13a002263e
+6216,CE04OSPS,mask,['ph_seawater'],llm,Annotation states pH raw files were unreadable/invalid amid a significant ground fault despite not_operational flag.,llm (pre-ledger),approved,,a244de02a2
+6260,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,02d0c5746d
+6261,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,73cd9e8f9f
+6269,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,beb88efc8d
+6279,CE04OSPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,13a002263e
+6318,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,91af7313f8
+6340,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,e9b20c92f9
+6395,CE04OSPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,Conductivity clog; salinity/density per OOI; DO inherits CTD salinity.,claude (in-session review),approved,2026-10-16,56761aa381
+6396,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,689feec8dd
+6447,CE04OSPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,13a002263e
+6541,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,c479d41fa5
+6555,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f5864c5675
+6572,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5745289678
+6596,CE04OSPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,13a002263e
+6597,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,95aa3cbc5e
+6612,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c020922bac
+6617,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c7152423a9
+6738,CE04OSPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,09b11c25ac
+6742,CE04OSPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,7e8a7a9018
+6807,CE04OSPS,mask,['ph_seawater'],llm,pH data flagged suspect; unusually noisy values.,llm (pre-ledger),approved,,dece164ba0
+6839,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,b1499a3680
+6885,CE04OSPS,mask,"['partial_pressure_co2_ssw', 'pco2_seawater', 'xco2_atm']",llm,pCO2 consistently outside valid range; instrument marked failed.,claude (in-session review),approved,2026-10-16,d422ecf2fe
+6888,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,bfa6bc7c1c
+6894,CE04OSPS,mask,['corrected_dissolved_oxygen'],official,Fail-range SBE 43 oxygen; OOI official parameter is corrected_dissolved_oxygen.,claude (in-session review),approved,2026-10-16,d9eed97a75
+6895,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,26fc655573
+6924,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,ec5ae23c4c
+6927,CE04OSPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,7a828b99a3
+6928,CE04OSPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,0d334de6b4
+6930,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,a474ad48ad
+18,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5aff0d5f53
+2329,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4fa50ed2b2
+2331,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a4a2e3f3d1
+2358,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ae4c859f1
+2441,RS01SBPD,ignore,,,Not a product instrument.,rule,approved,,ed4511edb1
+2442,RS01SBPD,ignore,,,Not a product instrument.,rule,approved,,b30c423f3b
+2511,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fa25e6b3a8
+2523,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,79d3ad7b77
+2526,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,92231044db
+2533,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9fce7ae91d
+2637,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,851817d12e
+3245,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c40e118c3b
+3273,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,50381b177e
+3312,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,96eb3a5720
+4228,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c5323ae436
+4390,RS01SBPD,ignore,,,Not a product instrument.,rule,approved,,770a5f75a4
+4391,RS01SBPD,ignore,,,Not a product instrument.,rule,approved,,770a5f75a4
+4392,RS01SBPD,ignore,,,Not a product instrument.,rule,approved,,770a5f75a4
+4537,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b4dab419bd
+4632,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9c5d8cc7cd
+4705,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,656d11aa6e
+4717,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2de9596206
+5293,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,787e7c72a2
+5400,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a1bc0bb563
+5434,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0dd35b879a
+5450,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7b0b457d4c
+5955,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,af93093bda
+203,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5f22dbe825
+208,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5ae7f0a4e1
+209,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a6e0eb0609
+210,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cf122e39d9
+222,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b5514ca348
+290,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f89a019526
+319,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,35082e2dec
+572,RS01SBPS,mask,['nitrate_concentration'],llm,Instrument deployed in freshwater mode produced an invalid L1 dissolved nitrate concentration product (suspect).,llm (pre-ledger),approved,,e5c5e9ddc7
+832,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6b92d8182f
+1240,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1241,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1242,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1243,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3179533508
+1244,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1245,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3179533508
+1246,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1247,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1248,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bc362d88f7
+1249,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f09f918d29
+1250,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c2e138476d
+1251,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c7a0d2f60e
+1252,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,053a00a210
+1253,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4d1e23eb94
+1254,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3179533508
+1255,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1256,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0e5c121364
+1257,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a7f0050d68
+1258,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e58dc5c8a6
+1259,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1f71d9d74d
+1260,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1261,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3179533508
+1262,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1dbf4c723e
+1263,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1264,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1265,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1266,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,849ee0284b
+1267,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1268,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7eb529ad9c
+1269,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1270,RS01SBPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,09345b49e2
+1271,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1272,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1273,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1274,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,88ba120c25
+1275,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1276,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0be6202484
+1277,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1278,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",llm+inherited,"Lower-than-usual L0 conductivity makes salinity, oxygen, and density products suspect.",claude (in-session review),approved,2026-10-16,7ecd498fa4
+1279,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,1b38b09d2a
+1280,RS01SBPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,09345b49e2
+1281,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,09a0bdc247
+1282,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7c3de25018
+1283,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d1ad2b7381
+1284,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3179533508
+1285,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,708454bf65
+1286,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2ed180bb1c
+1287,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4ea396fdab
+1288,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,46b6c6321d
+1289,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7f6ae7f9c1
+1290,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,1b38b09d2a
+1291,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,7291841a00
+1369,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fc5f8f4228
+1370,RS01SBPS,mask,['nitrate_concentration'],llm,Instrument deployed in freshwater mode produced an invalid L1 dissolved nitrate concentration product (suspect).,llm (pre-ledger),approved,,1a93720480
+1486,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ad206dc141
+2327,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9755552cd5
+2330,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ab919e630c
+2359,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c93e5488d3
+2440,RS01SBPS,mask,"['salinity_corrected_nitrate', 'nitrate_concentration']",llm,Instrument missed a profile and returned unusable data until rebooted (qcFlag fail).,llm (pre-ledger),approved,,c0e1bad787
+2443,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,faecd5338f
+2444,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,57f9761e11
+2512,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,4a3aeca9de
+2513,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,bbdbd2907e
+2514,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,28a85f4af0
+2515,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,8f378499be
+2516,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,e962a1b7d9
+2524,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1fc4fbc06c
+2531,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,067575e7d7
+2635,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6824585038
+2899,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c198b7fff3
+3244,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,c151cede6f
+3246,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4bbc0c232a
+3271,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4a7e3e293a
+3310,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4cc5caaf15
+3356,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,49519b50f3
+3357,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,087ac58c24
+3358,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4b882b1bda
+3399,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1969e0b4d8
+3400,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,9e1487dbab
+3773,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,f8e4c66a88
+3774,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d4e9231534
+3934,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3935,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3936,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3937,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3938,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3939,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3940,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3941,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3942,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3943,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3944,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3945,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3946,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3947,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3948,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3949,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3950,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3951,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3952,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3953,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3954,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3955,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3956,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3957,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3958,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3959,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3960,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3961,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3962,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+3963,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3964,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3965,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3966,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3967,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3968,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3969,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3970,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3971,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3972,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3973,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3974,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3975,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3976,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3977,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3978,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3979,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3980,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+3981,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+3982,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+3983,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+3984,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+3985,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+3986,RS01SBPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,51222ab1fa
+4110,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1984510c80
+4227,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,963961595a
+4329,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,68f10323c8
+4345,RS01SBPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,bda87d97dd
+4350,RS01SBPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,17fa7b51f5
+4389,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,eb093d00a4
+4397,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d963f94099
+4535,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b24eae7501
+4559,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c0d8387659
+4560,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c034dbb532
+4561,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,47481bb91c
+4568,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,82a6a6b627
+4569,RS01SBPS,mask,['ph_seawater'],llm,"Sensor readings became erratic and intermittent before failure, making measurements suspect.",llm (pre-ledger),approved,,fe67eb0fe5
+4570,RS01SBPS,mask,['ph_seawater'],llm,"Sensor values continued erratic and intermittent before failure, making measurements suspect.",llm (pre-ledger),approved,,cce38ece2a
+4594,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,424b9de4df
+4595,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,79e736bd1e
+4596,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6a5245164e
+4620,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b407e258c4
+4675,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7ee09d96a0
+4676,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,fc7c0bb0c1
+4732,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,a8b6540cda
+4762,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,46e67bac5d
+4812,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2b1fdd11df
+4836,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+4861,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5b6df6853d
+4883,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,f34af92fbe
+4884,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,f2cd301385
+4885,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,f34af92fbe
+4886,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,287a56742f
+5247,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,a8b6540cda
+5281,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4406987254
+5341,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f002b62603
+5342,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,467a3d5a33
+5343,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8a3205b19a
+5387,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,82d3ac1dad
+5418,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,11252fd191
+5428,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,df3863aa7e
+5437,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,bc6b39ebec
+5445,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,37f3c3b703
+5451,RS01SBPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data (qcFlag suspect) and advises against use in analysis.,llm (pre-ledger),approved,,3702f0bc2d
+5455,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,92bac3018b
+5467,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8721e21741
+5470,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,cf085623ba
+5476,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8229d3b8cf
+5490,RS01SBPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,c2c7ddc87e
+5508,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,14a783a50b
+5509,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,7aadc67068
+5525,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8d70f90fa2
+5538,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8d70f90fa2
+5554,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9ae686ea56
+5568,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7f17c8dbdc
+5570,RS01SBPS,mask,['corrected_dissolved_oxygen'],llm,HITL review flagged the oxygen data as inaccurate (qcFlag fail) during this period.,llm (pre-ledger),approved,,0032851d63
+5571,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,3a2ee56659
+5625,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4893b9f63b
+5626,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8d70f90fa2
+5627,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4009c818b6
+5658,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+5661,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,1e9a55a982
+5662,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,510ccd7547
+5663,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8a6e944d4c
+5666,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8d70f90fa2
+5667,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,475aa96e2b
+5671,RS01SBPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,7dc96dfbe4
+5673,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,75e5455b8e
+5677,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,ee6c4440f8
+5686,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,61c8e2c6aa
+5705,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,8d70f90fa2
+5723,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,13904a6b0f
+5724,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,ee6c4440f8
+5725,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,2c31ecd742
+5749,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b6f88eeac7
+5750,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,9ac6f8dc4c
+5794,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,ab04a14fb4
+5795,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,2a8e06aa7f
+5806,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,89ac74128e
+5814,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c821bfd4ef
+5817,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,667530eff0
+5824,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,733210efb1
+5880,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,02f5deb68c
+5922,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,4e43240a3b
+5950,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,938b3cefc4
+5951,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,25c0c315a7
+5964,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4c0a7ebe1b
+5980,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,144f599051
+6170,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,c4b408570d
+6175,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,b1768a88ef
+6176,RS01SBPS,mask,['ph_seawater'],llm,"Despite not_operational status, the instrument was outputting data the operator explicitly states are not valid due to a large ground fault.",llm (pre-ledger),approved,,521af20cd2
+6254,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,f2ccc4a7cd
+6258,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3241de3251
+6262,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,78048f8504
+6267,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a53d0a1b34
+6268,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,321e0bdbc8
+6272,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,c358169821
+6273,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,e58d9bb0aa
+6280,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,50f0d3dc93
+6281,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,80c6b11ee9
+6290,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,916ef1aa73
+6309,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6d0df94767
+6314,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b714208439
+6338,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,dbf34db6db
+6345,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,b23287667b
+6399,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,813c3e9f41
+6400,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e541d3b074
+6417,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,56973bdd36
+6423,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a4c25c305b
+6428,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,0934fd21ef
+6540,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,b962c9af5e
+6543,RS01SBPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data (qcFlag suspect) and advises against use in analysis.,llm (pre-ledger),approved,,82fbff6e64
+6545,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,7a72460a37
+6566,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6578,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2bd38e060a
+6608,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6610,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,Conductivity clog; salinity/density per OOI; DO inherits CTD salinity.,claude (in-session review),approved,2026-10-16,64f05db71b
+6614,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5013a57439
+6619,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bf1f2d3536
+6631,RS01SBPS,mask,"['fluorometric_chlorophyll_a', 'fluorometric_cdom', 'optical_backscatter']",llm,"Repeating pattern of unusually noisy chlorophyll, CDOM, and backscatter data flagged by HITL review.",llm (pre-ledger),approved,,e33a69cbfc
+6736,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6759,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,85542ddaf1
+6762,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,60933e1af6
+6795,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d341bc084
+6797,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,effb26cb6a
+6803,RS01SBPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d3b153cd91
+6806,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,08e0d77aba
+6829,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6831,RS01SBPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data during this period.,llm (pre-ledger),approved,,ac20486acb
+6837,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6853,RS01SBPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Conductivity drop (likely clogged cell) makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,08e0d77aba
+6886,RS01SBPS,mask,"['partial_pressure_co2_ssw', 'pco2_seawater', 'xco2_atm']",llm,pCO2 consistently outside valid range; instrument marked failed.,claude (in-session review),approved,2026-10-16,7164ec5c61
+6889,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,18b7a3c9bc
+6911,RS01SBPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,004f3f101c
+6918,RS01SBPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Conductivity clog 2017-12 to 2018-03; salinity/density bad, DO and nitrate inherit.",claude (in-session review),approved,2026-10-16,fba2e67ce5
+6926,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,6e7be9fe10
+6966,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,7e2cec8d82
+6974,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,697588338f
+6975,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,53fc3e3f00
+202,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e5d8d73aa0
+211,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9a5c43fbd0
+327,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e595b1f95f
+1180,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1181,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1182,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1183,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ba4e0f4103
+1184,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1185,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,25691a6756
+1186,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,be56334e10
+1187,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1188,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1189,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0b2b25e96b
+1190,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,49af5d72cf
+1191,RS01SLBS,mask,['corrected_dissolved_oxygen'],llm,Unusual drop in oxygen counts.,llm (pre-ledger),approved,,71e6c5707f
+1192,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1193,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1194,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,279c645c20
+1195,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d7ab962437
+1196,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,15afcc958d
+1197,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d25e049a8
+1198,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9b47ff94c2
+1199,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1200,RS01SLBS,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,9f6bb74cba
+1201,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2d1c168d08
+1202,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e9f59252f7
+1203,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,84caa1764b
+1204,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1205,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,248be762c0
+1206,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,54b2382da4
+1207,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,13d4f944d9
+1208,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67b968bf43
+1487,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4f5772b574
+2328,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2dbb864868
+2332,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5bb366804d
+2360,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2373b12752
+2425,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,42f361d554
+2426,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,84a54bcb01
+2427,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,75fd3a998b
+2428,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,874a25ad5c
+2510,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,18c1ee2e6e
+2525,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,281ec7e4ee
+2532,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,04ee3857f2
+2636,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,46921f7c35
+3272,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67efa04a9e
+3283,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,3ac6ac0511
+3311,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ace474f711
+3366,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,bb5c6ab1d2
+4226,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2dafda880e
+4328,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,db3ca836e5
+4344,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,efd87e31e4
+4349,RS01SLBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,6b9310214a
+4394,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,7e254aa65a
+4536,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2ab24002d0
+4591,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,cc87b68af6
+4621,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,33b55c9a2d
+4635,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,8aeef2d9a2
+4636,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,bcbb2f8ad7
+4763,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4562e0dd2e
+4813,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d7b19cd52
+4871,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,36ce4240c2
+5282,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fa77f09c68
+5377,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,952bd39119
+5386,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c6f9d845f9
+5477,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,becb8b8723
+5510,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,fe050fc542
+5555,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d374e00955
+5622,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,ef1381de8e
+5628,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,de43658da7
+5687,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,34f31233cf
+5715,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,ce315730ec
+5825,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1fafd06cbb
+5890,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,0d7c6800e5
+5960,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,4832517b6c
+5965,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,885606ce79
+5981,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4741166984
+5997,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,e9cc982b51
+6165,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,0074eeb8fe
+6315,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bbe7e7fcc2
+6836,RS01SLBS,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,6c6363e490
+6846,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,17db204239
+6935,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6936,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6937,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6938,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6949,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6954,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6976,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6977,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+6990,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+3,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b01707d162
+213,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5dc7969146
+326,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,644e7d0bd5
+1209,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1210,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1211,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1212,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,24c3f7afb3
+1213,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1214,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6980a5a05e
+1215,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fcc25c4701
+1216,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1217,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1218,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f27148087d
+1219,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1220,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,46e62acc2c
+1221,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1222,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,64bab5fc72
+1223,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d5e68c7348
+1224,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0bce6d361
+1225,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,ebfa41e593
+1226,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8d95fff766
+1227,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1228,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b12c1952cc
+1229,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f77fc9b821
+1230,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2694905987
+1231,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dd877567c7
+1232,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d980da56bb
+1233,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,21670c0351
+1234,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f912cb36ee
+1235,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,821ce41b7b
+1491,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b73eeea763
+1912,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,676c5390b8
+2364,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0f2179544b
+2473,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,73741b01f4
+2540,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,12a561be24
+2644,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,309bd26134
+3280,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bea252889d
+3319,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fe33777411
+3654,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,1a1d66bb36
+3661,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a9d570dc49
+3671,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,259e7203e6
+3749,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,259e7203e6
+4233,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,a1cb51fdfa
+4240,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,329dcf008a
+4323,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,3eb0652d73
+4324,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,231cbe7caf
+4340,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,fe65d589cb
+4347,RS03AXBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,82e040bfaf
+4437,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,eb23d45126
+4548,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6735ee1417
+4630,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6969e3e880
+4772,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5eefaffe75
+4823,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ccef6e532b
+4872,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,258931a553
+5291,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1a4764f28f
+5396,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ba39c8b5e9
+5433,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,23e9552ca9
+5486,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,21ca603077
+5505,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,e6a67a9ac5
+5511,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,b87a588118
+5564,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,42bf469260
+5624,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,903e2d2305
+5637,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6e85f955f4
+5696,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,05e08297c4
+5811,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e901dba5c7
+5834,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,034365897a
+5975,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a5b5eaf351
+5991,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3b538543c2
+6277,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,5f0fce3093
+6278,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,358ca6cfaa
+6325,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,113b61b2a6
+6615,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,7d7c70ebe3
+6616,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,fd04ba6c6b
+6620,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,6637a06dc8
+6884,RS03AXBS,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm (text over incomplete official),"Conductivity clog per text; OOI official list names only oxygen variables, so text-based salinity/density/DO kept.",claude (in-session review),approved,2026-10-16,76e2f2c29c
+6920,RS03AXBS,mask,['corrected_dissolved_oxygen'],llm,"Cal discrete-sample verification shows anomalously high oxygen for this deployment; recoverable via offset table (TBD, not yet applied), so served O2 is suspect.",llm (pre-ledger),approved,,5f66919c16
+6921,RS03AXBS,mask,['corrected_dissolved_oxygen'],llm,"Cal discrete-sample verification shows anomalously high oxygen for this deployment; recoverable via offset table (TBD, not yet applied), so served O2 is suspect.",llm (pre-ledger),approved,,5f66919c16
+6922,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,bb2ee074fa
+6923,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,bb2ee074fa
+1177,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,69ce70ee03
+1178,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,69ce70ee03
+1179,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,69ce70ee03
+1492,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d3874d4efe
+2365,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e4aa3ad28c
+2517,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0c9499cca
+2539,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,324e30d7ef
+2643,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,625e79f0dc
+2898,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d0b4fd20e
+3279,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,34976ebbc9
+3318,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f1ca0b2fa1
+3554,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3bf66ec318
+3660,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6b3463b54a
+3670,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0f36fddb64
+3748,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0f36fddb64
+4239,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2652812f83
+4547,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,455a39486d
+4633,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5a5394037f
+4638,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,611c017880
+5294,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,69236af162
+5373,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dc8e152e5b
+5420,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6c2c2a0ece
+5436,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2f670de79b
+5458,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c4f3cd22c3
+5839,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6df61ae408
+5882,RS03AXPD,mask,"['fluorometric_chlorophyll_a', 'optical_backscatter']",llm,"qcFlag=fail with HITL/automated review finding negative chlorophyll-a and abnormally low backscatter, and the annotation explicitly says to avoid using the data in analyses.",llm (pre-ledger),approved,,5224d18fe1
+5954,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,31ab2f0ae2
+5977,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ab301e6a9
+5993,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,18a810efde
+6271,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,16c4185bd9
+6308,RS03AXPD,ignore,,,Not a product instrument.,rule,approved,,6b0933914a
+6327,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6ccb749fa0
+212,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6e05148175
+214,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,418bcab769
+270,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dd90be52dd
+329,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,198651ebf2
+833,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,83b83a75f2
+1292,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,4f0013a5db
+1293,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1294,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1295,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1296,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ff90d24f4d
+1297,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1298,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1299,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7929799fae
+1300,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,67316d726f
+1301,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1302,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1303,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1304,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1305,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1306,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7de8a36af0
+1307,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9249dcbdad
+1308,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1309,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,56fd4bd6ab
+1310,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1311,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1313,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,27756944dc
+1314,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0a021cbbee
+1315,RS03AXPS,mask,['ph_seawater'],llm,Unusually low L0 conductivity from the co-located CTD makes pH suspect (qcFlag suspect).,llm (pre-ledger),approved,,593fbeec8c
+1316,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,48425632be
+1317,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,602418767c
+1318,RS03AXPS,mask,['salinity_corrected_nitrate'],official,Low CTD conductivity; OOI official parameters list salinity-corrected nitrate only.,claude (in-session review),approved,2026-10-16,8ccddc059e
+1319,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d7f570d572
+1320,RS03AXPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Unusually/abruptly low conductivity makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,d1abc40816
+1321,RS03AXPS,mask,['ph_seawater'],llm,pH L2 product uses co-located CTD salinity; abruptly low conductivity makes ph_seawater suspect (per HITL annotation).,llm (pre-ledger),approved,,55d3ed7863
+1322,RS03AXPS,mask,['optical_backscatter'],official,Low CTD conductivity; OOI official parameters list backscatter only (salinity enters the seawater-scattering correction).,claude (in-session review),approved,2026-10-16,7052d26a42
+1323,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1324,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1325,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,522dc1efda
+1326,RS03AXPS,mask,['ph_seawater'],llm,Unusually low L0 conductivity from the co-located CTD makes pH suspect (qcFlag suspect).,llm (pre-ledger),approved,,593fbeec8c
+1327,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,48425632be
+1328,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,602418767c
+1329,RS03AXPS,mask,['salinity_corrected_nitrate'],official,Low CTD conductivity; OOI official parameters list salinity-corrected nitrate only.,claude (in-session review),approved,2026-10-16,8ccddc059e
+1330,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bc201b2c23
+1331,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8c1e283915
+1332,RS03AXPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Unusually/abruptly low conductivity makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,d1abc40816
+1333,RS03AXPS,mask,['ph_seawater'],llm,pH L2 product uses co-located CTD salinity; abruptly low conductivity makes ph_seawater suspect (per HITL annotation).,llm (pre-ledger),approved,,55d3ed7863
+1334,RS03AXPS,mask,['optical_backscatter'],official,Low CTD conductivity; OOI official parameters list backscatter only (salinity enters the seawater-scattering correction).,claude (in-session review),approved,2026-10-16,7052d26a42
+1335,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0ed8d721dc
+1336,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e60b8e4784
+1337,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ffd90041ff
+1338,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f387abbb98
+1339,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6033242b3a
+1340,RS03AXPS,mask,['ph_seawater'],llm,Unusually low L0 conductivity from the co-located CTD makes pH suspect (qcFlag suspect).,llm (pre-ledger),approved,,593fbeec8c
+1341,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,48425632be
+1342,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,602418767c
+1343,RS03AXPS,mask,['salinity_corrected_nitrate'],official,Low CTD conductivity; OOI official parameters list salinity-corrected nitrate only.,claude (in-session review),approved,2026-10-16,8ccddc059e
+1344,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7c2f6aa25d
+1345,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fb5541316d
+1346,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a0f03835b2
+1347,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,62c1682211
+1349,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d07b0f43f
+1350,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1351,RS03AXPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Low L0 conductivity; OOI official parameters include salinity, density and DO.",claude (in-session review),approved,2026-10-16,07d52c0b77
+1352,RS03AXPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Low L0 conductivity; OOI official parameters include salinity, density and DO.",claude (in-session review),approved,2026-10-16,07d52c0b77
+1353,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1354,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1355,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1356,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1357,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1358,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1359,RS03AXPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Low L0 conductivity; OOI official parameters include salinity, density and DO.",claude (in-session review),approved,2026-10-16,07d52c0b77
+1360,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+1361,RS03AXPS,mask,['corrected_dissolved_oxygen'],official,"Low DO values; OOI official parameters list DO only, so T/S/density not masked.",claude (in-session review),approved,2026-10-16,2c2300662f
+2366,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0a2dd30ddd
+2472,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6fd5513690
+2477,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,de5fb70e69
+2541,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ccc5b78b63
+2542,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,18e565b571
+2645,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bfee6a8441
+2658,RS03AXPS,mask,"['salinity_corrected_nitrate', 'nitrate_concentration']",llm,Instrument received unusable data after missing a profile until rebooted (qcFlag fail).,llm (pre-ledger),approved,,7db48633cb
+3281,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9cf653efe2
+3282,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,861abef40d
+3320,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5da0f5c721
+3322,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f46647fb5d
+3336,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8cda10fd58
+3362,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e43482e476
+3363,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c03cb370c1
+3662,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d4d18165f5
+3672,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9f65520a2b
+3750,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9f65520a2b
+3751,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ec0fc21cd2
+3752,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,16dc588930
+3753,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,75d30f3915
+3754,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d74fafb805
+3762,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,25a2915299
+3764,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c45f12dd63
+3765,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,44c3bae168
+3766,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6d9f3b30cd
+3767,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ee3e0e742b
+3779,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,652d20681e
+3987,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3988,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3989,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3990,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3991,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3992,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3993,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3994,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3995,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3996,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3997,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3998,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+3999,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4000,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4001,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4002,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4003,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4004,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4005,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4006,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4007,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4008,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4009,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4010,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+4011,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4012,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4013,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4014,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4015,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4016,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4017,RS03AXPS,mask,"['pco2_seawater', 'partial_pressure_co2_ssw', 'xco2_atm']",llm,HITL review flagged the pCO2 data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,a05fabf4c2
+4241,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3867064102
+4346,RS03AXPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,03d85425e0
+4351,RS03AXPS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware bug injected noise into the phase-derived DO; corrected_dissolved_oxygen is the phase-derived product (verified ~7x noisier than onboard DO within this window).,llm (pre-ledger),approved,,47181ce9d0
+4395,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,a7b01307d5
+4398,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,f70d6a867c
+4412,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d908dcb0b8
+4549,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8fb7767338
+4555,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c876267184
+4557,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5d8d511a12
+4558,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9a47022750
+4592,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,22dcf1cfd8
+4593,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6a874b6cc5
+4601,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,da6fa12100
+4602,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a865db98f6
+4631,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b9a4d59a9f
+4655,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,16f20ded17
+4710,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4711,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4712,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+4715,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,abf3cde01b
+4716,RS03AXPS,mask,['salinity_corrected_nitrate'],llm,Freshwater-mode onboard processing produced an invalid L1 nitrate product (qcFlag suspect); the salinity/temperature-corrected L2 nitrate product is unaffected.,llm (pre-ledger),approved,,32848681d4
+4773,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5c8d164c34
+4824,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,00a8c9a5ce
+4852,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ca97d3035e
+5251,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,44f5ead665
+5292,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,77502c68e0
+5344,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,852cd1726e
+5345,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2c92f7623f
+5346,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2a267f252a
+5375,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,9e21df382d
+5376,RS03AXPS,mask,['corrected_dissolved_oxygen'],llm,Oxygen values rose to unrealistic levels after a power outage and are flagged suspect pending investigation.,llm (pre-ledger),approved,,ebac039142
+5397,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,164c2c1868
+5409,RS03AXPS,mask,['corrected_dissolved_oxygen'],llm,The oxygen sensor appears to have failed (values maxed out then flatlined at negatives); data are suspect.,llm (pre-ledger),approved,,b9b54be81e
+5441,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,bb63cac971
+5442,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8484849fdf
+5443,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,fb1b5a9fd1
+5444,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a3a4738fed
+5454,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,e1f0dbb6fb
+5459,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,5e9f802df7
+5471,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6ae716682b
+5473,RS03AXPS,mask,['ph_seawater'],llm,HITL review and automated QC determined pH data are inaccurate during this period.,llm (pre-ledger),approved,,c3408f22f0
+5487,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dddb714020
+5497,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d9f15958c4
+5498,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,32d7bc5400
+5499,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,86cf3f8f99
+5500,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ebdf1d5aee
+5506,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,fbdbdabce1
+5507,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c1553b72c4
+5526,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6ae716682b
+5565,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,81ede5f3a6
+5590,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4ffef517c8
+5592,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6ae716682b
+5607,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1461adeff0
+5638,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0ccfb621d0
+5665,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6ae716682b
+5678,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,f0565b4a60
+5697,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,dadc9f36b2
+5700,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,aff7858a95
+5701,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,54514b9ed6
+5702,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,f8f6286c7a
+5703,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ac4b49186
+5704,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7c5e11f74d
+5707,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,6ae716682b
+5722,RS03AXPS,mask,['ph_seawater'],llm,HITL review flagged the pH data as inaccurate (qcFlag fail) and advises against use in analysis.,llm (pre-ledger),approved,,d41cd44c80
+5735,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,838ce4e771
+5736,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,7a065556db
+5737,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c26cbafb63
+5796,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,add7404cdd
+5797,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,482a41fd9c
+5807,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c38458fb37
+5821,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,3494682205
+5823,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,5a66b76c7d
+5835,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6e67bce6d1
+5883,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2f1b024c32
+5936,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,cbc4d89faf
+5948,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,37c5a96566
+5949,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b2d0d53f92
+5957,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,471ae6c0d7
+5976,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5031500f25
+5992,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,906ffb86b0
+5999,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,17c2b54d0b
+6000,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,17c2b54d0b
+6001,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,832ebc11e5
+6002,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,832ebc11e5
+6003,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,42f540f7e1
+6004,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,42f540f7e1
+6005,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,accf2e747d
+6006,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,accf2e747d
+6007,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,000bfd711f
+6008,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,000bfd711f
+6163,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c8ea6abd4f
+6217,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,857b2c5358
+6259,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3d4c599a10
+6263,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,3db6d956a2
+6264,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,55c1fdd889
+6265,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f2937c8ba3
+6266,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5fa8168780
+6274,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,7807b5e156
+6275,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,b8f6eb28fd
+6276,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b3f707ca14
+6297,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,8a4ca132b7
+6326,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c8260c97e3
+6339,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,2de9bc4cf6
+6342,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b1e68e2c9b
+6343,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,923b4c5b3e
+6344,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0016d33ee5
+6346,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,4eea7c224f
+6424,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1a9f62718f
+6425,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,7ed82219ff
+6449,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,a2a16c14b5
+6542,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,1c6ce766a5
+6546,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6565,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,30f50162b2
+6567,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6577,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e32d91ffbb
+6607,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6611,RS03AXPS,mask,['ph_seawater'],llm,HITL review found unusually noisy pH data (qcFlag suspect) that should not be used in analysis.,llm (pre-ledger),approved,,a19af5527f
+6613,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c432b81525
+6618,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,743629c39e
+6629,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,80594a74fd
+6632,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6636,RS03AXPS,mask,['corrected_dissolved_oxygen'],llm,Calibration cast and discrete samples show anomalously low oxygen values for this deployment (qcFlag suspect).,llm (pre-ledger),approved,,0b0115f2a0
+6637,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,2cc3cc458f
+6737,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d30d7ef61
+6740,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6743,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6764,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,7558b97d4c
+6765,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
+6796,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,f3f4b3f52e
+6842,RS03AXPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,666b11bd51
+6843,RS03AXPS,mask,"['sea_water_practical_salinity', 'corrected_dissolved_oxygen', 'sea_water_density']",llm,"Unusually/abruptly low conductivity makes conductivity-derived salinity, density, and salinity-corrected DO suspect.",llm (pre-ledger),approved,,83b46ec06c
+6887,RS03AXPS,mask,"['partial_pressure_co2_ssw', 'pco2_seawater', 'xco2_atm']",llm,pCO2 consistently outside valid range; instrument marked failed.,claude (in-session review),approved,2026-10-16,21a3998dc8
+6890,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,0070df4d7f
+6893,RS03AXPS,mask,"['corrected_dissolved_oxygen', 'salinity_corrected_nitrate', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Conductivity drop/clog; salinity/density bad, DO and nitrate inherit.",claude (in-session review),approved,2026-10-16,f5b60d121a
+6913,RS03AXPS,mask,"['corrected_dissolved_oxygen', 'sea_water_density', 'sea_water_practical_salinity']",official+inherited,"Conductivity drop/clog on PC CTD; salinity/density bad, DO inherits.",claude (in-session review),approved,2026-10-16,83b46ec06c
+6939,RS03AXPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,fab2f4b408
+6950,RS03AXPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,de5d421752
+6955,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,0fcabea674
+6967,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,1fc0417e4a
+6968,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,48e512c4d8
+6973,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c062deee48
+6979,RS03AXPS,mask,['ph_seawater'],llm,"Noisy pH (suspect), open-ended.",claude (in-session review),approved,2026-10-16,a19af5527f
+6980,RS03AXPS,mask,"['nitrate_concentration', 'salinity_corrected_nitrate']",llm,"Nitrate lamp error; instrument stops mid-profile (suspect), open-ended.",claude (in-session review),approved,2026-10-16,1f36a55cdd

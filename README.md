@@ -31,10 +31,10 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `fixed-instruments` | Resample fixed-instrument (PC platform + seafloor BEP) data to a common time grid |
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
-| `curate-annotations` | Filter annotations to the data-quality-relevant set (rule- or LLM-based) |
+| `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
 | `sync-cresst` | Push local products in `data/` to the `rca-advanced-qaqc/cresst` S3 prefix |
 
-> **Harvest annotations before building `--qaqc-filter highest` products.** OOI edits annotations after the fact (e.g. closing open-ended windows). Stale annotations mask the wrong time ranges. See [HITL Annotations](#hitl-annotations).
+> **Before building `--qaqc-filter highest` products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
 
 ## Regridded Profiler Mooring Profiles
 
@@ -119,7 +119,7 @@ Output naming:
 | `<site>` | Site key (e.g. `axial_base`) |
 | `<start>` / `<end>` | Date range of profiles in the file (`YYYYMMDD`) |
 | `_qf<flags>` | QARTOD flags removed (`49` = fail + missing); omitted when `--qaqc-filter none` |
-| `_HITL` | Curated HITL annotation masking applied; present only with `--qaqc-filter highest` |
+| `_HITL` | Approved HITL ledger masks applied; present only with `--qaqc-filter highest` |
 | `<ext>` | `zarr` or `nc` |
 
 Examples:
@@ -134,7 +134,7 @@ See `regrid-profiler --help` for full options.
 
 ## Fixed Instrument Time Series
 
-Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL annotation masking, plus optional advanced pH masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
+Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + HITL ledger masking, plus optional advanced pH masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
 
 ### Sites and Instruments
 
@@ -188,47 +188,64 @@ See `fixed-instruments --help` for full options.
 
 ## HITL Annotations
 
-Raw annotations are harvested from the OOI M2M API and saved to `annotations/<SUBSITE>.csv`.
-Curated annotations (data-quality relevant only, with `parameters_affected`) live in `annotations/curated/<SUBSITE>_llm.csv`. Curation runs for different nodes merge into the same file (deduplicated by annotation id); the pipelines filter annotations to the nodes they process.
+OOI's human-in-the-loop (HITL) annotations flag time windows of bad or suspect data. Each annotation gets one reviewed decision in `annotations/ledger.csv`, which `--qaqc-filter highest` applies.
 
-Requires `OOI_USERNAME` and `OOI_TOKEN` in `.env` (and `ANTHROPIC_API_KEY` for LLM curation).
+| File | Contents |
+|------|----------|
+| `annotations/<SUBSITE>.csv` | Raw annotations from the OOI M2M API, overwritten on each harvest |
+| `annotations/harvest_manifest.csv` | When each subsite was last harvested |
+| `annotations/ledger.csv` | One decision per annotation `id`: `mask`, `ignore`, or `superseded` |
 
-**Before every product build:**
+The pipelines:
 
-1. Harvest (`harvest-annotations --all`).
-2. Refresh the curated files. The pipelines read `beginDT`/`endDT` from `annotations/curated/<SUBSITE>_llm.csv`, which keeps the window from curation time. A fresh harvest alone won't update it. Copy updated windows from the raw files by `id`, and curate any new ids.
-3. Review open-ended annotations (`endDT` empty). They mask to the end of the data, including later deployments.
+- apply only approved `mask` rows, with windows from the latest harvest (closed windows flow in automatically)
+- add products OOI computes from a masked CTD salinity: DO; salinity-corrected nitrate on profiler nodes; shelf `ph_total` after 2025-08-28 (see `CLAUDE.md`)
+- write `hitl_annotations_harvested` and `hitl_ledger_sha1` to the output attrs
+- warn when the harvest is over 30 days old, or when annotations are missing from the ledger, edited by OOI since review, or still `proposed`
 
-Example: annotation 6794 (shelf SeapHOx) was open-ended in our 2026-07-20 harvest. It masks good pH from the instrument's next deployment (2026-08-18 onward).
+### The ledger, column by column
+
+Each row is one decision about one OOI annotation. To read the annotation itself (text, dates, instrument, OOI's qcFlag), look up the same `id` in `annotations/<subsite>.csv`.
+
+| Column | What it means | Values | Edit it? |
+|--------|---------------|--------|----------|
+| `id` | OOI's annotation id. Links the row to the harvested annotation; one row per id. | integer | Never |
+| `subsite` | Mooring or seafloor site the annotation belongs to. | e.g. `RS03AXPS` | Never |
+| `decision` | What the products do during the annotation's time window. | `mask`: set the listed variables to NaN<br>`ignore`: no effect (not data-affecting, non-product instrument, or a real ocean event like a blowdown)<br>`superseded`: handled another way in code (e.g. the DO splice), so not masked | Yes |
+| `parameters_affected` | Variables to mask when `decision` is `mask`; empty otherwise. List only the directly affected variables: products OOI computes from a masked salinity (DO, nitrate, shelf pH) are added automatically. | Python-style list, e.g. `['sea_water_practical_salinity', 'sea_water_density']` (spreadsheets add the surrounding CSV quotes). Valid names below. | Yes |
+| `parameters_source` | Where the parameter list came from. | `official`: OOI's own `parameters` field<br>`llm`: chosen from the annotation text<br>`human`: chosen by a reviewer<br>`+inherited` suffix: the list already includes salinity-derived products<br>empty for `ignore` / `superseded` | Yes, when you change the list |
+| `rationale` | One sentence explaining the decision. The first thing a reviewer reads. | free text | Yes |
+| `decided_by` | Who made the decision. | `human`, `rule` (instrument not in any product), `llm:<model>` (`curate-annotations`), `claude (in-session review)`, `llm (pre-ledger)` (made before 2026-10-16, never human-reviewed) | Yes, set to `human` when you decide |
+| `status` | Whether the pipelines apply the row. | `proposed`: waiting for review, not applied<br>`approved`: applied | Yes, to approve |
+| `reviewed_at` | Date the decision was last checked by a person or review session. | `YYYY-MM-DD`; empty if never reviewed | Yes, set to today |
+| `content_hash` | Fingerprint of OOI's annotation (text, qcFlag, parameters, refdes) at the time of the decision. If OOI edits the annotation, the fingerprint stops matching and the row comes back for review. It fingerprints OOI's annotation, not your decision. | 10 hex characters | Never |
+
+Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical_salinity`, `sea_water_density`, `corrected_dissolved_oxygen`, `ph_seawater`, `ph_total`, `pco2_seawater`, `partial_pressure_co2_ssw`, `xco2_atm`, `salinity_corrected_nitrate`, `nitrate_concentration`, `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`, `flcdr_x_mmp_cds_fluorometric_cdom` (full list: `PARAM_TO_INSTRUMENT` in `common.py`). The pipelines warn about any other name.
+
+### Editing the ledger
+
+By hand, in a spreadsheet or text editor:
+
+1. Find the row by `id` and read the annotation in `annotations/<subsite>.csv`.
+2. Set `decision`, `parameters_affected`, `parameters_source` and `rationale`.
+3. Set `decided_by` to `human`, `status` to `approved`, and `reviewed_at` to today.
+4. Leave `id`, `subsite` and `content_hash` alone, and don't add rows by hand. `curate-annotations` creates rows for new annotations.
+5. Check: `curate-annotations --all` reports 0 annotations needing a decision, and a `--qaqc-filter highest` run logs no ledger warnings.
+6. Commit through a PR. The diff shows exactly which decisions changed.
+
+With an LLM (e.g. Claude Code), point it at the rows and at `CLAUDE.md`, which holds the decision rules. For example: *"Review the `proposed` rows in annotations/ledger.csv. For each, read the annotation text, apply the rules in CLAUDE.md, and fill in `decision`, `parameters_affected`, `parameters_source` and `rationale`. Leave `status` as `proposed` for me to approve."* Keep approval with a person.
+
+### Before every product build
 
 ```bash
-# harvest one site (accepts site key or raw subsite code)
-harvest-annotations oregon_offshore
-harvest-annotations CE04OSPS
-
-# harvest all profiler sites
-harvest-annotations --all
+harvest-annotations --all          # needs OOI_USERNAME / OOI_TOKEN in .env
+curate-annotations --all           # proposes decisions for new or OOI-edited annotations; needs ANTHROPIC_API_KEY
+git diff annotations/ledger.csv    # review the proposals
 ```
 
-Curate with qcFlag filtering:
+Approve a proposal by setting `status=approved` and `reviewed_at`, then commit through a PR. `curate-annotations` ignores annotations on non-product instruments by rule and asks Claude to judge the rest. OOI's official `parameters` (mapped through the preload `netcdf_name`) override Claude's parameter choice. Approved rows are never overwritten; an annotation OOI edits comes back as `proposed`.
 
-```bash
-curate-annotations CE04OSPS --qc-flag fail --qc-flag suspect
-```
-
-LLM curation (per node, mapping sensor codes to instrument keys):
-
-```bash
-# science pod (shallow profiler)
-curate-annotations CE04OSPS --node SF01B \
-    --sensor 2A-CTDPFA107:ctd --sensor 2B-PHSENA108:ph \
-    --sensor 4F-PCO2WA102:pco2 --sensor 4A-NUTNRA102:nutrients
-
-# fixed 200 m platform
-curate-annotations CE04OSPS --node PC01B \
-    --sensor 4A-CTDPFA109:ctd --sensor 4A-DOSTAD109:o2 \
-    --sensor 4B-PHSENA106:ph --sensor 4D-PCO2WA105:pco2
-```
+Both commands also take single sites, e.g. `harvest-annotations oregon_offshore` or `curate-annotations CE04OSPS`. Decision rules (corrected calibrations, blowdowns, parameter inheritance) are in `CLAUDE.md`.
 
 ## Advanced pH QC
 

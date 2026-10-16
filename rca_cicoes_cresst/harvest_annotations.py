@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Harvest OOI HITL annotations for a subsite via the M2M API.
 
-Saves raw annotations to annotations/<SUBSITE>.csv.
+Saves raw annotations to annotations/<SUBSITE>.csv and records the harvest time
+in annotations/harvest_manifest.csv.
 
 Usage:
     harvest-annotations oregon_offshore
@@ -9,7 +10,6 @@ Usage:
     harvest-annotations --all
 """
 import os
-import sys
 from pathlib import Path
 
 import click
@@ -17,6 +17,8 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 from loguru import logger
+
+from rca_cicoes_cresst.common import HARVEST_MANIFEST
 
 load_dotenv()
 
@@ -36,7 +38,16 @@ SITES: dict[str, str] = {
 }
 
 
-def harvest(subsite: str, out_dir: Path) -> Path:
+def record_harvest(subsite: str, n: int, out_dir: Path) -> None:
+    """Upsert this subsite's harvest time and annotation count in the manifest."""
+    path = out_dir / HARVEST_MANIFEST
+    m = pd.read_csv(path) if path.exists() else pd.DataFrame(columns=["subsite", "harvested_at", "n_annotations"])
+    row = {"subsite": subsite, "harvested_at": pd.Timestamp.now(tz="UTC").isoformat(timespec="seconds"), "n_annotations": n}
+    m = pd.concat([m[m["subsite"] != subsite], pd.DataFrame([row])]).sort_values("subsite")
+    m.to_csv(path, index=False)
+
+
+def harvest(subsite: str, out_dir: Path) -> Path | None:
     """Fetch annotations for one subsite and write to CSV. Returns output path."""
     username = os.environ["OOI_USERNAME"]
     token = os.environ["OOI_TOKEN"]
@@ -64,6 +75,7 @@ def harvest(subsite: str, out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{subsite}.csv"
     df.to_csv(out_path, index=False)
+    record_harvest(subsite, len(df), out_dir)
     logger.info(f"{subsite}: {len(df)} annotations saved to {out_path}")
     return out_path
 
