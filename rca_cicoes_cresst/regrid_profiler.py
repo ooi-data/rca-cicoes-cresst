@@ -260,7 +260,7 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: 
     "--annotations-dir",
     default=ANNOTATIONS_DIR,
     show_default=True,
-    help="Directory with harvested annotation CSVs and ledger.csv (used with --qaqc-filter highest).",
+    help="Directory holding ledger.csv and raw/ harvested annotations (used with --qaqc-filter highest).",
 )
 @click.option(
     "--ph-advanced",

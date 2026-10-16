@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Harvest OOI HITL annotations for a subsite via the M2M API.
 
-Saves raw annotations to annotations/<SUBSITE>.csv and records the harvest time
-in annotations/harvest_manifest.csv.
+Saves raw annotations to annotations/raw/<SUBSITE>.csv and records the harvest time
+in annotations/raw/harvest_manifest.csv.
 
 Usage:
     harvest-annotations oregon_offshore
@@ -18,7 +18,7 @@ import requests
 from dotenv import load_dotenv
 from loguru import logger
 
-from rca_cicoes_cresst.common import HARVEST_MANIFEST
+from rca_cicoes_cresst.common import ANNOTATIONS_DIR, HARVEST_MANIFEST, RAW_DIR
 
 load_dotenv()
 
@@ -88,7 +88,7 @@ def harvest(subsite: str, out_dir: Path) -> Path | None:
     help="Harvest every site in SITES (profiler moorings + BEP/seafloor subsites).",
 )
 @click.option(
-    "--out-dir", default="annotations",
+    "--out-dir", default=f"{ANNOTATIONS_DIR}/{RAW_DIR}",
     show_default=True,
     help="Directory to write raw annotation CSVs.",
 )

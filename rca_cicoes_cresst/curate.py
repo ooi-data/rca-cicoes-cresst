@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Propose ledger decisions for new or OOI-edited HITL annotations.
 
-Reads harvested annotations from annotations/<SUBSITE>.csv and adds `proposed`
+Reads harvested annotations from annotations/raw/<SUBSITE>.csv and adds `proposed`
 rows to annotations/ledger.csv for every annotation that is not yet in the
 ledger or whose content (text, qcFlag, parameters, refdes) changed since its
 decision. Approved rows are never overwritten. A reviewer approves proposals by
@@ -29,6 +29,7 @@ from loguru import logger
 from rca_cicoes_cresst.common import (
     ANNOTATIONS_DIR,
     LEDGER_FILE,
+    RAW_DIR,
     PARAM_TO_INSTRUMENT,
     content_hash,
     read_ledger,
@@ -174,7 +175,7 @@ def propose(client, row: pd.Series, netcdf_names: dict[int, str]) -> dict:
 @click.argument("subsites", nargs=-1)
 @click.option("--all", "curate_all", is_flag=True, help="Curate every harvested subsite.")
 @click.option("--annotations-dir", default=ANNOTATIONS_DIR, show_default=True,
-              help="Directory with harvested annotation CSVs and ledger.csv.")
+              help="Directory holding ledger.csv and raw/ harvested annotations.")
 def main(subsites: tuple[str, ...], curate_all: bool, annotations_dir: str) -> None:
     """Add proposed ledger rows for new or edited annotations of SUBSITES."""
     subsites = list(SITES.values()) if curate_all else [SITES.get(s, s) for s in subsites]
@@ -182,7 +183,7 @@ def main(subsites: tuple[str, ...], curate_all: bool, annotations_dir: str) -> N
         raise click.UsageError("Provide SUBSITES or use --all.")
 
     ledger = read_ledger(annotations_dir).set_index("id")
-    raw = pd.concat([pd.read_csv(Path(annotations_dir) / f"{s}.csv") for s in subsites], ignore_index=True)
+    raw = pd.concat([pd.read_csv(Path(annotations_dir) / RAW_DIR / f"{s}.csv") for s in subsites], ignore_index=True)
     needs_review = raw[~raw["id"].isin(ledger.index) |
                        (raw.apply(content_hash, axis=1) != raw["id"].map(ledger["content_hash"]))]
     logger.info(f"{len(needs_review)} of {len(raw)} annotations need a decision")

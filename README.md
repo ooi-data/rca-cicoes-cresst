@@ -192,9 +192,9 @@ OOI's human-in-the-loop (HITL) annotations flag time windows of bad or suspect d
 
 | File | Contents |
 |------|----------|
-| `annotations/<SUBSITE>.csv` | Raw annotations from the OOI M2M API, overwritten on each harvest |
-| `annotations/harvest_manifest.csv` | When each subsite was last harvested |
-| `annotations/ledger.csv` | One decision per annotation `id`: `mask`, `ignore`, or `superseded` |
+| `annotations/ledger.csv` | One reviewed decision per annotation `id`: `mask`, `ignore`, or `superseded`. The only file people edit. |
+| `annotations/raw/<SUBSITE>.csv` | Raw annotations from the OOI M2M API, overwritten on each harvest |
+| `annotations/raw/harvest_manifest.csv` | When each subsite was last harvested, written by `harvest-annotations` |
 
 The pipelines:
 
@@ -205,7 +205,7 @@ The pipelines:
 
 ### The ledger, column by column
 
-Each row is one decision about one OOI annotation. To read the annotation itself (text, dates, instrument, OOI's qcFlag), look up the same `id` in `annotations/<subsite>.csv`.
+Each row is one decision about one OOI annotation. To read the annotation itself (text, dates, instrument, OOI's qcFlag), look up the same `id` in `annotations/raw/<subsite>.csv`.
 
 | Column | What it means | Values | Edit it? |
 |--------|---------------|--------|----------|
@@ -226,7 +226,7 @@ Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical
 
 By hand, in a spreadsheet or text editor:
 
-1. Find the row by `id` and read the annotation in `annotations/<subsite>.csv`.
+1. Find the row by `id` and read the annotation in `annotations/raw/<subsite>.csv`.
 2. Set `decision`, `parameters_affected`, `parameters_source` and `rationale`.
 3. Set `decided_by` to `human`, `status` to `approved`, and `reviewed_at` to today.
 4. Leave `id`, `subsite` and `content_hash` alone, and don't add rows by hand. `curate-annotations` creates rows for new annotations.

@@ -98,6 +98,7 @@ def group_params_by_instrument(params: list[str], site_dict: dict[str, str]) -> 
 
 
 ANNOTATIONS_DIR = "annotations"
+RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"
 HARVEST_MAX_AGE_DAYS = 30
@@ -127,7 +128,7 @@ def inherit_params(params: set[str], node, end) -> set[str]:
 
 
 def read_raw_annotations(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
-    raw = pd.read_csv(Path(annotations_dir) / f"{subsite}.csv")
+    raw = pd.read_csv(Path(annotations_dir) / RAW_DIR / f"{subsite}.csv")
     raw["beginDT"] = pd.to_datetime(raw["beginDT"], format="ISO8601", utc=True)
     raw["endDT"] = pd.to_datetime(raw["endDT"], format="ISO8601", utc=True)
     return raw
@@ -138,7 +139,7 @@ def read_ledger(annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
 
 
 def harvest_time(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> pd.Timestamp | None:
-    path = Path(annotations_dir) / HARVEST_MANIFEST
+    path = Path(annotations_dir) / RAW_DIR / HARVEST_MANIFEST
     if not path.exists():
         return None
     m = pd.read_csv(path).set_index("subsite")
