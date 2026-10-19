@@ -23,7 +23,9 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
   `ignore` them, even if flagged suspect or described as anomalous. Mooring failures (e.g. 181,
   anchor leg pulled to 400 m, "data suspect") are different and stay masked.
 - Optode DAC firmware-noise annotations (2017–2021) are `superseded` by the DO splice
-  (`DO_SPLICE_WINDOWS`); don't mask them.
+  (`substitute` rows in `config/adjustments.csv`); don't mask them.
+- Window-based one-offs (substitute a variable, apply an offset, mask a window OOI hasn't
+  annotated) go in `config/adjustments.csv`, one variable per row, not in code.
 - Masking matches node + parameter name, so a DOSTA annotation also masks the CTD's
   integrated DO on that node. Mask DOSTA rows only if CTD DO is affected too.
 - Integrated packages carry several sensors in one stream. PHSENH is a SeapHOx: SBE 37
@@ -33,7 +35,8 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
 - Open-ended annotations mask to the end of the data, including later deployments.
   Usually OOI has since closed them (6794 was open-ended in our 2026-07-20 harvest;
   deployment 1 ended 2026-08-08). Re-harvest first; if still open and the next
-  deployment looks good, ask OOI to close it (the ledger has no window override).
+  deployment looks good, ask OOI to close it; meanwhile a `mask` row in
+  `config/adjustments.csv` can cover a window the annotation gets wrong.
 
 ## Parameter inheritance (CTD conductivity problems)
 OOI computes other instruments' products from the co-located CTD's practical salinity

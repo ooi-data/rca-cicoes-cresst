@@ -99,7 +99,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4229,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,52709c0745
 4326,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,8f544f9943
 4342,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,200eed7ede
-4352,CE02SHBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,aada7ec6f9
+4352,CE02SHBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see config/adjustments.csv).,llm (pre-ledger),approved,,aada7ec6f9
 4387,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,071fac4a11
 4388,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,502fe488ea
 4538,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d7320aad6
@@ -302,7 +302,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4230,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,72bb2bbe29
 4327,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,5e17f6f789
 4343,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,af69e083a0
-4353,CE04OSBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,4b162ba808
+4353,CE04OSBP,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see config/adjustments.csv).,llm (pre-ledger),approved,,4b162ba808
 4539,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,92d4fc4568
 4556,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,3812adcbea
 4604,CE04OSBP,ignore,,,Not a product instrument.,rule,approved,,e177288a7d
@@ -1001,7 +1001,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4226,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2dafda880e
 4328,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,db3ca836e5
 4344,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,efd87e31e4
-4349,RS01SLBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,6b9310214a
+4349,RS01SLBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see config/adjustments.csv).,llm (pre-ledger),approved,,6b9310214a
 4394,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,7e254aa65a
 4536,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2ab24002d0
 4591,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,cc87b68af6
@@ -1087,7 +1087,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4323,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,3eb0652d73
 4324,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,231cbe7caf
 4340,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,fe65d589cb
-4347,RS03AXBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see DO_SPLICE_WINDOWS).,llm (pre-ledger),approved,,82e040bfaf
+4347,RS03AXBS,superseded,['corrected_dissolved_oxygen'],llm,Optode DAC firmware noise in phase-derived DO; onboard product spliced in (see config/adjustments.csv).,llm (pre-ledger),approved,,82e040bfaf
 4437,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,eb23d45126
 4548,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6735ee1417
 4630,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6969e3e880

@@ -16,13 +16,15 @@ from rca_cicoes_cresst.common import (
     annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
-    QARTOD_LABELS,
     START_YEAR,
+    apply_adjustments,
     group_params_by_instrument,
     load_annotations,
     load_data,
     mask_annotation_windows,
     mask_ph_advanced,
+    mask_qartod,
+    qc_steps,
     qc_suffix,
 )
 
@@ -108,7 +110,7 @@ def load_regridding_inputs(
         refdes = site_dict[instr_key]
         stream_name = sites_lookup[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
-        ds = load_data(stream_name)
+        ds = apply_adjustments(load_data(stream_name), refdes)
         if ph_advanced and instr_key == "ph":
             ds = mask_ph_advanced(ds, stream_name)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
@@ -117,7 +119,6 @@ def load_regridding_inputs(
             "instrument": instr_key,
             "ds": ds[available],
             "params": [p for p in instr_params if p in ds],
-            "qartod_vars": qartod_vars,
             "is_downcast": instr_key in DOWNCAST_INSTRUMENTS,
         })
 
@@ -152,9 +153,9 @@ def regrid_profiles(
             ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()
             if annotations is not None:
                 ds_year = mask_annotation_windows(ds_year, instr["params"], annotations)
+            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE.get(qaqc_filter, set()))
             year_datasets.append({**instr, "ds_year": ds_year})
         skipped = 0
-        flag_removed: dict[int, int] = {}
 
         for _, row in tqdm(year_indices.iterrows(), total=len(year_indices), desc=str(year)):
             profile_parts = []
@@ -169,21 +170,6 @@ def regrid_profiles(
 
                 if ds_cast.sizes["time"] < 2:
                     continue
-
-                if qaqc_filter in QARTOD_EXCLUDE:
-                    exclude_flags = QARTOD_EXCLUDE[qaqc_filter]
-                    bad = np.zeros(ds_cast.sizes["time"], dtype=bool)
-                    for fv in instr["qartod_vars"]:
-                        if fv in ds_cast:
-                            flag_vals = ds_cast[fv].values
-                            for flag in exclude_flags:
-                                n = int(np.sum(flag_vals == flag))
-                                if n:
-                                    flag_removed[flag] = flag_removed.get(flag, 0) + n
-                            bad |= np.isin(flag_vals, list(exclude_flags))
-                    ds_cast = ds_cast.isel(time=~bad).drop_vars(instr["qartod_vars"], errors="ignore")
-                    if ds_cast.sizes["time"] < 2:
-                        continue
 
                 pres_var = next((v for v in PRES_PARAMS if v in ds_cast), None)
                 if pres_var is None:
@@ -215,9 +201,6 @@ def regrid_profiles(
 
         if skipped:
             logger.warning(f"{year}: {skipped}/{len(year_indices)} profiles skipped")
-        if flag_removed:
-            for flag, count in sorted(flag_removed.items()):
-                logger.info(f"{year}: removed {count:,} points with flag {flag} ({QARTOD_LABELS.get(flag, '?')})")
 
     logger.info("concatenating")
     return xr.concat(pds, dim="profile_number")
@@ -302,6 +285,7 @@ def main(
     subsite = site_dict["ctd"][:8]
     annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter, annotations)
+    ds_profiles.attrs["qc_steps"] = qc_steps(qaqc_filter, ph_advanced)
     if annotations is not None:
         ds_profiles.attrs.update(annotation_provenance(subsite, annotations_dir))
 

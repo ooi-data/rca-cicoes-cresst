@@ -3,10 +3,10 @@
 the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic
 Experiment Packages (BEP / LJ nodes).
 
-Same QAQC as the regridded profiler product (QARTOD flag masking + curated HITL
-annotation masking, plus optional advanced pH masking), but no profile slicing
-or pressure regridding: instruments are masked at native resolution, resampled
-to a common time grid (default hourly means), and merged into one dataset per site.
+Same QC steps, in the same order, as the regridded profiler product (see
+common.qc_steps), but no profile slicing or pressure regridding: instruments are
+masked at native resolution, resampled to a common time grid (default hourly
+means), and merged into one dataset per site.
 """
 import os
 
@@ -23,13 +23,15 @@ from rca_cicoes_cresst.common import (
     annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
-    QARTOD_LABELS,
     START_YEAR,
+    apply_adjustments,
     group_params_by_instrument,
     load_annotations,
     load_data,
     mask_annotation_windows,
     mask_ph_advanced,
+    mask_qartod,
+    qc_steps,
     qc_suffix,
 )
 
@@ -85,23 +87,6 @@ DEFAULT_PARAMS: list[str] = [
     "optical_backscatter",
 ]
 
-# An optode DAC firmware bug injected noise into the analog (phase-derived)
-# output during these windows; per the OOI annotations the onboard-calculated
-# 'dissolved_oxygen' product is the one to use. Splice it (and its QARTOD
-# flags) into 'corrected_dissolved_oxygen' to keep the DO record continuous.
-# Windows are the exact begin/end of the OOI annotations and are a fixed
-# property of the served data. Cal paths differ, so small offsets at the
-# seams are possible.
-DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
-    "oregon_offshore":     ("2017-07-29T05:24:00", "2020-08-18T01:24:00"),
-    "slope_base":          ("2017-08-04T19:30:00", "2021-08-04T20:20:00"),
-    "axial_base":          ("2017-07-31T04:00:00", "2021-08-03T01:26:00"),
-    "oregon_offshore_seafloor": ("2017-08-10T19:22:00", "2020-08-18T01:24:00"),
-    "oregon_shelf_seafloor":    ("2017-09-10T15:51:00", "2020-08-12T21:24:00"),
-    "slope_base_seafloor":      ("2017-07-29T19:19:00", "2021-08-04T20:20:00"),
-    "axial_base_seafloor":      ("2017-07-31T22:38:00", "2021-08-03T20:43:00"),
-}
-
 # Sites whose current pH sensor superseded an older one at the same node, whose
 # archived record we concatenate ahead of the active sensor to extend the pH
 # series. Value is the OLD reference designator
@@ -111,22 +96,6 @@ DO_SPLICE_WINDOWS: dict[str, tuple[str, str]] = {
 PH_STITCH: dict[str, str] = {
     "oregon_shelf_seafloor": "CE02SHBP-LJ01D-10-PHSEND103",
 }
-
-
-def splice_onboard_do(ds: xr.Dataset, window: tuple[str, str]) -> xr.Dataset:
-    """Substitute the onboard DO product for the phase-derived one inside window."""
-    begin, end = (pd.Timestamp(t).to_datetime64() for t in window)
-    in_window = (ds.time >= begin) & (ds.time <= end)
-    ds["corrected_dissolved_oxygen"] = ds["corrected_dissolved_oxygen"].where(~in_window, ds["dissolved_oxygen"])
-    if "dissolved_oxygen_qartod_results" in ds and "corrected_dissolved_oxygen_qartod_results" in ds:
-        ds["corrected_dissolved_oxygen_qartod_results"] = (
-            ds["corrected_dissolved_oxygen_qartod_results"].where(~in_window, ds["dissolved_oxygen_qartod_results"])
-        )
-    ds["corrected_dissolved_oxygen"].attrs["source_note"] = (
-        f"onboard-calculated 'dissolved_oxygen' substituted for the phase-derived product "
-        f"from {window[0]} to {window[1]} (optode DAC firmware noise, OOI annotations)"
-    )
-    return ds.drop_vars(["dissolved_oxygen", "dissolved_oxygen_qartod_results"], errors="ignore")
 
 
 def stitch_archived_ph(
@@ -148,7 +117,7 @@ def stitch_archived_ph(
     so it no-ops).
     """
     archive_stream = ARCHIVE_DICT[archive_refdes]["zarrFile"]
-    archive_ds = load_data(archive_stream)
+    archive_ds = apply_adjustments(load_data(archive_stream), archive_refdes)
     logger.info(f"stitching archived pH {archive_refdes} ahead of the active sensor")
 
     # active reports ph_total; rename so both sources share the ph_seawater name
@@ -184,7 +153,6 @@ def stitch_archived_ph(
 def load_fixed_inputs(
     site_dict: dict[str, str],
     params: list[str],
-    do_splice: tuple[str, str] | None = None,
     ph_stitch: str | None = None,
     ph_advanced: bool = False,
 ) -> list[dict]:
@@ -195,7 +163,7 @@ def load_fixed_inputs(
         refdes = site_dict[instr_key]
         stream_name = ACTIVE_DICT[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
-        ds = load_data(stream_name)
+        ds = apply_adjustments(load_data(stream_name), refdes)
         if instr_key == "ph" and ph_stitch:
             ds = stitch_archived_ph(ds, ph_stitch, stream_name, ph_advanced=ph_advanced)
             instr_params = ["ph_seawater"]  # unified stitched variable (see PH_STITCH)
@@ -203,13 +171,7 @@ def load_fixed_inputs(
         # only keep the platform pressure from the CTD; the other instruments
         # carry a duplicate int_ctd_pressure that would collide on merge
         pres_vars = [v for v in PRES_PARAMS if v in ds] if instr_key == "ctd" else []
-        available = [v for v in pres_vars + instr_params + qartod_vars if v in ds]
-        if do_splice and instr_key == "ctd" and "corrected_dissolved_oxygen" in available and "dissolved_oxygen" in ds:
-            onboard = [v for v in ("dissolved_oxygen", "dissolved_oxygen_qartod_results") if v in ds]
-            ds = splice_onboard_do(ds[available + onboard], do_splice)
-            logger.info(f"splicing onboard DO into corrected_dissolved_oxygen for {do_splice[0]} → {do_splice[1]}")
-        else:
-            ds = ds[available]
+        ds = ds[[v for v in pres_vars + instr_params + qartod_vars if v in ds]]
         # stitched pH masks per-source inside stitch_archived_ph (streams differ)
         if ph_advanced and instr_key == "ph" and not ph_stitch:
             ds = mask_ph_advanced(ds, stream_name)
@@ -217,7 +179,6 @@ def load_fixed_inputs(
             "instrument": instr_key,
             "ds": ds,
             "params": [p for p in instr_params if p in ds],
-            "qartod_vars": qartod_vars,
         })
     return instrument_datasets
 
@@ -234,7 +195,6 @@ def resample_fixed(
 
     for instr in instrument_datasets:
         year_parts = []
-        flag_removed: dict[int, int] = {}
 
         for year in range(start_year, end_year + 1):
             ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()
@@ -244,25 +204,10 @@ def resample_fixed(
             if annotations is not None:
                 ds_year = mask_annotation_windows(ds_year, instr["params"], annotations)
 
-            if qaqc_filter in QARTOD_EXCLUDE:
-                exclude_flags = list(QARTOD_EXCLUDE[qaqc_filter])
-                for param in instr["params"]:
-                    fv = f"{param}_qartod_results"
-                    if fv not in ds_year:
-                        continue
-                    bad = ds_year[fv].isin(exclude_flags)
-                    for flag in exclude_flags:
-                        n = int((ds_year[fv] == flag).sum())
-                        if n:
-                            flag_removed[flag] = flag_removed.get(flag, 0) + n
-                    ds_year[param] = ds_year[param].where(~bad)
-
-            ds_year = ds_year.drop_vars(instr["qartod_vars"], errors="ignore")
+            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE.get(qaqc_filter, set()))
             year_parts.append(ds_year.resample(time=resample).mean())
             logger.info(f"{instr['instrument']} {year}: {ds_year.sizes['time']:,} points → {year_parts[-1].sizes['time']:,} bins")
 
-        for flag, count in sorted(flag_removed.items()):
-            logger.info(f"{instr['instrument']}: masked {count:,} points with flag {flag} ({QARTOD_LABELS.get(flag, '?')})")
 
         if not year_parts:
             logger.warning(f"{instr['instrument']}: no data in {start_year}–{end_year}")
@@ -360,7 +305,6 @@ def main(
 
     instrument_datasets = load_fixed_inputs(
         site_dict, DEFAULT_PARAMS,
-        do_splice=DO_SPLICE_WINDOWS.get(site),
         ph_stitch=PH_STITCH.get(site),
         ph_advanced=ph_advanced,
     )
@@ -368,6 +312,7 @@ def main(
     subsite = site_dict["ctd"][:8]
     annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
     ds_fixed = resample_fixed(instrument_datasets, resample, start_year, end_year, qaqc_filter, annotations)
+    ds_fixed.attrs["qc_steps"] = qc_steps(qaqc_filter, ph_advanced)
     if annotations is not None:
         ds_fixed.attrs.update(annotation_provenance(subsite, annotations_dir))
 

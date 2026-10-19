@@ -8,6 +8,7 @@ Curated data products from OOI Regional Cabled Array (RCA) profiler moorings and
 - [Command overview](#command-overview)
 - [Regridded Profiler Mooring Profiles](#regridded-profiler-mooring-profiles) (`regrid-profiler`)
 - [Fixed Instrument Time Series](#fixed-instrument-time-series) (`fixed-instruments`)
+- [QC Steps and Adjustments](#qc-steps-and-adjustments) (`config/adjustments.csv`)
 - [HITL Annotations](#hitl-annotations) (`harvest-annotations`, `curate-annotations`)
 - [Advanced pH QC](#advanced-ph-qc)
 - [Binned Profiles](#binned-profiles-bin-dataset) (`bin-dataset`)
@@ -94,7 +95,18 @@ All variables are sampled on the upcast except `ph_seawater` and `pco2_seawater`
 | `fluorometric_chlorophyll_a` | — | Fluorometer (FLNTUA) |
 | `flcdr_x_mmp_cds_fluorometric_cdom` | — | CDOM (FLCDRA) |
 
-### Generating the Data Product
+### Building the profiler product (`regrid-profiler`)
+
+Run from `data/`; outputs land in the current directory and logs in `logs/`. For `--qaqc-filter highest`, run the [annotation steps](#before-every-product-build) first.
+
+| Option | Effect | Filename suffix |
+|--------|--------|-----------------|
+| `--grid START STOP STEP` | Pressure grid in dbar (profiler only) | — |
+| `--qaqc-filter none` | No QC masking (adjustments still apply) | — |
+| `--qaqc-filter basic` | Mask QARTOD fail (4) and missing (9) | `_qf49` |
+| `--qaqc-filter highest` | `basic` plus approved HITL ledger masks | `_qf49_HITL` |
+| `--ph-advanced` | Also mask pH where any advanced pH test failed ([details](#advanced-ph-qc)) | `_phadv` |
+| `--format zarr\|nc\|both` | Output format | extension |
 
 ```bash
 # shallow profilers (~0–200 m)
@@ -111,7 +123,7 @@ regrid-profiler axial_base_deep --grid 150 2600 1 --format both --qaqc-filter hi
 Output naming:
 
 ```
-<site>_profiles_<start>_<end>[_qf<flags>][_HITL].<ext>
+<site>_profiles_<start>_<end>[_qf<flags>][_HITL][_phadv].<ext>
 ```
 
 | Component | Description |
@@ -120,6 +132,7 @@ Output naming:
 | `<start>` / `<end>` | Date range of profiles in the file (`YYYYMMDD`) |
 | `_qf<flags>` | QARTOD flags removed (`49` = fail + missing); omitted when `--qaqc-filter none` |
 | `_HITL` | Approved HITL ledger masks applied; present only with `--qaqc-filter highest` |
+| `_phadv` | Advanced pH masking applied; present only with `--ph-advanced` |
 | `<ext>` | `zarr` or `nc` |
 
 Examples:
@@ -143,20 +156,22 @@ Time-series datasets from fixed (non-profiling) instruments: the shallow profile
 | `oregon_offshore` | CE04OSPS-PC01B | 200 m | ✓ | ✓ | ✓ | — |
 | `slope_base` | RS01SBPS-PC01A | 200 m | ✓ | ✓ | — | ✓ |
 | `axial_base` | RS03AXPS-PC03A | 200 m | ✓ | ✓ | — | ✓ |
-| `oregon_offshore_seafloor` | CE04OSBP-LJ01C | ~580 m | ✓ | ✓ | ✓ | — |
-| `oregon_shelf_seafloor` | CE02SHBP-LJ01D | ~80 m | ✓ | ✓ *(total)* | ✓ | — |
+| `oregon_offshore_seafloor` | CE04OSBP-LJ01C | ~580 m | ✓ | ✓ | *excluded* | — |
+| `oregon_shelf_seafloor` | CE02SHBP-LJ01D | ~80 m | ✓ | ✓ *(stitched)* | *excluded* | — |
 | `slope_base_seafloor` | RS01SLBS-LJ01A | ~2900 m | ✓ | — | — | — |
 | `axial_base_seafloor` | RS03AXBS-LJ03A | ~2600 m | ✓ | — | — | — |
 
-All four `*_seafloor` sites are Benthic Experiment Packages (BEPs). The two Oregon Coastal Endurance BEPs carry the full carbon suite (CTD, pH, pCO₂); the two deep cabled packages (Slope Base, Axial Base) carry only a CTD in this product — they also host OPTAA, ADCP, and HPIES, but no pH/pCO₂/fluorometer. The CTDs at all fixed sites report DO through the CTD stream (integrated optode), unlike the deep profilers which use a standalone DOSTA. OPTAA (spectral absorption/attenuation) is excluded from this product.
+All four `*_seafloor` sites are Benthic Experiment Packages (BEPs). The two Oregon Coastal Endurance BEPs carry CTD, pH and pCO₂, but pCO₂ is left out of this product until it can be offset and reviewed by an SME; the two deep cabled packages (Slope Base, Axial Base) carry only a CTD in this product — they also host OPTAA, ADCP, and HPIES, but no pH/pCO₂/fluorometer. The CTDs at all fixed sites report DO through the CTD stream (integrated optode), unlike the deep profilers which use a standalone DOSTA. OPTAA (spectral absorption/attenuation) is excluded from this product.
 
 ### Data Variables
 
-CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (PHSEN) or `ph_total` (PHSENH at Oregon Shelf) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
+CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (at Oregon Shelf, the archived PHSEND record followed by the active PHSENH `ph_total`, stitched without scale conversion; see the variable's `source_note`) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
-**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows hardcoded in `DO_SPLICE_WINDOWS` in `fixed_instruments.py`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `source_note` attribute. Applies to the PC platforms and the BEP/seafloor CTDs (every fixed site with the integrated optode).
+**Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows are the `substitute` rows in `config/adjustments.csv`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `adjustments` attribute. Applies to the PC platforms and the BEP/seafloor CTDs (every fixed site with the integrated optode).
 
-### Generating the Data Product
+### Building the fixed time series (`fixed-instruments`)
+
+Same working directory, prerequisites and QC options as the [profiler build](#building-the-profiler-product-regrid-profiler); instead of `--grid`, use `--resample FREQ` (bin width, default `1h`) and `--start-year` / `--end-year`.
 
 ```bash
 # PC platforms (200 m)
@@ -164,7 +179,7 @@ fixed-instruments slope_base --format both --qaqc-filter highest --ph-advanced
 fixed-instruments oregon_offshore --format both --qaqc-filter highest --ph-advanced
 fixed-instruments axial_base --format both --qaqc-filter highest --ph-advanced
 
-# seafloor BEPs — Oregon carbon suite (CTD + pH + pCO₂)
+# Oregon seafloor BEPs (CTD + pH; pCO₂ excluded pending offset review)
 fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter highest
 fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter highest
 
@@ -182,9 +197,38 @@ Output naming:
 <site>_fixed_<start>_<end>_<freq>[_qf<flags>][_HITL][_phadv].<ext>
 ```
 
-Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL_phadv.nc`
+`<freq>` is the `--resample` bin width; the other components match the [profiler naming](#building-the-profiler-product-regrid-profiler). Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL_phadv.nc`
 
 See `fixed-instruments --help` for full options.
+
+## QC Steps and Adjustments
+
+Both pipelines apply the same QC steps in the same order, at native resolution, before gridding or resampling. Each product records the order in its `qc_steps` attribute.
+
+1. **Adjustments**: rows in `config/adjustments.csv` (below), applied to each raw stream.
+2. **Advanced pH**: with `--ph-advanced` (see [Advanced pH QC](#advanced-ph-qc)).
+3. **HITL ledger**: with `--qaqc-filter highest` (see [HITL Annotations](#hitl-annotations)).
+4. **QARTOD**: with `basic` or `highest`, each variable is set to NaN where its own flag is fail (4) or missing (9). The flag variables are not written to products.
+
+The shelf pH stitch combines the archived PHSEND and active PHSENH records after steps 1–2 have run on each source.
+
+### `config/adjustments.csv`
+
+One row per window-based fix that OOI's annotations don't handle: a substitution, an offset, or a mask OOI hasn't annotated. Each row changes one variable. When a new one-off problem turns up, add a row here instead of code, and review it in a PR like the ledger.
+
+| Column | What it means | Values |
+|--------|---------------|--------|
+| `id` | Unique row number, quoted in the variable's `adjustments` attribute | integer; never reuse one |
+| `refdes` | Instrument stream the row applies to | full reference designator, e.g. `CE02SHBP-LJ01D-10-PHSENH110` |
+| `variable` | Variable to change, using the stream's own name | e.g. `ph_total` (before the shelf stitch renames it to `ph_seawater`) |
+| `action` | What to do inside the window | `mask`: set to NaN<br>`substitute`: replace with `source` (and its QARTOD flags)<br>`offset`: add `value` |
+| `source` | For `substitute`: the stream variable to use instead | e.g. `dissolved_oxygen`; empty otherwise |
+| `value` | For `offset`: amount to add, in the variable's units | empty otherwise |
+| `begin`, `end` | Window in UTC, inclusive | ISO 8601; empty `end` = to the end of the data |
+| `annotation_id` | OOI annotation this row implements, if any | e.g. `4348`; empty if none |
+| `rationale` | Why the row exists. The first thing a reviewer reads. | free text |
+
+Edit it by hand or with an LLM; the decision rules are in `CLAUDE.md`. Changes take effect on the next build.
 
 ## HITL Annotations
 
@@ -211,7 +255,7 @@ Each row is one decision about one OOI annotation. To read the annotation itself
 |--------|---------------|--------|----------|
 | `id` | OOI's annotation id. Links the row to the harvested annotation; one row per id. | integer | Never |
 | `subsite` | Mooring or seafloor site the annotation belongs to. | e.g. `RS03AXPS` | Never |
-| `decision` | What the products do during the annotation's time window. | `mask`: set the listed variables to NaN<br>`ignore`: no effect (not data-affecting, non-product instrument, or a real ocean event like a blowdown)<br>`superseded`: handled another way in code (e.g. the DO splice), so not masked | Yes |
+| `decision` | What the products do during the annotation's time window. | `mask`: set the listed variables to NaN<br>`ignore`: no effect (not data-affecting, non-product instrument, or a real ocean event like a blowdown)<br>`superseded`: handled another way (e.g. the DO splice in `config/adjustments.csv`), so not masked | Yes |
 | `parameters_affected` | Variables to mask when `decision` is `mask`; empty otherwise. List only the directly affected variables: products OOI computes from a masked salinity (DO, nitrate, shelf pH) are added automatically. | Python-style list, e.g. `['sea_water_practical_salinity', 'sea_water_density']` (spreadsheets add the surrounding CSV quotes). Valid names below. | Yes |
 | `parameters_source` | Where the parameter list came from. | `official`: OOI's own `parameters` field<br>`llm`: chosen from the annotation text<br>`human`: chosen by a reviewer<br>`+inherited` suffix: the list already includes salinity-derived products<br>empty for `ignore` / `superseded` | Yes, when you change the list |
 | `rationale` | One sentence explaining the decision. The first thing a reviewer reads. | free text | Yes |
@@ -267,8 +311,9 @@ contains a `3`), per science-lead guidance. This is aggressive — the `low_indi
 test alone fires on a large fraction of samples — so expect substantial pH data loss; it is
 opt-in for that reason.
 
-Available for the PC-platform and profiler PHSEN sensors (where the flag products exist); the flag
-is a no-op for the seafloor BEP pH. Works on both `fixed-instruments` and `regrid-profiler`; the
+Flag products exist for the PC-platform and profiler PHSEN sensors and the archived Oregon Shelf
+PHSEND (the pre-2025 part of the stitched shelf record). There are none for the Oregon Offshore
+BEP or the active shelf PHSENH, so the option does nothing there. Works on both `fixed-instruments` and `regrid-profiler`; the
 output filename gets a `_phadv` suffix.
 
 ## Binned Profiles (`bin-dataset`)

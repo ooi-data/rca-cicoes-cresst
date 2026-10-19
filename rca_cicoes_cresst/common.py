@@ -97,7 +97,10 @@ def group_params_by_instrument(params: list[str], site_dict: dict[str, str]) -> 
     return instrument_params
 
 
-ANNOTATIONS_DIR = "annotations"
+# repo-relative so the pipelines can run from data/ (see README)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+ANNOTATIONS_DIR = str(REPO_ROOT / "annotations")
+ADJUSTMENTS_FILE = REPO_ROOT / "config" / "adjustments.csv"
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"
@@ -256,6 +259,67 @@ def mask_ph_advanced(ds: xr.Dataset, ph_stream: str) -> xr.Dataset:
     )
     logger.info(f"advanced pH: masked {int(bad.sum())}/{bad.sizes['time']} points ({ph_stream})")
     return ds
+
+
+def read_adjustments() -> pd.DataFrame:
+    adj = pd.read_csv(ADJUSTMENTS_FILE)
+    adj["begin"] = pd.to_datetime(adj["begin"], utc=True)
+    adj["end"] = pd.to_datetime(adj["end"], utc=True)
+    return adj
+
+
+def apply_adjustments(ds: xr.Dataset, refdes: str) -> xr.Dataset:
+    """Apply config/adjustments.csv rows for this instrument: mask, substitute or offset
+    one variable inside a time window. Runs on the raw stream, before any masking."""
+    adj = read_adjustments()
+    for row in adj[adj["refdes"] == refdes].itertuples():
+        var = row.variable
+        if var not in ds:
+            continue
+        end = ds.time.values[-1] if pd.isna(row.end) else row.end.tz_localize(None).to_datetime64()
+        in_window = (ds.time >= row.begin.tz_localize(None).to_datetime64()) & (ds.time <= end)
+        if row.action == "mask":
+            ds[var] = ds[var].where(~in_window)
+        elif row.action == "substitute":
+            if row.source not in ds:
+                logger.warning(f"{refdes} adjustment {row.id}: source {row.source} not in stream, skipped")
+                continue
+            ds[var] = ds[var].where(~in_window, ds[row.source])
+            q, src_q = f"{var}_qartod_results", f"{row.source}_qartod_results"
+            if q in ds and src_q in ds:
+                ds[q] = ds[q].where(~in_window, ds[src_q])
+        elif row.action == "offset":
+            ds[var] = ds[var].where(~in_window, ds[var] + row.value)
+        until = "open" if pd.isna(row.end) else f"{row.end:%Y-%m-%dT%H:%M}"
+        note = f"adjustment {row.id}: {row.action} {row.begin:%Y-%m-%dT%H:%M} to {until} ({row.rationale})"
+        ds[var].attrs["adjustments"] = "; ".join(filter(None, [ds[var].attrs.get("adjustments"), note]))
+        logger.info(f"{refdes} {note}")
+    return ds
+
+
+def mask_qartod(ds: xr.Dataset, params: list[str], exclude_flags: set[int]) -> xr.Dataset:
+    """NaN each parameter where its own QARTOD flag is in exclude_flags, then drop the flag variables."""
+    flag_vars = [f"{p}_qartod_results" for p in params if f"{p}_qartod_results" in ds]
+    for fv in flag_vars:
+        param = fv.removesuffix("_qartod_results")
+        bad = ds[fv].isin(list(exclude_flags))
+        if exclude_flags and bool(bad.any()):
+            counts = {QARTOD_LABELS[f]: int((ds[fv] == f).sum()) for f in sorted(exclude_flags)}
+            logger.info(f"QARTOD {param}: masked {counts}")
+        ds[param] = ds[param].where(~bad)
+    return ds.drop_vars(flag_vars)
+
+
+def qc_steps(qaqc_filter: str, ph_advanced: bool) -> str:
+    """The QC steps both pipelines apply, in order, for the product's attrs."""
+    steps = ["adjustments: config/adjustments.csv (mask/substitute/offset windows)"]
+    if ph_advanced:
+        steps.append("advanced pH: ph_seawater masked where any advanced test failed")
+    if qaqc_filter == "highest":
+        steps.append("HITL: approved annotations/ledger.csv masks, plus CTD-salinity inheritance")
+    if qaqc_filter in QARTOD_EXCLUDE:
+        steps.append(f"QARTOD: each variable masked where its flag is in {sorted(QARTOD_EXCLUDE[qaqc_filter])}")
+    return " | ".join(f"{i}. {s}" for i, s in enumerate(steps, 1))
 
 
 def qc_suffix(qaqc_filter: str, ph_advanced: bool = False) -> str:
