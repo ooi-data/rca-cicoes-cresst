@@ -83,6 +83,12 @@ def mermaid(edges: set[tuple[str, str]], products: dict[str, set[str]], names: d
     ordered = sorted(edges)
     for a, b in ordered:
         lines.append(f'    {a.replace("-", "_")} --> {b.replace("-", "_")}')
+    lines += [
+        "    subgraph Legend",
+        "        lg_in[intermediate input] -->|computed from| lg_prod[our product]",
+        "        lg_sal[practical salinity] -->|computed from salinity:<br/>CTD problems can carry over| lg_prod2[our product]",
+        "    end",
+    ]
     # explicit text colors so boxes stay legible in light and dark themes
     lines.append("    classDef default fill:#e5e7eb,stroke:#4b5563,color:#111827")
     lines.append("    classDef product fill:#bfdbfe,stroke:#1d4ed8,color:#0b1f4d")
@@ -90,10 +96,12 @@ def mermaid(edges: set[tuple[str, str]], products: dict[str, set[str]], names: d
     prod = [n.replace("-", "_") for n in nodes if n in products and n != "PRACSAL_L2"]
     if prod:
         lines.append(f"    class {','.join(prod)} product")
-    lines.append("    class PRACSAL_L2 salinity")
-    sal = [str(i) for i, (a, _) in enumerate(ordered) if a == "PRACSAL_L2"]
-    if sal:
-        lines.append(f"    linkStyle {','.join(sal)} stroke:#b45309,stroke-width:2px")
+    lines.append("    class PRACSAL_L2,lg_sal salinity")
+    lines.append("    class lg_prod,lg_prod2 product")
+    lines.append("    linkStyle default stroke:#6b7280")
+    # legend edges come after the graph's, so the salinity one is index len(ordered) + 1
+    sal = [str(i) for i, (a, _) in enumerate(ordered) if a == "PRACSAL_L2"] + [str(len(ordered) + 1)]
+    lines.append(f"    linkStyle {','.join(sal)} stroke:#b45309,stroke-width:2px")
     return "\n".join(lines)
 
 

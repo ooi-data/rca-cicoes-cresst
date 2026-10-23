@@ -54,12 +54,18 @@ flowchart LR
     TEMPWAT_L1 --> NITRTSC_L2
     TEMPWAT_L1 --> PHWATER_L2
     TEMPWAT_L1 --> PRACSAL_L2
+    subgraph Legend
+        lg_in[intermediate input] -->|computed from| lg_prod[our product]
+        lg_sal[practical salinity] -->|computed from salinity:<br/>CTD problems can carry over| lg_prod2[our product]
+    end
     classDef default fill:#e5e7eb,stroke:#4b5563,color:#111827
     classDef product fill:#bfdbfe,stroke:#1d4ed8,color:#0b1f4d
     classDef salinity fill:#fcd34d,stroke:#b45309,stroke-width:2px,color:#451a03
     class CDOMFLO_L1,CHLAFLO_L1,DENSITY_L2,DOCONCF_L2,DOXYGEN_L2,FLUBSCT_L2,NITRTSC_L2,PCO2WAT_L1,PHWATER_L2,TEMPWAT_L1 product
-    class PRACSAL_L2 salinity
-    linkStyle 5,6,7,8,9,10 stroke:#b45309,stroke-width:2px
+    class PRACSAL_L2,lg_sal salinity
+    class lg_prod,lg_prod2 product
+    linkStyle default stroke:#6b7280
+    linkStyle 5,6,7,8,9,10,26 stroke:#b45309,stroke-width:2px
 ```
 
 ## Salinity inheritance
