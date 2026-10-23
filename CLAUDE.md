@@ -39,23 +39,7 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
   `config/adjustments.csv` can cover a window the annotation gets wrong.
 
 ## Parameter inheritance (CTD conductivity problems)
-OOI computes other instruments' products from the co-located CTD's practical salinity
-(preload `parameterfunctionmap` -> `dpi_PRACSAL_L2`). A conductivity clog/drift on a CTD
-therefore affects these products on the same node:
-
-| Mask | Error per unit salinity | Why |
-|------|-------------------------|-----|
-| `sea_water_practical_salinity`, `sea_water_density` | density -0.79 kg/m3 | computed directly |
-| `corrected_dissolved_oxygen`, `dissolved_oxygen` | ~0.7% | Garcia & Gordon salinity correction, umol/L -> umol/kg |
-| `ph_total` (PHSENH, ISFET) | ~0.015 pH | chloride / sulfate / ionic-strength terms |
-| `salinity_corrected_nitrate` | large | sea-salt (bromide) absorbance subtraction |
-
-Do not mask: temperature (Sea-Bird: fouling doesn't affect the thermistor), PHSEN
-`ph_seawater` (~0.002 pH per unit salinity, below sensor uncertainty), pCO2, chlorophyll,
-CDOM, backscatter. Exception: on pumped profiling CTDs, an annotation describing a pump
-failure may also affect temperature response.
-
-Clogs are usually abrupt multi-unit steps (annotation 6394: -2.45 for 10 weeks), not slow
-drift. BGC-Argo flags O2/NO3/pH as suspect (3) when salinity is bad; this product keeps
-good data only, so mask. Inheritance is applied in code at load time
-(`common.inherit_params`); ledger rows only need the base parameters.
+A CTD salinity problem also affects products OOI computes from it on the same node (DO,
+PHSENH `ph_total`, nitrate, density). `common.inherit_params` adds these at load time, so ledger
+rows only need the base parameters. Which products are and aren't masked, and why:
+`docs/parameter_dependencies.md`.

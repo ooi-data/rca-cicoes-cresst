@@ -243,7 +243,7 @@ OOI's human-in-the-loop (HITL) annotations flag time windows of bad or suspect d
 The pipelines:
 
 - apply only approved `mask` rows, with windows from the latest harvest (closed windows flow in automatically)
-- add products OOI computes from a masked CTD salinity: DO; salinity-corrected nitrate on profiler nodes; shelf `ph_total` after 2025-08-28 (see `CLAUDE.md`, and [docs/parameter_dependencies.md](docs/parameter_dependencies.md) for OOI's dependency graph)
+- add products OOI computes from a masked CTD salinity: DO; salinity-corrected nitrate on profiler nodes; shelf `ph_total` after 2025-08-28 (see [docs/parameter_dependencies.md](docs/parameter_dependencies.md))
 - write `hitl_annotations_harvested` and `hitl_ledger_sha1` to the output attrs
 - warn when the harvest is over 30 days old, or when annotations are missing from the ledger, edited by OOI since review, or still `proposed`
 

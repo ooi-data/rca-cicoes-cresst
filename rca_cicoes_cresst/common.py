@@ -119,7 +119,7 @@ def content_hash(row: pd.Series) -> str:
 
 
 def inherit_params(params: set[str], node, end) -> set[str]:
-    """Add products OOI computes from a CTD's practical salinity (see CLAUDE.md)."""
+    """Add products OOI computes from a CTD's practical salinity (see docs/parameter_dependencies.md)."""
     params = set(params)
     if "sea_water_practical_salinity" in params:
         params.add("corrected_dissolved_oxygen")
