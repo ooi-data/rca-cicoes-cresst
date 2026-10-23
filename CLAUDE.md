@@ -22,6 +22,9 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
 - Shallow-profiler platform blowdowns are real ocean events, not data-quality problems:
   `ignore` them, even if flagged suspect or described as anomalous. Mooring failures (e.g. 181,
   anchor leg pulled to 400 m, "data suspect") are different and stay masked.
+- Offsets revealed by discrete samples or calibration casts ("anomalously low/high vs.
+  verification data", "recoverable with offset table") are `ignore`: the data are correctable,
+  not bad. Apply a known offset as an `offset` row in `config/adjustments.csv` instead.
 - Optode DAC firmware-noise annotations (2017–2021) are `superseded` by the DO splice
   (`substitute` rows in `config/adjustments.csv`); don't mask them.
 - Window-based one-offs (substitute a variable, apply an offset, mask a window OOI hasn't

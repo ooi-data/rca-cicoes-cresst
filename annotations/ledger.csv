@@ -1115,8 +1115,8 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6616,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,fd04ba6c6b
 6620,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,6637a06dc8
 6884,RS03AXBS,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm (text over incomplete official),"Conductivity clog per text; OOI official list names only oxygen variables, so text-based salinity/density/DO kept.",claude (in-session review),approved,2026-10-16,76e2f2c29c
-6920,RS03AXBS,mask,['corrected_dissolved_oxygen'],llm,"Cal discrete-sample verification shows anomalously high oxygen for this deployment; recoverable via offset table (TBD, not yet applied), so served O2 is suspect.",llm (pre-ledger),approved,,5f66919c16
-6921,RS03AXBS,mask,['corrected_dissolved_oxygen'],llm,"Cal discrete-sample verification shows anomalously high oxygen for this deployment; recoverable via offset table (TBD, not yet applied), so served O2 is suspect.",llm (pre-ledger),approved,,5f66919c16
+6920,RS03AXBS,ignore,,,"Offset vs. discrete samples; recoverable with offset table, not masked.",human,approved,2026-10-23,5f66919c16
+6921,RS03AXBS,ignore,,,"Offset vs. discrete samples; recoverable with offset table, not masked.",human,approved,2026-10-23,5f66919c16
 6922,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,bb2ee074fa
 6923,RS03AXBS,ignore,,,Not a product instrument.,rule,approved,,bb2ee074fa
 1177,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,69ce70ee03
@@ -1403,7 +1403,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6618,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,743629c39e
 6629,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,80594a74fd
 6632,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
-6636,RS03AXPS,mask,['corrected_dissolved_oxygen'],llm,Calibration cast and discrete samples show anomalously low oxygen values for this deployment (qcFlag suspect).,llm (pre-ledger),approved,,0b0115f2a0
+6636,RS03AXPS,ignore,,,"Offset vs. discrete samples/calibration cast; correctable, not masked.",human,approved,2026-10-23,0b0115f2a0
 6637,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,2cc3cc458f
 6737,RS03AXPS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7d30d7ef61
 6740,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,89c5e163e1
