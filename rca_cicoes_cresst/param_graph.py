@@ -21,6 +21,17 @@ PRELOAD = "https://raw.githubusercontent.com/oceanobservatories/preload-database
 OUT = REPO_ROOT / "docs" / "parameter_dependencies.md"
 SKIP = ("_L0", "SRF", "SALSURF", "OPT", "PRESTMP")  # raw counts, surface moorings, OPTAA
 PRODUCT_VARS = set(FIXED_PARAMS) | {v for vs in PROFILER_PARAMS.values() for v in vs}
+NAME_OVERRIDES = {  # preload names that vary by instrument or don't say which sensor
+    "DOXYGEN_L2": "Dissolved Oxygen - Temp Pressure Sal Corrected",
+    "ABSTHRM_L1": "pH Sensor Thermistor Temperature",
+    "CO2THRM_L1": "pCO2 Sensor Thermistor Temperature",
+}
+
+
+def dpi_names(p: pd.DataFrame) -> dict[str, str]:
+    """DPI -> its most common preload displayname."""
+    names = p.dropna(subset=["dataproductidentifier", "displayname"]).groupby("dataproductidentifier")["displayname"]
+    return names.agg(lambda s: s.mode().iloc[0]).to_dict() | NAME_OVERRIDES
 
 
 def dpi_edges(p: pd.DataFrame) -> tuple[set[tuple[str, str]], dict[str, set[str]]]:
@@ -62,18 +73,20 @@ def dpi_edges(p: pd.DataFrame) -> tuple[set[tuple[str, str]], dict[str, set[str]
     return {e for e in edges if keep(e[0]) and keep(e[1])}, products
 
 
-def mermaid(edges: set[tuple[str, str]], products: dict[str, set[str]]) -> str:
+def mermaid(edges: set[tuple[str, str]], products: dict[str, set[str]], names: dict[str, str]) -> str:
     keep = lambda n: not any(x in n for x in SKIP)
     nodes = sorted({n for e in edges for n in e} | {n for n in products if keep(n)})  # unlinked products too
     lines = ["flowchart LR"]
     for n in nodes:
-        names = "<br/>".join(f"<i>{v}</i>" for v in sorted(products.get(n, [])))
-        lines.append(f'    {n.replace("-", "_")}["<b>{n}</b>{"<br/>" + names if names else ""}"]')
+        vars_ = "<br/>".join(f"<i>{v}</i>" for v in sorted(products.get(n, [])))
+        lines.append(f'    {n.replace("-", "_")}["<b>{names.get(n, n)}</b><br/>{n}{"<br/>" + vars_ if vars_ else ""}"]')
     ordered = sorted(edges)
     for a, b in ordered:
         lines.append(f'    {a.replace("-", "_")} --> {b.replace("-", "_")}')
-    lines.append("    classDef product fill:#dbeafe,stroke:#1d4ed8")
-    lines.append("    classDef salinity fill:#fde68a,stroke:#b45309,stroke-width:2px")
+    # explicit text colors so boxes stay legible in light and dark themes
+    lines.append("    classDef default fill:#e5e7eb,stroke:#4b5563,color:#111827")
+    lines.append("    classDef product fill:#bfdbfe,stroke:#1d4ed8,color:#0b1f4d")
+    lines.append("    classDef salinity fill:#fcd34d,stroke:#b45309,stroke-width:2px,color:#451a03")
     prod = [n.replace("-", "_") for n in nodes if n in products and n != "PRACSAL_L2"]
     if prod:
         lines.append(f"    class {','.join(prod)} product")
@@ -88,14 +101,15 @@ def main() -> None:
     p = pd.read_csv(PRELOAD)
     p = p[p["id"].astype(str).str.match(r"^PD\d+$")].set_index("id")
     edges, products = dpi_edges(p)
+    names = dpi_names(p)
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(f"""# Parameter dependencies
 
 How OOI computes the variables in our products, drawn from the
 [preload database](https://github.com/oceanobservatories/preload-database) `ParameterDefs.csv`
 (`master` as of {date.today()}). Each box is an OOI data product (DPI); arrows point from an
-input to the product computed from it. Blue boxes feed our products (our variable names in
-italics). Practical salinity (`PRACSAL_L2`, amber) is the main shared input: a bad salinity
+input to the product computed from it, labelled with OOI's display name and DPI code. Blue boxes
+are our products (our variable names in italics); grey boxes are intermediate inputs. Practical salinity (`PRACSAL_L2`, amber) is the main shared input: a bad salinity
 also corrupts every product it points to, which is what `common.inherit_params` handles. An arrow
 means "used in", not "strongly affected by": see the sensitivity table in `CLAUDE.md` (e.g. PHSEN
 `ph_seawater` changes only ~0.002 pH per unit salinity). Unlinked boxes depend only on their own
@@ -105,7 +119,7 @@ Calibration constants, raw L0 counts, and surface-mooring / OPTAA branches are o
 Regenerate: `python -m rca_cicoes_cresst.param_graph`
 
 ```mermaid
-{mermaid(edges, products)}
+{mermaid(edges, products, names)}
 ```
 """)
     print(f"wrote {OUT} ({len(edges)} edges)")
