@@ -85,8 +85,8 @@ def mermaid(edges: set[tuple[str, str]], products: dict[str, set[str]], names: d
         lines.append(f'    {a.replace("-", "_")} --> {b.replace("-", "_")}')
     lines += [
         "    subgraph Legend",
-        "        lg_in[intermediate input] -->|computed from| lg_prod[our product]",
-        "        lg_sal[practical salinity] -->|computed from salinity:<br/>CTD problems can carry over| lg_prod2[our product]",
+        "        lg_in[intermediate input] -->|used to compute| lg_prod[our product]",
+        "        lg_sal[practical salinity] -->|used to compute:<br/>CTD problems can carry over| lg_prod2[our product]",
         "    end",
     ]
     # explicit text colors so boxes stay legible in light and dark themes
@@ -116,7 +116,7 @@ def main() -> None:
 How OOI computes the variables in our products, drawn from the
 [preload database](https://github.com/oceanobservatories/preload-database) `ParameterDefs.csv`
 (`master` as of {date.today()}). Each box is an OOI data product (DPI), labelled with OOI's
-display name and DPI code; arrows point from an input to the product computed from it. Blue boxes
+display name and DPI code; arrows point from an input to the product it is used to compute. Blue boxes
 are our products (our variable names in italics); grey boxes are intermediate inputs; unlinked
 boxes depend only on their own sensor and calibration. Calibration constants, raw L0 counts, and
 surface-mooring / OPTAA branches are omitted.

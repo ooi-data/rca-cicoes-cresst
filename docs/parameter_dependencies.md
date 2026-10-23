@@ -3,7 +3,7 @@
 How OOI computes the variables in our products, drawn from the
 [preload database](https://github.com/oceanobservatories/preload-database) `ParameterDefs.csv`
 (`master` as of 2026-10-23). Each box is an OOI data product (DPI), labelled with OOI's
-display name and DPI code; arrows point from an input to the product computed from it. Blue boxes
+display name and DPI code; arrows point from an input to the product it is used to compute. Blue boxes
 are our products (our variable names in italics); grey boxes are intermediate inputs; unlinked
 boxes depend only on their own sensor and calibration. Calibration constants, raw L0 counts, and
 surface-mooring / OPTAA branches are omitted.
@@ -55,8 +55,8 @@ flowchart LR
     TEMPWAT_L1 --> PHWATER_L2
     TEMPWAT_L1 --> PRACSAL_L2
     subgraph Legend
-        lg_in[intermediate input] -->|computed from| lg_prod[our product]
-        lg_sal[practical salinity] -->|computed from salinity:<br/>CTD problems can carry over| lg_prod2[our product]
+        lg_in[intermediate input] -->|used to compute| lg_prod[our product]
+        lg_sal[practical salinity] -->|used to compute:<br/>CTD problems can carry over| lg_prod2[our product]
     end
     classDef default fill:#e5e7eb,stroke:#4b5563,color:#111827
     classDef product fill:#bfdbfe,stroke:#1d4ed8,color:#0b1f4d
