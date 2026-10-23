@@ -88,7 +88,7 @@ DEFAULT_PARAMS: list[str] = [
 ]
 
 # Sites whose current pH sensor superseded an older one at the same node, whose
-# archived record we concatenate ahead of the active sensor to extend the pH
+# archived record is concatenated ahead of the active sensor to extend the pH
 # series. Value is the OLD reference designator
 # SCALE NOTE: the old PHSEND sensors report ph_seawater (seawater/free scale)
 # and the current PHSENH reports ph_total (total scale). Per science lead

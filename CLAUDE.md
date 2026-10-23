@@ -33,7 +33,7 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
   can be correctly attached and still affect the others (6794: O2 phase delay pinned and
   pH drifted to ~6.5 together). Check the data before masking or dismissing.
 - Open-ended annotations mask to the end of the data, including later deployments.
-  Usually OOI has since closed them (6794 was open-ended in our 2026-07-20 harvest;
+  Usually OOI has since closed them (6794 was open-ended in the 2026-07-20 harvest;
   deployment 1 ended 2026-08-08). Re-harvest first; if still open and the next
   deployment looks good, ask OOI to close it; meanwhile a `mask` row in
   `config/adjustments.csv` can cover a window the annotation gets wrong.
