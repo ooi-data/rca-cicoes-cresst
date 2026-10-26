@@ -22,7 +22,7 @@ pip install -e .
 
 Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, loguru) install automatically; LLM curation additionally needs `anthropic` (`pip install -e ".[curate]"`). Reading OOI/RCA S3 data is anonymous — no credentials needed. Credentials are required only for: harvesting/curating annotations (`OOI_USERNAME`, `OOI_TOKEN`, and `ANTHROPIC_API_KEY` for LLM curation, in a local `.env`) and writing with `sync-cresst` (AWS credentials).
 
-**Outputs & layout.** `regrid-profiler` and `fixed-instruments` write to the **current directory** and logs to `logs/`; `bin-dataset` writes to `data/binned/`. The convention is to keep finished products under `data/` — run the generators from `data/` (or move outputs there), since `sync-cresst` mirrors `data/` to S3.
+**Outputs & layout.** Each S3 prefix has a matching local directory under `data/`: `data/cresst` ↔ `rca-advanced-qaqc/cresst` (the default) and `data/cresst-one-easy-rca` ↔ `rca-advanced-qaqc/cresst-one-easy-rca`. `regrid-profiler` and `fixed-instruments` write to `--output-dir` (default `data/cresst`) and logs to `logs/`; `bin-dataset` writes next to its input. `sync-cresst --bucket` syncs the matching directory.
 
 ## Command overview
 
@@ -33,7 +33,7 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
 | `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
-| `sync-cresst` | Push local products in `data/` to an S3 prefix (default `rca-advanced-qaqc/cresst`) |
+| `sync-cresst` | Push local products in `data/<prefix>` to the matching S3 prefix (default `rca-advanced-qaqc/cresst`) |
 
 > **Before building `--qaqc-filter highest` products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
 
@@ -97,7 +97,7 @@ All variables are sampled on the upcast except `ph_seawater` and `pco2_seawater`
 
 ### Building the profiler product (`regrid-profiler`)
 
-Run from `data/`; outputs land in the current directory and logs in `logs/`. For `--qaqc-filter highest`, run the [annotation steps](#before-every-product-build) first.
+Run from the repo root; outputs land in `--output-dir` and logs in `logs/`. For `--qaqc-filter highest`, run the [annotation steps](#before-every-product-build) first.
 
 | Option | Effect | Filename suffix |
 |--------|--------|-----------------|
@@ -107,6 +107,7 @@ Run from `data/`; outputs land in the current directory and logs in `logs/`. For
 | `--qaqc-filter highest` | `basic` plus approved HITL ledger masks | `_qf49_HITL` |
 | `--ph-advanced` | Also mask pH where any advanced pH test failed ([details](#advanced-ph-qc)) | `_phadv` |
 | `--format zarr\|nc\|both` | Output format | extension |
+| `--output-dir DIR` | Where to write (default `data/cresst`) | — |
 
 ```bash
 # shallow profilers (~0–200 m)
@@ -175,17 +176,17 @@ Same working directory, prerequisites and QC options as the [profiler build](#bu
 
 ```bash
 # PC platforms (200 m)
-fixed-instruments slope_base --format both --qaqc-filter highest --ph-advanced
-fixed-instruments oregon_offshore --format both --qaqc-filter highest --ph-advanced
-fixed-instruments axial_base --format both --qaqc-filter highest --ph-advanced
+fixed-instruments slope_base --format both --qaqc-filter highest
+fixed-instruments oregon_offshore --format both --qaqc-filter highest
+fixed-instruments axial_base --format both --qaqc-filter highest
 
 # Oregon seafloor BEPs (CTD + pH; pCO₂ excluded pending offset review)
-fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter highest
-fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter highest
+fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter highest --ph-advanced
+fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter highest --ph-advanced
 
 # deep cabled seafloor BEPs (CTD only)
-fixed-instruments slope_base_seafloor --format both --qaqc-filter highest
-fixed-instruments axial_base_seafloor --format both --qaqc-filter highest
+fixed-instruments slope_base_seafloor --format both --qaqc-filter highest --ph-advanced
+fixed-instruments axial_base_seafloor --format both --qaqc-filter highest --ph-advanced
 
 # custom bin width or year range
 fixed-instruments axial_base --resample 30min --start-year 2020 --end-year 2024
@@ -331,19 +332,19 @@ axial_base_profiles_20150107_20260604_qf49_HITL_binned_24h.zarr
 ```
 
 ```bash
-bin-dataset data/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24
-bin-dataset data/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24 --format both
+bin-dataset data/cresst/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24
+bin-dataset data/cresst/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24 --format both
 ```
 
-Output is written to `data/binned/`. See `bin-dataset --help` for full options.
+Output is written next to the input file. See `bin-dataset --help` for full options.
 
 ## Syncing Products (`sync-cresst`)
 
-Push local products in `data/` up to an S3 prefix (default `rca-advanced-qaqc/cresst`, change with `--bucket`), matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
+Push local products in `data/<prefix>` up to the matching S3 prefix (default `rca-advanced-qaqc/cresst` from `data/cresst`; change with `--bucket`, override the local directory with `--data-dir`), matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
 
 ```bash
 sync-cresst                                   # preview the plan
 sync-cresst --apply                           # upload + remove superseded same-identity copies
 sync-cresst --apply --delete-remote-only-data # also delete bucket-only files
-sync-cresst --bucket my-bucket/cresst-test     # preview against another bucket/prefix
+sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca  # sync data/cresst-one-easy-rca
 ```

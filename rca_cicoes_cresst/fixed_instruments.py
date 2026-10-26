@@ -19,6 +19,7 @@ from loguru import logger
 from rca_cicoes_cresst.common import (
     ACTIVE_DICT,
     ANNOTATIONS_DIR,
+    OUTPUT_DIR,
     ARCHIVE_DICT,
     annotation_provenance,
     PRES_PARAMS,
@@ -280,6 +281,12 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
         "platforms and the archived shelf BEP); applied where present, skipped otherwise."
     ),
 )
+@click.option(
+    "--output-dir",
+    default=OUTPUT_DIR,
+    show_default=True,
+    help="Directory to write products to (one per S3 prefix under data/, e.g. data/cresst-one-easy-rca).",
+)
 def main(
     site: str,
     resample: str,
@@ -289,11 +296,11 @@ def main(
     qaqc_filter: str,
     annotations_dir: str,
     ph_advanced: bool,
+    output_dir: str,
 ) -> None:
     """Resample fixed-instrument data (PC platforms and seafloor BEPs) to a common time grid.
 
-    Output is saved to <site>_fixed_<start>_<end>_<freq>.<ext> in the current
-    directory.  Example: slope_base_fixed_20150101_20260630_1h_qf49_HITL.zarr
+    Output is saved to <output-dir>/<site>_fixed_<start>_<end>_<freq>.<ext>.  Example: slope_base_fixed_20150101_20260630_1h_qf49_HITL.zarr
     With --format both, saves zarr and nc versions with the same base name.
     """
     os.makedirs("logs", exist_ok=True)
@@ -316,9 +323,10 @@ def main(
     if annotations is not None:
         ds_fixed.attrs.update(annotation_provenance(subsite, annotations_dir))
 
+    os.makedirs(output_dir, exist_ok=True)
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = build_output_path(site, ds_fixed, resample, qaqc_filter, ph_advanced, f)
+        output_path = os.path.join(output_dir, build_output_path(site, ds_fixed, resample, qaqc_filter, ph_advanced, f))
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_fixed.to_zarr(output_path, mode="w")

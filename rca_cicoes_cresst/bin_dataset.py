@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-import os
 import xarray as xr
 import click
 from pathlib import Path
 from loguru import logger
-
-OUTPUT_DIR = "data/binned"
 
 
 def load_dataset(path: str) -> xr.Dataset:
@@ -16,9 +13,9 @@ def load_dataset(path: str) -> xr.Dataset:
 
 
 def build_output_path(input_path: str, bin_hours: float, ext: str) -> str:
-    stem = Path(input_path).stem
+    p = Path(input_path)
     label = f"{int(bin_hours)}h" if bin_hours == int(bin_hours) else f"{bin_hours}h"
-    return os.path.join(OUTPUT_DIR, f"{stem}_binned_{label}.{ext}")
+    return str(p.with_name(f"{p.stem}_binned_{label}.{ext}"))  # next to the input, like the S3 prefix
 
 
 @click.command()
@@ -47,7 +44,6 @@ def main(file: str, bin_hours: float, fmt: str) -> None:
     Example:
         bin-dataset axial_base_profiles.zarr --bin 24
     """
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
     logger.info(f"loading {file}")
     ds = load_dataset(file)
 

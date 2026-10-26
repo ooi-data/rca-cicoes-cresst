@@ -12,6 +12,7 @@ from tqdm.auto import tqdm
 from rca_cicoes_cresst.common import (
     ACTIVE_DICT,
     ANNOTATIONS_DIR,
+    OUTPUT_DIR,
     ARCHIVE_DICT,
     annotation_provenance,
     PRES_PARAMS,
@@ -253,6 +254,12 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: 
         "Also mask ph_seawater where any advanced pH QC test failed (flag string contains a 3)."
     ),
 )
+@click.option(
+    "--output-dir",
+    default=OUTPUT_DIR,
+    show_default=True,
+    help="Directory to write products to (one per S3 prefix under data/, e.g. data/cresst-one-easy-rca).",
+)
 def main(
     site: str,
     grid: tuple[float, float, float],
@@ -260,10 +267,11 @@ def main(
     qaqc_filter: str,
     annotations_dir: str,
     ph_advanced: bool,
+    output_dir: str,
 ) -> None:
     """Regrid RCA shallow profiler data to a uniform pressure grid.
 
-    Output is saved to <site>_profiles_<start>_<end>.<ext> in the current directory.
+    Output is saved to <output-dir>/<site>_profiles_<start>_<end>.<ext>.
     Example: oregon_offshore_profiles_20150101_20260508.zarr
     With --format both, saves zarr and nc versions with the same base name.
     """
@@ -289,9 +297,10 @@ def main(
     if annotations is not None:
         ds_profiles.attrs.update(annotation_provenance(subsite, annotations_dir))
 
+    os.makedirs(output_dir, exist_ok=True)
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = build_output_path(site, ds_profiles, qaqc_filter, ph_advanced, f)
+        output_path = os.path.join(output_dir, build_output_path(site, ds_profiles, qaqc_filter, ph_advanced, f))
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_profiles.to_zarr(output_path, mode="w")

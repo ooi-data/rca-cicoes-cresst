@@ -19,7 +19,7 @@ import click
 import s3fs
 from loguru import logger
 
-from rca_cicoes_cresst.common import fs as anon_fs  # anonymous, read-only
+from rca_cicoes_cresst.common import DATA_DIR, fs as anon_fs  # anonymous, read-only
 
 DEFAULT_BUCKET = "rca-advanced-qaqc/cresst"
 DATE_PAIR = re.compile(r"\d{8}_\d{8}")
@@ -34,21 +34,18 @@ def identity(basename: str) -> tuple[str, str] | None:
 
 
 def local_products(data_dir: Path) -> dict[str, list[tuple[Path, str, int]]]:
-    """identity -> [(path, end_date, size_bytes)], scanning data/ and data/binned/."""
+    """identity -> [(path, end_date, size_bytes)] in data_dir."""
     out: dict[str, list[tuple[Path, str, int]]] = {}
-    for d in (data_dir, data_dir / "binned"):
-        if not d.exists():
+    for p in data_dir.iterdir():
+        if not (p.name.endswith(".zarr") or p.name.endswith(".nc")):
             continue
-        for p in d.iterdir():
-            if not (p.name.endswith(".zarr") or p.name.endswith(".nc")):
-                continue
-            ident = identity(p.name)
-            if ident is None:
-                logger.warning(f"no date range in {p.name}, skipping")
-                continue
-            size = (p.stat().st_size if p.is_file()
-                    else sum(f.stat().st_size for f in p.rglob("*") if f.is_file()))
-            out.setdefault(ident[0], []).append((p, ident[1], size))
+        ident = identity(p.name)
+        if ident is None:
+            logger.warning(f"no date range in {p.name}, skipping")
+            continue
+        size = (p.stat().st_size if p.is_file()
+                else sum(f.stat().st_size for f in p.rglob("*") if f.is_file()))
+        out.setdefault(ident[0], []).append((p, ident[1], size))
     return out
 
 
@@ -77,15 +74,17 @@ def bucket_products(fs: s3fs.S3FileSystem, bucket: str) -> dict[str, list[tuple[
 
 
 @click.command()
-@click.option("--data-dir", default="data", show_default=True, help="Local product directory.")
+@click.option("--data-dir", default=None, help="Local product directory.  [default: data/<last part of --bucket>]")
 @click.option("--bucket", default=DEFAULT_BUCKET, show_default=True, help="Destination S3 bucket/prefix.")
 @click.option("--apply", "apply_", is_flag=True, help="Actually upload/delete (default is dry-run).")
 @click.option("--delete-remote-only-data", "delete_remote_only", is_flag=True,
               help="Also delete bucket files that have no local counterpart.")
-def main(data_dir: str, bucket: str, apply_: bool, delete_remote_only: bool) -> None:
+def main(data_dir: str | None, bucket: str, apply_: bool, delete_remote_only: bool) -> None:
     """Sync local data products up to an S3 bucket/prefix."""
     bucket = bucket.removeprefix("s3://").rstrip("/")
+    data_dir = data_dir or DATA_DIR / bucket.rsplit("/", 1)[-1]
     fs = read_fs(bucket)
+    logger.info(f"syncing {data_dir} -> {bucket}")
     local = local_products(Path(data_dir))
     remote = bucket_products(fs, bucket)
     write_fs = s3fs.S3FileSystem() if apply_ else None

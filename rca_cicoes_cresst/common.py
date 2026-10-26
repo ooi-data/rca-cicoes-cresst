@@ -100,6 +100,8 @@ def group_params_by_instrument(params: list[str], site_dict: dict[str, str]) -> 
 # repo-relative so the pipelines can run from data/ (see README)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ANNOTATIONS_DIR = str(REPO_ROOT / "annotations")
+DATA_DIR = REPO_ROOT / "data"  # one subdirectory per S3 prefix, e.g. data/cresst -> rca-advanced-qaqc/cresst
+OUTPUT_DIR = str(DATA_DIR / "cresst")
 ADJUSTMENTS_FILE = REPO_ROOT / "config" / "adjustments.csv"
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
