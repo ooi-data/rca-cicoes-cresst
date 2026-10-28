@@ -33,6 +33,7 @@ from rca_cicoes_cresst.common import (
     PARAM_TO_INSTRUMENT,
     content_hash,
     read_ledger,
+    read_preload,
 )
 from rca_cicoes_cresst.fixed_instruments import FIXED_SITES, PH_STITCH
 from rca_cicoes_cresst.harvest_annotations import SITES
@@ -41,7 +42,6 @@ from rca_cicoes_cresst.regrid_profiler import PROFILER_SITES
 load_dotenv()
 
 MODEL = "claude-haiku-4-5"
-PRELOAD_PARAMS = "https://raw.githubusercontent.com/oceanobservatories/preload-database/master/csv/ParameterDefs.csv"
 LEDGER_COLUMNS = ["id", "subsite", "decision", "parameters_affected", "parameters_source", "rationale",
                   "decided_by", "status", "reviewed_at", "content_hash"]
 
@@ -192,9 +192,8 @@ def main(subsites: tuple[str, ...], curate_all: bool, annotations_dir: str) -> N
 
     import anthropic
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    preload = pd.read_csv(PRELOAD_PARAMS, usecols=["id", "netcdf_name"])
-    preload = preload[preload["id"].astype(str).str.match(r"^PD\d+$")]
-    netcdf_names = dict(zip(preload["id"].str[2:].astype(int), preload["netcdf_name"]))
+    preload = read_preload()
+    netcdf_names = dict(zip(preload.index.str[2:].astype(int), preload["netcdf_name"]))
 
     rows = []
     for _, row in needs_review.iterrows():

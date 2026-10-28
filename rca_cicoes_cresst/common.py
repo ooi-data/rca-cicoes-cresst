@@ -1,6 +1,8 @@
 """Shared loading, QAQC, and annotation-masking logic for RCA data pipelines."""
 import ast
 import hashlib
+import json
+from functools import cache
 from pathlib import Path
 
 import numpy as np
@@ -108,9 +110,13 @@ LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"
 HARVEST_MAX_AGE_DAYS = 30
 
-# The shelf PHSENH (reports ph_total from its own CTD salinity) replaced PHSEND103 here;
-# before this date the stitched pH is PHSEND, which is insensitive to salinity.
-SHELF_PHSENH_START = pd.Timestamp("2025-08-28", tz="UTC")
+PRELOAD_PARAMS = "https://raw.githubusercontent.com/oceanobservatories/preload-database/master/csv/ParameterDefs.csv"
+# computed from salinity per preload, but too weakly to inherit a salinity mask
+# (sensitivities in docs/parameter_dependencies.md)
+SALINITY_INSENSITIVE = {"ph_seawater", "optical_backscatter"}
+# ph_total is masked through its ph_seawater alias, which also holds PHSEN pH (insensitive), so
+# it inherits only where and when a PHSENH supplies the pH: the shelf, after it replaced PHSEND103
+PHSENH_START = {"LJ01D": pd.Timestamp("2025-08-28", tz="UTC")}
 
 
 def content_hash(row: pd.Series) -> str:
@@ -120,15 +126,51 @@ def content_hash(row: pd.Series) -> str:
     return hashlib.sha1(key.encode()).hexdigest()[:10]
 
 
+@cache
+def read_preload() -> pd.DataFrame:
+    """Preload ParameterDefs.csv, indexed by parameter id (PD###)."""
+    p = pd.read_csv(PRELOAD_PARAMS)
+    return p[p["id"].astype(str).str.match(r"^PD\d+$")].set_index("id")
+
+
+def upstream_dpis(p: pd.DataFrame, pd_id: str, seen: set[str] | None = None) -> set[str]:
+    """Data products (DPIs) a parameter is computed from, following its parameterfunctionmap."""
+    seen = set() if seen is None else seen
+    if pd_id in seen or pd.isna(p.at[pd_id, "parameterfunctionmap"]):
+        return set()
+    seen.add(pd_id)
+    dpis = set()
+    for value in json.loads(p.at[pd_id, "parameterfunctionmap"]).values():
+        for x in value if isinstance(value, list) else [value]:
+            if isinstance(x, str) and x.startswith("dpi_"):
+                dpis.add(x.removeprefix("dpi_"))
+            elif isinstance(x, str) and x in p.index:
+                if pd.notna(p.at[x, "dataproductidentifier"]):
+                    dpis.add(p.at[x, "dataproductidentifier"])
+                dpis |= upstream_dpis(p, x, seen)
+    return dpis
+
+
+@cache
+def salinity_dependents() -> frozenset[str]:
+    """Variables OOI computes from practical salinity (PRACSAL_L2), less SALINITY_INSENSITIVE."""
+    p = read_preload()
+    rows = p[p["netcdf_name"].isin(PARAM_TO_INSTRUMENT)]
+    deps = {r["netcdf_name"] for pd_id, r in rows.iterrows() if "PRACSAL_L2" in upstream_dpis(p, pd_id)}
+    return frozenset(deps - SALINITY_INSENSITIVE - {"sea_water_practical_salinity"})
+
+
 def inherit_params(params: set[str], node, end) -> set[str]:
-    """Add products OOI computes from a CTD's practical salinity (see docs/parameter_dependencies.md)."""
+    """Add products OOI computes from a masked CTD salinity (see docs/parameter_dependencies.md).
+
+    Applies node-wide; a product absent from the node masks nothing.
+    """
     params = set(params)
     if "sea_water_practical_salinity" in params:
-        params.add("corrected_dissolved_oxygen")
-        if str(node).startswith("SF"):
-            params.add("salinity_corrected_nitrate")
-        if node == "LJ01D" and (pd.isna(end) or end > SHELF_PHSENH_START):
-            params.add("ph_total")
+        params |= salinity_dependents()
+        start = PHSENH_START.get(node)
+        if start is None or not (pd.isna(end) or end > start):
+            params.discard("ph_total")
     return params
 
 
