@@ -34,10 +34,9 @@ from rca_cicoes_cresst.common import (
     content_hash,
     read_ledger,
     read_preload,
+    read_sites,
 )
-from rca_cicoes_cresst.fixed_instruments import FIXED_SITES, PH_STITCH
 from rca_cicoes_cresst.harvest_annotations import SITES
-from rca_cicoes_cresst.regrid_profiler import PROFILER_SITES
 
 load_dotenv()
 
@@ -46,9 +45,7 @@ LEDGER_COLUMNS = ["id", "subsite", "decision", "parameters_affected", "parameter
                   "decided_by", "status", "reviewed_at", "content_hash"]
 
 # refdes (subsite-node-sensor) of every instrument feeding a product
-PRODUCT_REFDES = {
-    r for sites in (PROFILER_SITES, FIXED_SITES) for site in sites.values() for r in site.values()
-} | set(PH_STITCH.values())
+PRODUCT_REFDES = set(read_sites()["refdes"]) | set(read_sites()["stitch_from"].dropna())
 
 INSTRUMENT_TO_PARAMS: dict[str, list[str]] = {
     "ctd":       ["sea_water_temperature", "sea_water_practical_salinity",

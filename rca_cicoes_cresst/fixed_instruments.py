@@ -32,48 +32,13 @@ from rca_cicoes_cresst.common import (
     mask_annotation_windows,
     mask_ph_advanced,
     mask_qartod,
+    product_sites,
     qc_steps,
+    read_sites,
     qc_suffix,
 )
 
-# PC = 200 m platform on the shallow profiler mooring; BEP = seafloor benthic
-# experiment package. Both are fixed-depth. The deep RS seafloor BEPs carry
-# only a CTD (with integrated optode); the CE BEPs add pH and pCO2.
-FIXED_SITES: dict[str, dict[str, str]] = {
-    "oregon_offshore": {
-        "ctd":    "CE04OSPS-PC01B-4A-CTDPFA109",
-        "ph":     "CE04OSPS-PC01B-4B-PHSENA106",
-        "pco2":   "CE04OSPS-PC01B-4D-PCO2WA105",
-    },
-    "slope_base": {
-        "ctd":    "RS01SBPS-PC01A-4A-CTDPFA103",
-        "ph":     "RS01SBPS-PC01A-4B-PHSENA102",
-        "fluoro": "RS01SBPS-PC01A-4C-FLORDD103",
-    },
-    "axial_base": {
-        "ctd":    "RS03AXPS-PC03A-4A-CTDPFA303",
-        "ph":     "RS03AXPS-PC03A-4B-PHSENA302",
-        "fluoro": "RS03AXPS-PC03A-4C-FLORDD303",
-    },
-    "oregon_offshore_seafloor": {
-        "ctd":    "CE04OSBP-LJ01C-06-CTDBPO108",
-        "ph":     "CE04OSBP-LJ01C-10-PHSEND107",
-        # pco2 CE04OSBP-LJ01C-09-PCO2WB104 excluded: pCO2 requires offsetting and
-        # SME review prior to inclusion in this curated product (2026-08-03).
-    },
-    "oregon_shelf_seafloor": {
-        "ctd":    "CE02SHBP-LJ01D-06-CTDBPN106",
-        "ph":     "CE02SHBP-LJ01D-10-PHSENH110",  # reports ph_total, not ph_seawater
-        # pco2 CE02SHBP-LJ01D-09-PCO2WB103 excluded: pCO2 requires offsetting and
-        # SME review prior to inclusion in this curated product (2026-08-03).
-    },
-    "slope_base_seafloor": {  # deep BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
-        "ctd":    "RS01SLBS-LJ01A-12-CTDPFB101",
-    },
-    "axial_base_seafloor": {  # deep BEP; CTD-only in this product (also has OPTAA/ADCP/HPIES)
-        "ctd":    "RS03AXBS-LJ03A-12-CTDPFB301",
-    },
-}
+FIXED_SITES = product_sites("fixed")
 
 DEFAULT_PARAMS: list[str] = [
     "sea_water_temperature",
@@ -88,15 +53,8 @@ DEFAULT_PARAMS: list[str] = [
     "optical_backscatter",
 ]
 
-# Sites whose current pH sensor superseded an older one at the same node, whose
-# archived record is concatenated ahead of the active sensor to extend the pH
-# series. Value is the OLD reference designator
-# SCALE NOTE: the old PHSEND sensors report ph_seawater (seawater/free scale)
-# and the current PHSENH reports ph_total (total scale). Per science lead
-# (2026-08-03) the two are concatenated WITHOUT scale conversion
-PH_STITCH: dict[str, str] = {
-    "oregon_shelf_seafloor": "CE02SHBP-LJ01D-10-PHSEND103",
-}
+# site -> archived pH sensor concatenated ahead of the active one (stitch_from in config/sites.csv)
+PH_STITCH = read_sites().query("product == 'fixed'").dropna(subset=["stitch_from"]).set_index("site")["stitch_from"].to_dict()
 
 
 def stitch_archived_ph(

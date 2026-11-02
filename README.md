@@ -43,6 +43,8 @@ A multi-instrument, pressure-gridded dataset derived from RCA profiler mooring d
 
 ### Sites
 
+Instruments per site are set in [`config/sites.csv`](config/sites.csv); every refdes there must be in the rca-data-tools params.
+
 #### Shallow Profilers
 
 Science pod winched through the upper water column. ~9 profiles/day.
@@ -151,6 +153,8 @@ See `regrid-profiler --help` for full options.
 Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + HITL ledger masking, plus optional advanced pH masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
 
 ### Sites and Instruments
+
+Instruments per site are set in [`config/sites.csv`](config/sites.csv); every refdes there must be in the rca-data-tools params.
 
 | Key | Platform | Depth | CTD (T/S/ρ/DO) | pH | pCO₂ | Fluorometer |
 |-----|----------|-------|-----|----|------|-------------|

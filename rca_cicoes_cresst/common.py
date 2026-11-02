@@ -105,6 +105,7 @@ ANNOTATIONS_DIR = str(REPO_ROOT / "annotations")
 DATA_DIR = REPO_ROOT / "data"  # one subdirectory per S3 prefix, e.g. data/cresst -> rca-advanced-qaqc/cresst
 OUTPUT_DIR = str(DATA_DIR / "cresst")
 ADJUSTMENTS_FILE = REPO_ROOT / "config" / "adjustments.csv"
+SITES_FILE = REPO_ROOT / "config" / "sites.csv"
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"
@@ -131,6 +132,21 @@ def read_preload() -> pd.DataFrame:
     """Preload ParameterDefs.csv, indexed by parameter id (PD###)."""
     p = pd.read_csv(PRELOAD_PARAMS)
     return p[p["id"].astype(str).str.match(r"^PD\d+$")].set_index("id")
+
+
+@cache
+def read_sites() -> pd.DataFrame:
+    """config/sites.csv: instruments feeding each product."""
+    s = pd.read_csv(SITES_FILE, comment="#")
+    missing = (set(s["refdes"]) | set(s["stitch_from"].dropna())) - set(ACTIVE_DICT) - set(ARCHIVE_DICT)
+    assert not missing, f"not in rca-data-tools params: {missing}"
+    return s
+
+
+def product_sites(product: str) -> dict[str, dict[str, str]]:
+    """site -> {instrument: refdes} for product 'profiler' or 'fixed'."""
+    s = read_sites().query("product == @product")
+    return {site: dict(zip(g["instrument"], g["refdes"])) for site, g in s.groupby("site", sort=False)}
 
 
 def upstream_dpis(p: pd.DataFrame, pd_id: str, seen: set[str] | None = None) -> set[str]:

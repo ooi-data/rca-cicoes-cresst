@@ -18,24 +18,14 @@ import requests
 from dotenv import load_dotenv
 from loguru import logger
 
-from rca_cicoes_cresst.common import ANNOTATIONS_DIR, HARVEST_MANIFEST, RAW_DIR
+from rca_cicoes_cresst.common import ANNOTATIONS_DIR, HARVEST_MANIFEST, RAW_DIR, read_sites
 
 load_dotenv()
 
 ANNOTATIONS_ENDPOINT = "https://ooinet.oceanobservatories.org/api/m2m/12580/anno/find"
 
-SITES: dict[str, str] = {
-    "oregon_offshore":      "CE04OSPS",
-    "oregon_offshore_deep": "CE04OSPD",
-    "slope_base":           "RS01SBPS",
-    "slope_base_deep":      "RS01SBPD",
-    "axial_base":           "RS03AXPS",
-    "axial_base_deep":      "RS03AXPD",
-    "oregon_offshore_seafloor": "CE04OSBP",
-    "oregon_shelf_seafloor":    "CE02SHBP",
-    "slope_base_seafloor":      "RS01SLBS",
-    "axial_base_seafloor":      "RS03AXBS",
-}
+# site key -> subsite, for every product site
+SITES: dict[str, str] = read_sites().drop_duplicates("site").set_index("site")["refdes"].str[:8].to_dict()
 
 
 def record_harvest(subsite: str, n: int, out_dir: Path) -> None:

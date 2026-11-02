@@ -25,48 +25,12 @@ from rca_cicoes_cresst.common import (
     mask_annotation_windows,
     mask_ph_advanced,
     mask_qartod,
+    product_sites,
     qc_steps,
     qc_suffix,
 )
 
-PROFILER_SITES: dict[str, dict[str, str]] = {
-    "oregon_offshore": {
-        "ctd":       "CE04OSPS-SF01B-2A-CTDPFA107",
-        "ph":        "CE04OSPS-SF01B-2B-PHSENA108",
-        "pco2":      "CE04OSPS-SF01B-4F-PCO2WA102",
-        "nutrients": "CE04OSPS-SF01B-4A-NUTNRA102",
-    },
-    "slope_base": {
-        "ctd":       "RS01SBPS-SF01A-2A-CTDPFA102",
-        "ph":        "RS01SBPS-SF01A-2D-PHSENA101",
-        "pco2":      "RS01SBPS-SF01A-4F-PCO2WA101",
-        "nutrients": "RS01SBPS-SF01A-4A-NUTNRA101",
-    },
-    "axial_base": {
-        "ctd":       "RS03AXPS-SF03A-2A-CTDPFA302",
-        "ph":        "RS03AXPS-SF03A-2D-PHSENA301",
-        "pco2":      "RS03AXPS-SF03A-4F-PCO2WA301",
-        "nutrients": "RS03AXPS-SF03A-4A-NUTNRA301",
-    },
-    "oregon_offshore_deep": {
-        "ctd":    "CE04OSPD-DP01B-01-CTDPFL105",
-        "o2":     "CE04OSPD-DP01B-06-DOSTAD105",
-        "fluoro": "CE04OSPD-DP01B-04-FLNTUA103",
-        "cdom":   "CE04OSPD-DP01B-03-FLCDRA103",
-    },
-    "slope_base_deep": {
-        "ctd":    "RS01SBPD-DP01A-01-CTDPFL104",
-        "o2":     "RS01SBPD-DP01A-06-DOSTAD104",
-        "fluoro": "RS01SBPD-DP01A-04-FLNTUA102",
-        "cdom":   "RS01SBPD-DP01A-03-FLCDRA102",
-    },
-    "axial_base_deep": {
-        "ctd":    "RS03AXPD-DP03A-01-CTDPFL304",
-        "o2":     "RS03AXPD-DP03A-06-DOSTAD304",
-        "fluoro": "RS03AXPD-DP03A-03-FLNTUA302",
-        "cdom":   "RS03AXPD-DP03A-03-FLCDRA302",
-    },
-}
+PROFILER_SITES = product_sites("profiler")
 
 DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
 
@@ -95,13 +59,8 @@ def load_regridding_inputs(
     site_dict: dict[str, str],
     params: list[str],
     sites_lookup: dict,
-    end_year: int | None = None,
     ph_advanced: bool = False,
 ) -> tuple[list[dict], pd.DataFrame]:
-    now = datetime.now(timezone.utc)
-    current_year = now.year
-    years = list(range(START_YEAR, (end_year or current_year) + 1))
-
     site = site_dict["ctd"][:8]
 
     instrument_params = group_params_by_instrument(params, site_dict)
@@ -124,8 +83,9 @@ def load_regridding_inputs(
         })
 
     logger.info("loading profile indices")
+    last_year = max(int(d["ds"].time.max().dt.year) for d in instrument_datasets)
     frames = []
-    for year in years:
+    for year in range(START_YEAR, last_year + 1):
         try:
             frames.append(pd.read_csv(
                 f"https://raw.githubusercontent.com/OOI-CabledArray/profileIndices/refs/heads/main/{site}_profiles_{year}.csv"
@@ -284,9 +244,8 @@ def main(
     site_dict = PROFILER_SITES[site]
     profile_type = "deep" if site.endswith("_deep") else "shallow"
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
-    end_year = 2025 if profile_type == "deep" else None
     instrument_datasets, indices = load_regridding_inputs(
-        site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, end_year=end_year, ph_advanced=ph_advanced
+        site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, ph_advanced=ph_advanced
     )
 
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
