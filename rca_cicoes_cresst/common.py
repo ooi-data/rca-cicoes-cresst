@@ -2,11 +2,13 @@
 import ast
 import hashlib
 import json
+import subprocess
 from functools import cache
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import requests
 import s3fs
 import xarray as xr
 from loguru import logger
@@ -68,10 +70,15 @@ PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
 # ph_total annotations must match the unified ph_seawater variable.
 PARAM_ALIASES: dict[str, str] = {"ph_total": "ph_seawater"}
 
-QARTOD_EXCLUDE: dict[str, set[int]] = {
-    "basic":    {4, 9},
-    "highest":  {4, 9},
-}
+# QC levels (science lead, 2026-11-04), cumulative: each applies every step of the levels before it.
+#   ooi:                 OOI values as served, only gridded or resampled
+#   qartod:              + QARTOD masks
+#   hitl:                + config/adjustments.csv, HITL ledger masks, salinity inheritance
+#   advanced:            + advanced flags (pH so far; fixed products only)
+#   deploymentcorrected: + per-deployment discrete-sample corrections (calibrationPipeline), provisional
+QC_LEVELS = ("ooi", "qartod", "hitl", "advanced", "deploymentcorrected")
+QARTOD_EXCLUDE = {4, 9}  # fail, missing
+SPEC_VERSION = "0.2"  # docs/spec.md
 
 QARTOD_LABELS = {1: "pass", 2: "not_evaluated", 3: "suspect", 4: "fail", 9: "missing"}
 
@@ -106,6 +113,16 @@ DATA_DIR = REPO_ROOT / "data"  # one subdirectory per S3 prefix, e.g. data/cress
 OUTPUT_DIR = str(DATA_DIR / "cresst")
 ADJUSTMENTS_FILE = REPO_ROOT / "config" / "adjustments.csv"
 SITES_FILE = REPO_ROOT / "config" / "sites.csv"
+
+# Discrete-sample calibrations (OOI-CabledArray/calibrationPipeline), pinned. Ready per Ada
+# (2026-11-02): shallow-profiler salinity and oxygen. Nitrate and fixed instruments in progress.
+CALIBRATION_COMMIT = "a02841bcfd6d87d16470f5e498c198ec7088cfb6"
+CALIBRATION_URL = (
+    "https://raw.githubusercontent.com/OOI-CabledArray/calibrationPipeline/"
+    f"{CALIBRATION_COMMIT}/outputs/deployments.json"
+)
+CALIBRATION_VARIABLES = {"salinity": "sea_water_practical_salinity", "oxygen": "corrected_dissolved_oxygen"}
+CALIBRATION_MAX_STATUS = 3  # provisional: worst status level (1 good to 4 not recommended) applied
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"
@@ -240,6 +257,7 @@ def load_annotations(subsite: str, nodes: set[str] | None = None, annotations_di
     if unknown:
         logger.warning(f"ledger names unknown parameters (typo?), they mask nothing: {sorted(unknown)}")
     annotations = raw[raw["id"].isin(masks.index)].copy()
+    annotations["parameters_direct"] = [sorted(ast.literal_eval(masks.at[i, "parameters_affected"])) for i in annotations["id"]]
     annotations["parameters_affected"] = [
         sorted(inherit_params(ast.literal_eval(masks.at[i, "parameters_affected"]), node, end))
         for i, node, end in zip(annotations["id"], annotations["node"], annotations["endDT"])
@@ -254,12 +272,33 @@ def annotation_provenance(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) 
     return {"hitl_annotations_harvested": str(harvest_time(subsite, annotations_dir)), "hitl_ledger_sha1": ledger_sha}
 
 
+def iso_utc(ts: pd.Timestamp) -> str | None:
+    return None if pd.isna(ts) else ts.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def hitl_mask_entry(row: pd.Series, param: str, sensors: set[str]) -> dict:
+    """R25 record of one annotation masking one variable, with the rule that carried it there."""
+    rules = []
+    if pd.isna(row["sensor"]) or row["sensor"] not in sensors:
+        rules.append("R19")  # node- or site-wide wildcard, or another sensor at the node
+    if param not in {PARAM_ALIASES.get(p, p) for p in row["parameters_direct"]}:
+        rules.append("R20")  # added by salinity inheritance
+    return {"annotation_id": int(row["id"]), "begin": iso_utc(row["beginDT"]), "end": iso_utc(row["endDT"]),
+            "via": "+".join(rules) or "direct"}
+
+
 def mask_annotation_windows(
     ds: xr.Dataset,
     params: list[str],
     annotations: pd.DataFrame,
+    sensors: set[str] = frozenset(),
+    applied: dict | None = None,
 ) -> xr.Dataset:
-    """NaN out affected parameters in a raw time-series for each annotation window."""
+    """NaN out affected parameters in a raw time-series for each annotation window.
+    Records each annotation that matched in `applied` (variable -> {annotation id: entry}, R25);
+    `sensors` are the instrument's sensor codes (e.g. 2A-CTDPFA102)."""
+    if ds.sizes["time"] == 0:
+        return ds
     combined_mask = xr.zeros_like(ds.time, dtype=bool)
 
     for _, row in annotations.iterrows():
@@ -280,6 +319,8 @@ def mask_annotation_windows(
 
         for param in overlap:
             ds[param] = ds[param].where(~in_window)
+            if applied is not None:
+                applied.setdefault(param, {})[int(row["id"])] = hitl_mask_entry(row, param, sensors)
 
         logger.info(
             f"annotation id={row['id']}: masked {int(in_window.sum())} time points "
@@ -300,7 +341,8 @@ def mask_ph_advanced(ds: xr.Dataset, ph_stream: str) -> xr.Dataset:
 
     Loads the precomputed advanced_qc_flags for this pH stream from the
     rca-advanced-qaqc bucket, aligns to ds by time, and masks any point whose
-    flag string contains a 3 (failed test). Points with no matching flag are kept.
+    flag string contains a 3 (failed test). Only 3 masks: any other code is kept, as are
+    points with no matching flag.
     """
     if "ph_seawater" not in ds:
         return ds
@@ -357,6 +399,50 @@ def apply_adjustments(ds: xr.Dataset, refdes: str) -> xr.Dataset:
     return ds
 
 
+@cache
+def read_calibrations() -> pd.DataFrame:
+    """Per-deployment discrete-sample corrections from calibrationPipeline: one row per product
+    refdes, variable and deployment, with kind (offset: add, scale: multiply), value and status
+    level (1 good to 4 not recommended)."""
+    cal = requests.get(CALIBRATION_URL).json()
+    # oxygen is calibrated on the DOFSTA refdes but served in the CTD stream on the same port
+    ctd = {r.rsplit("-", 1)[0]: r for r in read_sites()["refdes"] if "-CTD" in r}
+    rows = []
+    for inst in cal["instruments"]:
+        if inst["variable"] not in CALIBRATION_VARIABLES:
+            continue
+        for d in filter(lambda d: d["calibrated"], inst["deployments"]):
+            gain = (d["function_offset"] or {}).get("gain")
+            rows.append({
+                "refdes": ctd.get(inst["refdes"].rsplit("-", 1)[0], inst["refdes"]),
+                "variable": CALIBRATION_VARIABLES[inst["variable"]],
+                "deployment": d["deployment"],
+                "kind": "offset" if gain is None else "scale",
+                "value": d["flat_offset"]["value"] if gain is None else gain,
+                "status": d["status"]["level"],
+                "record_id": d["record_id"],
+            })
+    return pd.DataFrame(rows)
+
+
+def apply_calibrations(ds: xr.Dataset, refdes: str, max_status: int) -> xr.Dataset:
+    """Apply read_calibrations rows for this instrument, matched on the stream's deployment number.
+    Deployments rated above max_status stay uncorrected. Runs on the raw stream, after adjustments."""
+    cal = read_calibrations()
+    for row in cal[(cal["refdes"] == refdes) & (cal["status"] <= max_status)].itertuples():
+        if row.variable not in ds:
+            continue
+        var = ds[row.variable]
+        corrected = var + row.value if row.kind == "offset" else var * row.value
+        ds[row.variable] = var.where(ds["deployment"] != row.deployment, corrected)
+        note = f"deployment {row.deployment}: {row.kind} {row.value} (status {row.status}, {row.record_id})"
+        ds[row.variable].attrs["calibrations"] = "; ".join(filter(None, [var.attrs.get("calibrations"), note]))
+        logger.info(f"{refdes} {row.variable} calibration, {note}")
+    if "sea_water_practical_salinity" in cal[cal["refdes"] == refdes]["variable"].values:
+        logger.warning(f"{refdes}: sea_water_density not recomputed from calibrated salinity")  # TODO: gsw
+    return ds
+
+
 def mask_qartod(ds: xr.Dataset, params: list[str], exclude_flags: set[int]) -> xr.Dataset:
     """NaN each parameter where its own QARTOD flag is in exclude_flags, then drop the flag variables."""
     flag_vars = [f"{p}_qartod_results" for p in params if f"{p}_qartod_results" in ds]
@@ -370,26 +456,66 @@ def mask_qartod(ds: xr.Dataset, params: list[str], exclude_flags: set[int]) -> x
     return ds.drop_vars(flag_vars)
 
 
-def qc_steps(qaqc_filter: str, ph_advanced: bool) -> str:
-    """The QC steps both pipelines apply, in order, for the product's attrs."""
-    steps = ["adjustments: config/adjustments.csv (mask/substitute/offset windows)"]
-    if ph_advanced:
-        steps.append("advanced pH: ph_seawater masked where any advanced test failed")
-    if qaqc_filter == "highest":
+def qc_at(level: str, step_level: str) -> bool:
+    """Whether a product at `level` includes the steps introduced at `step_level`."""
+    return QC_LEVELS.index(level) >= QC_LEVELS.index(step_level)
+
+
+def stream_qc(ds: xr.Dataset, refdes: str, stream_name: str, level: str, advanced_ph: bool = True) -> xr.Dataset:
+    """QC steps that run on each raw stream before slicing: adjustments, deployment corrections,
+    advanced pH. Value changes run before masks; the level only decides which steps run."""
+    if qc_at(level, "hitl"):
+        ds = apply_adjustments(ds, refdes)
+    if qc_at(level, "deploymentcorrected"):
+        ds = apply_calibrations(ds, refdes, CALIBRATION_MAX_STATUS)
+    if qc_at(level, "advanced") and advanced_ph:
+        ds = mask_ph_advanced(ds, stream_name)
+    return ds
+
+
+def qc_steps(level: str, advanced_ph: bool = True) -> str:
+    """The QC steps both pipelines apply at this level, in order, for the product's attrs."""
+    steps = []
+    if qc_at(level, "hitl"):
+        steps.append("adjustments: config/adjustments.csv (mask/substitute/offset windows)")
+    if qc_at(level, "deploymentcorrected"):
+        steps.append(f"deployment corrections: calibrationPipeline {CALIBRATION_COMMIT[:7]} per-deployment "
+                     f"offsets and gains, status <= {CALIBRATION_MAX_STATUS}")
+    if qc_at(level, "advanced"):
+        steps.append("advanced pH: ph_seawater masked where any advanced test failed (3)" if advanced_ph
+                     else "advanced pH: not applied to profiler products")
+    if qc_at(level, "hitl"):
         steps.append("HITL: approved annotations/ledger.csv masks, plus CTD-salinity inheritance")
-    if qaqc_filter in QARTOD_EXCLUDE:
-        steps.append(f"QARTOD: each variable masked where its flag is in {sorted(QARTOD_EXCLUDE[qaqc_filter])}")
-    return " | ".join(f"{i}. {s}" for i, s in enumerate(steps, 1))
+    if qc_at(level, "qartod"):
+        steps.append(f"QARTOD: each variable masked where its flag is in {sorted(QARTOD_EXCLUDE)}")
+    return " | ".join(f"{i}. {s}" for i, s in enumerate(steps, 1)) or "none: OOI values as served"
 
 
-def qc_suffix(qaqc_filter: str, ph_advanced: bool = False) -> str:
-    """Filename suffix encoding the QAQC level, e.g. '_qf49_HITL'."""
-    suffix = ""
-    if qaqc_filter in QARTOD_EXCLUDE:
-        flags = "".join(str(f) for f in sorted(QARTOD_EXCLUDE[qaqc_filter]))
-        suffix = f"_qf{flags}"
-    if qaqc_filter == "highest":
-        suffix += "_HITL"
-    if ph_advanced:
-        suffix += "_phadv"
-    return suffix
+def hitl_mask_attrs(ds: xr.Dataset, instrument_datasets: list[dict]) -> xr.Dataset:
+    """Set every variable's hitl_masks attribute (R25) from the masks recorded while building."""
+    applied: dict[str, dict] = {}
+    for instr in instrument_datasets:
+        for var, entries in instr["hitl_masks"].items():
+            applied.setdefault(var, {}).update(entries)
+    for var in ds.data_vars:
+        entries = sorted(applied.get(var, {}).values(), key=lambda e: (e["begin"], e["annotation_id"]))
+        ds[var].attrs["hitl_masks"] = json.dumps(entries)
+    return ds
+
+
+def git_commit() -> str:
+    """HEAD of this repository, with -dirty if tracked files have uncommitted changes."""
+    def git(*args: str) -> str:
+        return subprocess.run(["git", "-C", str(REPO_ROOT), *args], capture_output=True, text=True).stdout.strip()
+    return git("rev-parse", "HEAD") + ("-dirty" if git("status", "--porcelain", "--untracked-files=no") else "")
+
+
+def product_attrs(level: str, advanced_ph: bool = True) -> dict[str, str]:
+    """Global attrs every product gets at build time (R29; release is added by release-cresst)."""
+    return {"qc_level": level, "qc_steps": qc_steps(level, advanced_ph), "spec_version": SPEC_VERSION,
+            "git_commit": git_commit()}
+
+
+def qc_suffix(level: str) -> str:
+    """Filename suffix naming the QC level, e.g. '_hitl'."""
+    return f"_{level}"

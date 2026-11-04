@@ -15,7 +15,7 @@ Per OOI's stream_engine and ooi-data-explorations code; no published spec exists
 
 ## Curation rules
 - Decisions live in `annotations/ledger.csv` (one row per annotation id: mask / ignore /
-  superseded). Before building `--qaqc-filter highest` products: `harvest-annotations --all`,
+  superseded). Before building `hitl` or higher products: `harvest-annotations --all`,
   `curate-annotations --all` (proposes rows for new or OOI-edited ids), review, approve.
   Windows always come from the latest harvest; never edit decisions' windows by hand.
 - Official `parameters`, when present, take precedence over LLM `parameters_affected`.

@@ -3,11 +3,14 @@
 
 Products are matched by *identity* — the filename with its <start>_<end> date
 pair stripped — so a local file supersedes its bucket counterpart across date
-ranges while keeping QAQC variants (_HITL, _phadv, _binned_Nh, ...) distinct.
+ranges while keeping QC levels (_hitl, _advanced, ...) and _binned_Nh variants distinct.
 
 Local supersedes the bucket when its end date is newer, or (same end date) its
 size differs (a same-range re-QAQC). On upload, older-end-date copies of the
 same identity are removed. Nothing else in the bucket is touched.
+
+With --release vYYYY.MM, uploads <data-dir>/releases/vYYYY.MM (from release-cresst) instead,
+then catalog.json and CHANGELOG.md. A release already in the bucket is never overwritten (spec R28).
 
 Dry-run by default; pass --apply to write. Writing needs AWS credentials; listing
 is anonymous for public buckets and falls back to credentials for private ones.
@@ -73,17 +76,41 @@ def bucket_products(fs: s3fs.S3FileSystem, bucket: str) -> dict[str, list[tuple[
     return out
 
 
+def sync_release(data_dir: Path, bucket: str, release: str, fs: s3fs.S3FileSystem, apply_: bool) -> None:
+    """Upload one packaged release, then the catalog and changelog that point to it."""
+    local = data_dir / "releases" / release
+    if not local.is_dir():
+        raise click.ClickException(f"{local} not found; package it with release-cresst first")
+    target = f"{bucket}/releases/{release}"
+    if fs.exists(target):
+        raise click.ClickException(f"{target} already exists; releases are never changed")
+    uploads = [(p, f"{target}/{p.name}") for p in sorted(local.iterdir())]
+    uploads += [(data_dir / name, f"{bucket}/{name}") for name in ("catalog.json", "CHANGELOG.md")]
+    for path, dest in uploads:
+        logger.info(f"UPLOAD  {path.relative_to(data_dir)} -> {dest}")
+    if not apply_:
+        logger.info("dry-run; re-run with --apply to execute")
+        return
+    write_fs = s3fs.S3FileSystem()
+    for path, dest in uploads:
+        write_fs.put(str(path), dest, recursive=path.is_dir())
+    logger.info("done")
+
+
 @click.command()
 @click.option("--data-dir", default=None, help="Local product directory.  [default: data/<last part of --bucket>]")
 @click.option("--bucket", default=DEFAULT_BUCKET, show_default=True, help="Destination S3 bucket/prefix.")
 @click.option("--apply", "apply_", is_flag=True, help="Actually upload/delete (default is dry-run).")
 @click.option("--delete-remote-only-data", "delete_remote_only", is_flag=True,
               help="Also delete bucket files that have no local counterpart.")
-def main(data_dir: str | None, bucket: str, apply_: bool, delete_remote_only: bool) -> None:
+@click.option("--release", default=None, metavar="vYYYY.MM", help="Upload this packaged release instead.")
+def main(data_dir: str | None, bucket: str, apply_: bool, delete_remote_only: bool, release: str | None) -> None:
     """Sync local data products up to an S3 bucket/prefix."""
     bucket = bucket.removeprefix("s3://").rstrip("/")
     data_dir = data_dir or DATA_DIR / bucket.rsplit("/", 1)[-1]
     fs = read_fs(bucket)
+    if release:
+        return sync_release(Path(data_dir), bucket, release, fs, apply_)
     logger.info(f"syncing {data_dir} -> {bucket}")
     local = local_products(Path(data_dir))
     remote = bucket_products(fs, bucket)

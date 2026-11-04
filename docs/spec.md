@@ -1,9 +1,9 @@
 # RCA-CRESST Data Products: Product Specification
 
-**Version 0.1 (draft), 2026-10-28.** Describes the products as built on 2026-10-23 and published to
-`s3://rca-advanced-qaqc/cresst-one-easy-rca/`. Rules are numbered (R1, R2, …) so they can be
-cited, and each is meant to become a test. Nothing in this version is guaranteed between
-releases yet (see [Versioning](#10-versioning-and-release)).
+**Version 0.2 (draft), 2026-11-04.** Describes the products published as versioned releases under
+`s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/` (section 10). Rules are numbered (R1, R2, …)
+so they can be cited, and each is meant to become a test. Version 0.1 (2026-10-28) described the
+2026-10-23 build, published as release `v2026.10`.
 
 ## 1. Purpose and audience
 
@@ -17,13 +17,14 @@ flag. These products are a curated, gridded layer on top of it.
 
 ## 2. Products
 
-| Product | What it is | Files |
-|---|---|---|
-| Profiler profiles | Each profiler cast interpolated onto a fixed pressure grid | 6 sites |
-| Profiler daily bins | Profiler profiles averaged into 24 h time bins | 6 sites |
-| Fixed time series | Fixed-depth instruments averaged into 1 h time bins | 7 sites |
+| Product | Name | What it is | Sites |
+|---|---|---|---|
+| Profiler profiles | `<site>_profiles` | Each profiler cast interpolated onto a fixed pressure grid | 6 |
+| Profiler daily bins | `<site>_profiles_binned_24h` | Profiler profiles averaged into 24 h time bins | 6 |
+| Fixed time series | `<site>_fixed_1h` | Fixed-depth instruments averaged into 1 h time bins | 7 |
 
-Each is published as both zarr and netCDF with the same content.
+Each product is built at one or more QC levels (section 6) and published as both zarr and netCDF
+with the same content.
 
 ## 3. Sites and input streams
 
@@ -125,7 +126,8 @@ A site's file contains only the variables its instruments provide (section 3).
 
 ### 5.4 Adjustments to the raw data
 
-Applied before QC, from [`config/adjustments.csv`](../config/adjustments.csv), one variable per row.
+Applied at the `hitl` level and above, before the other QC steps, from
+[`config/adjustments.csv`](../config/adjustments.csv), one variable per row.
 Each adjusted variable lists the rows applied in its `adjustments` attribute.
 
 - **R13.** Dissolved oxygen splice: during the 2017–2021 optode firmware-noise windows, OOI's
@@ -139,20 +141,36 @@ Each adjusted variable lists the rows applied in its `adjustments` attribute.
 
 ## 6. Quality control
 
-Applied in this order, at native resolution, before gridding or binning. Each product records
-the order in its `qc_steps` attribute.
+Products are built at one of five cumulative QC levels; each applies every step of the levels
+before it. The level is in the filename and the `qc_level` attribute.
+
+| Level | Adds |
+|---|---|
+| `ooi` | Nothing: OOI's values as served, only gridded or resampled |
+| `qartod` | QARTOD (R15–R16) |
+| `hitl` | Adjustments (section 5.4), HITL annotation masks (R18–R21) |
+| `advanced` | Advanced pH tests (R17) |
+| `deploymentcorrected` | Per-deployment discrete-sample corrections (R24, provisional) |
+
+Steps run in this order, at native resolution, before gridding or binning: value changes first,
+then masks. The level only decides which steps run. Each product records them in its `qc_steps`
+attribute.
 
 1. Adjustments (section 5.4).
-2. Advanced pH tests (seafloor products only, R17).
-3. HITL annotation masks (R18–R21).
-4. QARTOD (R15–R16).
+2. Deployment corrections (R24).
+3. Advanced pH tests (R17).
+4. HITL annotation masks (R18–R21).
+5. QARTOD (R15–R16).
 
 - **R15.** QARTOD: each variable is set to NaN where its own QARTOD flag is fail (4) or
   missing (9). Suspect (3) and not evaluated (2) are kept.
 - **R16.** QARTOD flag variables are not written to products.
-- **R17.** Advanced pH (`_phadv` products): `ph_seawater` is NaN wherever any of the six
-  rca-data-tools advanced pH tests fails, using flags from `s3://rca-advanced-qaqc/`. Streams
-  without flags are unaffected. Expect heavy loss on sediment-embedded seafloor sensors (~63%).
+- **R17.** Advanced pH (`advanced` level, fixed products only): `ph_seawater` is NaN wherever any
+  of the six rca-data-tools advanced pH tests fails (code 3), using flags from
+  `s3://rca-advanced-qaqc/`. Other codes are kept. Not applied to profiler products: their pH is
+  rough and the rule would remove most of it (74% of Axial shallow-profiler samples). Streams
+  without flags (Oregon Offshore BEP, active Oregon Shelf PHSENH) are unaffected. Expect heavy loss
+  on sediment-embedded seafloor sensors (~63%).
 - **R18.** HITL annotations: OOI's human-in-the-loop annotations are harvested from the OOI M2M
   API, and each gets one reviewed decision in `annotations/ledger.csv`: `mask`, `ignore` or
   `superseded`. Only approved `mask` rows apply, using the annotation's time window from the
@@ -166,23 +184,53 @@ the order in its `qc_steps` attribute.
 - **R21.** Not masked, by rule: platform blowdowns (real ocean events); annotations saying
   calibrations were since corrected; offsets found by discrete samples or calibration casts
   (correctable, not bad).
+- **R24.** Deployment corrections (`deploymentcorrected` level, provisional): per-deployment corrections from cruise
+  discrete samples ([calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline),
+  pinned commit). Shallow-profiler salinity gets an offset added and oxygen a gain multiplied,
+  2020–2025, matched on the stream's `deployment` number. Deployments rated worse than status 3
+  stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Open:
+  density is not yet recomputed, and products don't yet mark corrected deployments.
+- **R25.** At `hitl` and above, every variable has a `hitl_masks` attribute: a JSON list with one
+  entry per approved mask annotation that matched the variable's data, after R19 and R20 are
+  applied. Each entry has `annotation_id` (integer), `begin` and `end` (ISO 8601 UTC; `end` is null
+  for an open-ended annotation, which masks to the end of the data) and `via`:
+  - `direct`: the annotation names this variable on this variable's instrument;
+  - `R19`: it names the variable, but sits on another sensor at the node or is a node- or site-wide
+    wildcard;
+  - `R20`: the variable was added by salinity inheritance;
+  - `R19+R20`: both.
+
+  An empty list means no HITL masks apply. Every annotation and its ledger decision, including
+  `ignore` and `superseded`, is in the release's `annotations.csv` (R31).
 
 ## 7. Files
 
-### 7.1 Naming
+### 7.1 Layout
 
 ```
-<site>_profiles_<start>_<end>_qf49_HITL[_phadv].<ext>                 profiler profiles
-<site>_profiles_<start>_<end>_qf49_HITL[_phadv]_binned_24h.<ext>      profiler daily bins
-<site>_fixed_<start>_<end>_1h_qf49_HITL[_phadv].<ext>                 fixed time series
+s3://rca-advanced-qaqc/cresst-one-easy-rca/
+  catalog.json                    releases, newest first (R33)
+  CHANGELOG.md                    changes in every release
+  releases/vYYYY.MM/
+    manifest.json                 every product and level in the release (R32)
+    RELEASE_NOTES.md              highlights and diffs against the previous release (R36)
+    build_report.json             values kept and removed by variable, level and year (R37)
+    annotations.csv               every harvested annotation with its ledger decision (R31)
+    ledger.csv, adjustments.csv   the decision files the release was built with
+    <product>/<level>.zarr
+    <product>/<level>.nc
 ```
 
-- `<start>`, `<end>`: first and last date in the file, `YYYYMMDD`, UTC.
-- `qf49`: QARTOD flags 4 and 9 removed. `HITL`: annotation masks applied. `phadv`: R17 applied.
-- `<ext>`: `zarr` or `nc`.
+- **R26.** `<product>` names (section 2) carry no dates and stay the same across releases. Time
+  coverage is in the manifest and the files' time coordinates.
+- **R27.** `<level>` is the QC level (section 6). A release can hold any subset of levels for each
+  product; the manifest lists which exist.
+- **R28.** A published release is never changed: files are not replaced or deleted. Fixes go in a
+  new release.
 
-Published set: profilers `_qf49_HITL`; PC-platform fixed `_qf49_HITL`; seafloor fixed
-`_qf49_HITL_phadv`.
+The flat files at the top of `cresst-one-easy-rca/` are the 2026-10-23 build (`_qf49_HITL` =
+`hitl`, `_qf49_HITL_phadv` = `advanced`), kept until consumers read the manifest. They are the same
+data as release `v2026.10`.
 
 ### 7.2 Dimensions and coordinates
 
@@ -199,21 +247,84 @@ Published set: profilers `_qf49_HITL`; PC-platform fixed `_qf49_HITL`; seafloor 
 
 | Attribute | Meaning |
 |---|---|
+| `release` | Release the file belongs to, e.g. `v2026.11` |
+| `spec_version` | Version of this specification the build implements |
+| `git_commit` | Commit of this repository the file was built from; `-dirty` if it had uncommitted changes |
+| `qc_level` | QC level (section 6) |
 | `qc_steps` | QC applied, in order |
-| `hitl_annotations_harvested` | When the annotations used were harvested |
-| `hitl_ledger_sha1` | Fingerprint of the ledger used |
+| `hitl_annotations_harvested` | When the annotations used were harvested (`hitl` and above) |
+| `hitl_ledger_sha1` | Fingerprint of the ledger used (`hitl` and above) |
 
 Other global attributes (`title`, `sensor`, `stream`, `time_coverage_*`, …) are copied from one
 of the OOI source streams and describe that stream, not the product. See section 9.
+
+- **R29.** Every file in a release has the `release`, `spec_version` and `git_commit` attributes.
+  Files in `v2026.10` predate `git_commit`, `qc_level` and `hitl_masks` (R25); their level is in the
+  file path and the manifest.
+
+### 7.4 Variable attributes
+
+| Attribute | Meaning |
+|---|---|
+| `adjustments` | `config/adjustments.csv` rows applied (section 5.4) |
+| `calibrations` | Deployment corrections applied (R24) |
+| `hitl_masks` | HITL masks applied, as JSON (R25) |
+| `source_note` | How a stitched variable was assembled (R14) |
+
+### 7.5 Release files
+
+- **R30.** Release files are UTF-8; times are ISO 8601 UTC with a `Z` suffix.
+- **R31.** `annotations.csv` has one row per harvested annotation for the release's sites: OOI's
+  fields (`id`, `subsite`, `node`, `sensor`, `stream`, `beginDT`, `endDT`, `qcFlag`, `parameters`,
+  `annotation`) joined with the ledger's (`decision`, `status`, `parameters_affected`,
+  `parameters_source`, `rationale`, `decided_by`, `reviewed_at`). Ledger fields are empty for an
+  annotation with no decision yet.
+- **R32.** `manifest.json` is the contract consumers read instead of listing the bucket:
+
+  ```json
+  {
+    "release": "v2026.11",
+    "date": "2026-11-30",
+    "spec_version": "0.2",
+    "git_commit": "<40 hex>",
+    "base_url": "s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/v2026.11/",
+    "products": [
+      {
+        "product": "slope_base_profiles",
+        "site": "slope_base",
+        "type": "profiles",
+        "level": "hitl",
+        "files": {"zarr": "slope_base_profiles/hitl.zarr", "nc": "slope_base_profiles/hitl.nc"},
+        "dims": {"profile_number": 24119, "sea_water_pressure": 200},
+        "time_start": "2015-07-09T03:12:00Z",
+        "time_end": "2026-08-16T21:40:00Z",
+        "variables": ["sea_water_temperature", "sea_water_practical_salinity"],
+        "qc_steps": "1. adjustments: … | 2. HITL: … | 3. QARTOD: …",
+        "hitl_ledger_sha1": "<10 hex>",
+        "hitl_annotations_harvested": "2026-11-28T18:34:30Z",
+        "git_commit": "<40 hex>",
+        "spec_version": "0.2"
+      }
+    ]
+  }
+  ```
+
+  `type` is `profiles`, `profiles_binned` or `fixed`. `files` paths are relative to `base_url`.
+  `hitl_*` are null below `hitl`. A field may be added in a later spec version; none is removed or
+  renamed without a major version change.
+- **R33.** `catalog.json` lists every release, newest first:
+  `{"latest": "v2026.11", "releases": [{"id": "v2026.11", "date": "2026-11-30", "git_commit": "<40 hex>",
+  "spec_version": "0.2"}]}`.
 
 ## 8. Access
 
 | Location | Contents |
 |---|---|
-| `s3://rca-advanced-qaqc/cresst-one-easy-rca/` | This specification's products |
-| `s3://rca-advanced-qaqc/cresst/` | Earlier build of the same products |
+| `s3://rca-advanced-qaqc/cresst-one-easy-rca/catalog.json` | Index of releases; start here |
+| `s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/vYYYY.MM/` | One release (section 7) |
+| `s3://rca-advanced-qaqc/cresst/` | July 2026 build, unversioned; not maintained |
 
-Both buckets are publicly readable without credentials.
+All are publicly readable without credentials.
 
 ## 9. Known limitations
 
@@ -232,12 +343,27 @@ Both buckets are publicly readable without credentials.
 
 ## 10. Versioning and release
 
-Not yet implemented; planned for version 1.0:
+Products are built with `regrid-profiler`, `bin-dataset` and `fixed-instruments` at whichever QC
+levels are wanted, then packaged and published as a release with `release-cresst` and
+`sync-cresst`.
 
-- The spec version recorded in every file's attributes.
-- Monthly releases under a versioned path (`vYYYY.MM/`), with a build report of the percentage
-  masked by variable, reason and year, compared with the previous release.
-- A DOI for the spec and for the product series.
-- Each numbered rule checked by a test.
+- **R34.** Releases are named `vYYYY.MM`, at most one per month. Each is tagged `vYYYY.MM` in this
+  repository on the commit its products were built from.
+- **R35.** `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). A
+  release needs a non-empty `Unreleased` section with at least one entry under `Highlights`.
+  Entries that change a method or rule cite its number (e.g. R14). Releasing moves `Unreleased`
+  under the version.
+- **R36.** `RELEASE_NOTES.md` has the highlights, the changelog section, and diffs against the
+  previous release: ledger decisions added or changed (with rationale, and counts by
+  `decided_by`), `adjustments.csv` rows added, removed or changed, products and levels added or
+  removed, and changes in each product's time coverage.
+- **R37.** `build_report.json` has one row per product, level, variable and year: the number of
+  finite values, and the percentage of the next-lower level's values that this level removed (when
+  that level is in the release). Each row also carries the previous release's figures for the same
+  product, level, variable and year.
 
-Until then, products are replaced in place when rebuilt.
+There is no `latest/` copy: `catalog.json` names the latest release. Not yet decided: how long old
+releases keep every level.
+
+Planned for version 1.0: a DOI for the spec and the product series, and each numbered rule checked
+by a test.

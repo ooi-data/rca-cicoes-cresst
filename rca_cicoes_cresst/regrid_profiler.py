@@ -17,22 +17,27 @@ from rca_cicoes_cresst.common import (
     annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
+    QC_LEVELS,
     START_YEAR,
-    apply_adjustments,
     group_params_by_instrument,
     load_annotations,
     load_data,
     mask_annotation_windows,
-    mask_ph_advanced,
     mask_qartod,
     product_sites,
-    qc_steps,
+    hitl_mask_attrs,
+    product_attrs,
+    qc_at,
     qc_suffix,
+    stream_qc,
 )
 
 PROFILER_SITES = product_sites("profiler")
 
 DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
+# Advanced pH flags are not applied to profiler products (science lead, 2026-11-04): profiler pH
+# is rough and the any-test rule would remove most of it. Fixed products apply them at advanced.
+ADVANCED_PH = False
 
 DEFAULT_PARAMS: dict[str, list[str]] = {
     "shallow": [
@@ -59,7 +64,7 @@ def load_regridding_inputs(
     site_dict: dict[str, str],
     params: list[str],
     sites_lookup: dict,
-    ph_advanced: bool = False,
+    qaqc_filter: str = "ooi",
 ) -> tuple[list[dict], pd.DataFrame]:
     site = site_dict["ctd"][:8]
 
@@ -70,9 +75,7 @@ def load_regridding_inputs(
         refdes = site_dict[instr_key]
         stream_name = sites_lookup[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
-        ds = apply_adjustments(load_data(stream_name), refdes)
-        if ph_advanced and instr_key == "ph":
-            ds = mask_ph_advanced(ds, stream_name)
+        ds = stream_qc(load_data(stream_name), refdes, stream_name, qaqc_filter, ADVANCED_PH)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
         available = [v for v in PRES_PARAMS + instr_params + qartod_vars if v in ds]
         instrument_datasets.append({
@@ -80,10 +83,12 @@ def load_regridding_inputs(
             "ds": ds[available],
             "params": [p for p in instr_params if p in ds],
             "is_downcast": instr_key in DOWNCAST_INSTRUMENTS,
+            "sensors": {refdes.split("-", 2)[2]},
+            "hitl_masks": {},
         })
 
     logger.info("loading profile indices")
-    last_year = max(int(d["ds"].time.max().dt.year) for d in instrument_datasets)
+    last_year = max(int(d["ds"].time.max().dt.year) for d in instrument_datasets if d["ds"].sizes["time"])
     frames = []
     for year in range(START_YEAR, last_year + 1):
         try:
@@ -101,7 +106,7 @@ def regrid_profiles(
     instrument_datasets: list[dict],
     indices: pd.DataFrame,
     new_grid: np.ndarray,
-    qaqc_filter: str = "none",
+    qaqc_filter: str = "ooi",
     annotations: pd.DataFrame | None = None,
 ) -> xr.Dataset:
     pds = []
@@ -113,8 +118,8 @@ def regrid_profiles(
         for instr in instrument_datasets:
             ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()
             if annotations is not None:
-                ds_year = mask_annotation_windows(ds_year, instr["params"], annotations)
-            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE.get(qaqc_filter, set()))
+                ds_year = mask_annotation_windows(ds_year, instr["params"], annotations, instr["sensors"], instr["hitl_masks"])
+            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE if qc_at(qaqc_filter, "qartod") else set())
             year_datasets.append({**instr, "ds_year": ds_year})
         skipped = 0
 
@@ -167,10 +172,10 @@ def regrid_profiles(
     return xr.concat(pds, dim="profile_number")
 
 
-def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: bool, ext: str) -> str:
+def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> str:
     t_start = pd.Timestamp(ds.start_time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.end_time.values.max()).strftime("%Y%m%d")
-    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix(qaqc_filter, ph_advanced)}.{ext}"
+    return f"{site}_profiles_{t_start}_{t_end}{qc_suffix(qaqc_filter)}.{ext}"
 
 
 @click.command()
@@ -192,27 +197,20 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ph_advanced: 
 )
 @click.option(
     "--qaqc-filter",
-    type=click.Choice(["none", "basic", "highest"]),
-    default="none",
-    show_default=True,
+    type=click.Choice(QC_LEVELS),
+    required=True,
     help=(
-        "QARTOD filter level. 'basic' excludes fail (4) and missing (9) flags. "
-        "'highest' applies 'basic' plus masks approved HITL annotations from the ledger."
+        "QC level; each includes the ones before it. 'ooi': OOI values as served. 'qartod': + QARTOD fail (4) "
+        "and missing (9) masks. 'hitl': + config/adjustments.csv and approved HITL ledger masks. 'advanced': "
+        "+ advanced pH flags (fixed products only). 'deploymentcorrected': + per-deployment discrete-sample "
+        "corrections (provisional)."
     ),
 )
 @click.option(
     "--annotations-dir",
     default=ANNOTATIONS_DIR,
     show_default=True,
-    help="Directory holding ledger.csv and raw/ harvested annotations (used with --qaqc-filter highest).",
-)
-@click.option(
-    "--ph-advanced",
-    is_flag=True,
-    default=False,
-    help=(
-        "Also mask ph_seawater where any advanced pH QC test failed (flag string contains a 3)."
-    ),
+    help="Directory holding ledger.csv and raw/ harvested annotations (used at hitl and above).",
 )
 @click.option(
     "--output-dir",
@@ -226,13 +224,12 @@ def main(
     fmt: str,
     qaqc_filter: str,
     annotations_dir: str,
-    ph_advanced: bool,
     output_dir: str,
 ) -> None:
     """Regrid RCA shallow profiler data to a uniform pressure grid.
 
-    Output is saved to <output-dir>/<site>_profiles_<start>_<end>.<ext>.
-    Example: oregon_offshore_profiles_20150101_20260508.zarr
+    Output is saved to <output-dir>/<site>_profiles_<start>_<end>_<level>.<ext>.
+    Example: oregon_offshore_profiles_20150101_20260508_hitl.zarr
     With --format both, saves zarr and nc versions with the same base name.
     """
     new_grid = np.arange(*grid)
@@ -245,21 +242,22 @@ def main(
     profile_type = "deep" if site.endswith("_deep") else "shallow"
     sites_lookup = ARCHIVE_DICT if profile_type == "deep" else ACTIVE_DICT
     instrument_datasets, indices = load_regridding_inputs(
-        site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, ph_advanced=ph_advanced
+        site_dict, DEFAULT_PARAMS[profile_type], sites_lookup, qaqc_filter
     )
 
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     subsite = site_dict["ctd"][:8]
-    annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
+    annotations = load_annotations(subsite, nodes, annotations_dir) if qc_at(qaqc_filter, "hitl") else None
     ds_profiles = regrid_profiles(instrument_datasets, indices, new_grid, qaqc_filter, annotations)
-    ds_profiles.attrs["qc_steps"] = qc_steps(qaqc_filter, ph_advanced)
+    ds_profiles.attrs.update(product_attrs(qaqc_filter, ADVANCED_PH))
     if annotations is not None:
+        ds_profiles = hitl_mask_attrs(ds_profiles, instrument_datasets)
         ds_profiles.attrs.update(annotation_provenance(subsite, annotations_dir))
 
     os.makedirs(output_dir, exist_ok=True)
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = os.path.join(output_dir, build_output_path(site, ds_profiles, qaqc_filter, ph_advanced, f))
+        output_path = os.path.join(output_dir, build_output_path(site, ds_profiles, qaqc_filter, f))
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_profiles.to_zarr(output_path, mode="w")

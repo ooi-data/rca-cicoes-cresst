@@ -24,8 +24,8 @@ from rca_cicoes_cresst.common import (
     annotation_provenance,
     PRES_PARAMS,
     QARTOD_EXCLUDE,
+    QC_LEVELS,
     START_YEAR,
-    apply_adjustments,
     group_params_by_instrument,
     load_annotations,
     load_data,
@@ -33,9 +33,12 @@ from rca_cicoes_cresst.common import (
     mask_ph_advanced,
     mask_qartod,
     product_sites,
-    qc_steps,
+    hitl_mask_attrs,
+    product_attrs,
+    qc_at,
     read_sites,
     qc_suffix,
+    stream_qc,
 )
 
 FIXED_SITES = product_sites("fixed")
@@ -61,7 +64,7 @@ def stitch_archived_ph(
     ds_active: xr.Dataset,
     archive_refdes: str,
     active_stream: str,
-    ph_advanced: bool = False,
+    qaqc_filter: str = "ooi",
 ) -> xr.Dataset:
     """Concatenate an archived pH sensor's record ahead of the active sensor's.
 
@@ -70,13 +73,13 @@ def stitch_archived_ph(
     WITHOUT scale conversion into a single ph_seawater variable to keep the
     record continuous -- a small offset is possible at the swap seam.
 
-    Advanced pH flags are keyed per stream, so when ph_advanced is set each
+    Advanced pH flags are keyed per stream, so at the advanced level each
     source is masked with its OWN stream before the concat (the archived PHSEND
     sensor carries advanced flags; the active PHSENH stream currently does not,
     so it no-ops).
     """
     archive_stream = ARCHIVE_DICT[archive_refdes]["zarrFile"]
-    archive_ds = apply_adjustments(load_data(archive_stream), archive_refdes)
+    archive_ds = stream_qc(load_data(archive_stream), archive_refdes, archive_stream, qaqc_filter)
     logger.info(f"stitching archived pH {archive_refdes} ahead of the active sensor")
 
     # active reports ph_total; rename so both sources share the ph_seawater name
@@ -85,8 +88,7 @@ def stitch_archived_ph(
         rename["ph_total_qartod_results"] = "ph_seawater_qartod_results"
     active_ds = ds_active.rename(rename)
 
-    if ph_advanced:  # mask each source with its own stream's flags (see docstring)
-        archive_ds = mask_ph_advanced(archive_ds, archive_stream)
+    if qc_at(qaqc_filter, "advanced"):  # active masked after the rename, with its own stream's flags
         active_ds = mask_ph_advanced(active_ds, active_stream)
 
     ph = xr.concat([archive_ds["ph_seawater"], active_ds["ph_seawater"]], dim="time").sortby("time").drop_duplicates("time")
@@ -113,7 +115,7 @@ def load_fixed_inputs(
     site_dict: dict[str, str],
     params: list[str],
     ph_stitch: str | None = None,
-    ph_advanced: bool = False,
+    qaqc_filter: str = "ooi",
 ) -> list[dict]:
     instrument_params = group_params_by_instrument(params, site_dict)
 
@@ -122,22 +124,23 @@ def load_fixed_inputs(
         refdes = site_dict[instr_key]
         stream_name = ACTIVE_DICT[refdes]["zarrFile"]
         logger.info(f"loading zarr: {instr_key} ({refdes})")
-        ds = apply_adjustments(load_data(stream_name), refdes)
+        ds = stream_qc(load_data(stream_name), refdes, stream_name, qaqc_filter)
+        sources = [refdes]
         if instr_key == "ph" and ph_stitch:
-            ds = stitch_archived_ph(ds, ph_stitch, stream_name, ph_advanced=ph_advanced)
+            ds = stitch_archived_ph(ds, ph_stitch, stream_name, qaqc_filter)
+            sources.append(ph_stitch)
             instr_params = ["ph_seawater"]  # unified stitched variable (see PH_STITCH)
         qartod_vars = [f"{p}_qartod_results" for p in instr_params if f"{p}_qartod_results" in ds]
         # only keep the platform pressure from the CTD; the other instruments
         # carry a duplicate int_ctd_pressure that would collide on merge
         pres_vars = [v for v in PRES_PARAMS if v in ds] if instr_key == "ctd" else []
         ds = ds[[v for v in pres_vars + instr_params + qartod_vars if v in ds]]
-        # stitched pH masks per-source inside stitch_archived_ph (streams differ)
-        if ph_advanced and instr_key == "ph" and not ph_stitch:
-            ds = mask_ph_advanced(ds, stream_name)
         instrument_datasets.append({
             "instrument": instr_key,
             "ds": ds,
             "params": [p for p in instr_params if p in ds],
+            "sensors": {r.split("-", 2)[2] for r in sources},
+            "hitl_masks": {},
         })
     return instrument_datasets
 
@@ -147,7 +150,7 @@ def resample_fixed(
     resample: str,
     start_year: int,
     end_year: int,
-    qaqc_filter: str = "none",
+    qaqc_filter: str = "ooi",
     annotations: pd.DataFrame | None = None,
 ) -> xr.Dataset:
     resampled = []
@@ -161,9 +164,9 @@ def resample_fixed(
                 continue
 
             if annotations is not None:
-                ds_year = mask_annotation_windows(ds_year, instr["params"], annotations)
+                ds_year = mask_annotation_windows(ds_year, instr["params"], annotations, instr["sensors"], instr["hitl_masks"])
 
-            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE.get(qaqc_filter, set()))
+            ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE if qc_at(qaqc_filter, "qartod") else set())
             year_parts.append(ds_year.resample(time=resample).mean())
             logger.info(f"{instr['instrument']} {year}: {ds_year.sizes['time']:,} points → {year_parts[-1].sizes['time']:,} bins")
 
@@ -178,10 +181,10 @@ def resample_fixed(
     return xr.merge(resampled, join="outer")  # union the instruments' hourly grids; empty bins NaN
 
 
-def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str, ph_advanced: bool, ext: str) -> str:
+def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str, ext: str) -> str:
     t_start = pd.Timestamp(ds.time.values.min()).strftime("%Y%m%d")
     t_end = pd.Timestamp(ds.time.values.max()).strftime("%Y%m%d")
-    return f"{site}_fixed_{t_start}_{t_end}_{resample}{qc_suffix(qaqc_filter, ph_advanced)}.{ext}"
+    return f"{site}_fixed_{t_start}_{t_end}_{resample}{qc_suffix(qaqc_filter)}.{ext}"
 
 
 @click.command()
@@ -215,29 +218,20 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
 )
 @click.option(
     "--qaqc-filter",
-    type=click.Choice(["none", "basic", "highest"]),
-    default="none",
-    show_default=True,
+    type=click.Choice(QC_LEVELS),
+    required=True,
     help=(
-        "QARTOD filter level. 'basic' excludes fail (4) and missing (9) flags. "
-        "'highest' applies 'basic' plus masks approved HITL annotations from the ledger."
+        "QC level; each includes the ones before it. 'ooi': OOI values as served. 'qartod': + QARTOD fail (4) "
+        "and missing (9) masks. 'hitl': + config/adjustments.csv and approved HITL ledger masks. 'advanced': "
+        "+ advanced pH flags (fixed products only). 'deploymentcorrected': + per-deployment discrete-sample "
+        "corrections (provisional)."
     ),
 )
 @click.option(
     "--annotations-dir",
     default=ANNOTATIONS_DIR,
     show_default=True,
-    help="Directory holding ledger.csv and raw/ harvested annotations (used with --qaqc-filter highest).",
-)
-@click.option(
-    "--ph-advanced",
-    is_flag=True,
-    default=False,
-    help=(
-        "Also mask ph_seawater where any advanced pH QC test failed (flag string "
-        "contains a 3). Advanced flags exist per-stream for some pH sensors (PC "
-        "platforms and the archived shelf BEP); applied where present, skipped otherwise."
-    ),
+    help="Directory holding ledger.csv and raw/ harvested annotations (used at hitl and above).",
 )
 @click.option(
     "--output-dir",
@@ -253,12 +247,11 @@ def main(
     fmt: str,
     qaqc_filter: str,
     annotations_dir: str,
-    ph_advanced: bool,
     output_dir: str,
 ) -> None:
     """Resample fixed-instrument data (PC platforms and seafloor BEPs) to a common time grid.
 
-    Output is saved to <output-dir>/<site>_fixed_<start>_<end>_<freq>.<ext>.  Example: slope_base_fixed_20150101_20260630_1h_qf49_HITL.zarr
+    Output is saved to <output-dir>/<site>_fixed_<start>_<end>_<freq>_<level>.<ext>.  Example: slope_base_fixed_20150101_20260630_1h_hitl.zarr
     With --format both, saves zarr and nc versions with the same base name.
     """
     os.makedirs("logs", exist_ok=True)
@@ -271,20 +264,21 @@ def main(
     instrument_datasets = load_fixed_inputs(
         site_dict, DEFAULT_PARAMS,
         ph_stitch=PH_STITCH.get(site),
-        ph_advanced=ph_advanced,
+        qaqc_filter=qaqc_filter,
     )
     nodes = {refdes.split("-")[1] for refdes in site_dict.values()}
     subsite = site_dict["ctd"][:8]
-    annotations = load_annotations(subsite, nodes, annotations_dir) if qaqc_filter == "highest" else None
+    annotations = load_annotations(subsite, nodes, annotations_dir) if qc_at(qaqc_filter, "hitl") else None
     ds_fixed = resample_fixed(instrument_datasets, resample, start_year, end_year, qaqc_filter, annotations)
-    ds_fixed.attrs["qc_steps"] = qc_steps(qaqc_filter, ph_advanced)
+    ds_fixed.attrs.update(product_attrs(qaqc_filter))
     if annotations is not None:
+        ds_fixed = hitl_mask_attrs(ds_fixed, instrument_datasets)
         ds_fixed.attrs.update(annotation_provenance(subsite, annotations_dir))
 
     os.makedirs(output_dir, exist_ok=True)
     fmts = ["zarr", "nc"] if fmt == "both" else [fmt]
     for f in fmts:
-        output_path = os.path.join(output_dir, build_output_path(site, ds_fixed, resample, qaqc_filter, ph_advanced, f))
+        output_path = os.path.join(output_dir, build_output_path(site, ds_fixed, resample, qaqc_filter, f))
         logger.info(f"saving to {output_path}")
         if f == "zarr":
             ds_fixed.to_zarr(output_path, mode="w")

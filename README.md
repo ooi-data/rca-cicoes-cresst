@@ -8,10 +8,11 @@ Curated data products from OOI Regional Cabled Array (RCA) profiler moorings and
 - [Command overview](#command-overview)
 - [Regridded Profiler Mooring Profiles](#regridded-profiler-mooring-profiles) (`regrid-profiler`)
 - [Fixed Instrument Time Series](#fixed-instrument-time-series) (`fixed-instruments`)
-- [QC Steps and Adjustments](#qc-steps-and-adjustments) (`config/adjustments.csv`)
+- [QC Levels and Adjustments](#qc-levels-and-adjustments) (`--qaqc-filter`, `config/adjustments.csv`)
 - [HITL Annotations](#hitl-annotations) (`harvest-annotations`, `curate-annotations`)
 - [Advanced pH QC](#advanced-ph-qc)
 - [Binned Profiles](#binned-profiles-bin-dataset) (`bin-dataset`)
+- [Releases](#releases-release-cresst) (`release-cresst`)
 - [Syncing Products](#syncing-products-sync-cresst) (`sync-cresst`)
 
 ## Setup
@@ -33,9 +34,10 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
 | `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
-| `sync-cresst` | Push local products in `data/<prefix>` to the matching S3 prefix (default `rca-advanced-qaqc/cresst`) |
+| `release-cresst` | Package built products as a versioned release (manifest, notes, build report) |
+| `sync-cresst` | Upload a packaged release, or push flat products in `data/<prefix>` to the matching S3 prefix |
 
-> **Before building `--qaqc-filter highest` products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
+> **Before building `hitl` or higher products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
 
 ## Regridded Profiler Mooring Profiles
 
@@ -99,58 +101,53 @@ All variables are sampled on the upcast except `ph_seawater` and `pco2_seawater`
 
 ### Building the profiler product (`regrid-profiler`)
 
-Run from the repo root; outputs land in `--output-dir` and logs in `logs/`. For `--qaqc-filter highest`, run the [annotation steps](#before-every-product-build) first.
+Run from the repo root; outputs land in `--output-dir` and logs in `logs/`. For `hitl` and above, run the [annotation steps](#before-every-product-build) first.
 
 | Option | Effect | Filename suffix |
 |--------|--------|-----------------|
 | `--grid START STOP STEP` | Pressure grid in dbar (profiler only) | — |
-| `--qaqc-filter none` | No QC masking (adjustments still apply) | — |
-| `--qaqc-filter basic` | Mask QARTOD fail (4) and missing (9) | `_qf49` |
-| `--qaqc-filter highest` | `basic` plus approved HITL ledger masks | `_qf49_HITL` |
-| `--ph-advanced` | Also mask pH where any advanced pH test failed ([details](#advanced-ph-qc)) | `_phadv` |
+| `--qaqc-filter LEVEL` | Required. QC level: `ooi`, `qartod`, `hitl`, `advanced` or `deploymentcorrected` ([details](#qc-levels-and-adjustments)) | `_<level>` |
 | `--format zarr\|nc\|both` | Output format | extension |
 | `--output-dir DIR` | Where to write (default `data/cresst`) | — |
 
 ```bash
 # shallow profilers (~0–200 m)
-regrid-profiler oregon_offshore --grid 0 200 1 --format both --qaqc-filter highest
-regrid-profiler axial_base --grid 0 200 1 --format both --qaqc-filter highest
-regrid-profiler slope_base --grid 0 200 1 --format both --qaqc-filter highest
+regrid-profiler oregon_offshore --grid 0 200 1 --format both --qaqc-filter hitl
+regrid-profiler axial_base --grid 0 200 1 --format both --qaqc-filter hitl
+regrid-profiler slope_base --grid 0 200 1 --format both --qaqc-filter hitl
 
 # deep profilers (site-dependent depth range)
-regrid-profiler oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter highest
-regrid-profiler slope_base_deep --grid 150 2900 1 --format both --qaqc-filter highest
-regrid-profiler axial_base_deep --grid 150 2600 1 --format both --qaqc-filter highest
+regrid-profiler oregon_offshore_deep --grid 175 590 1 --format both --qaqc-filter hitl
+regrid-profiler slope_base_deep --grid 150 2900 1 --format both --qaqc-filter hitl
+regrid-profiler axial_base_deep --grid 150 2600 1 --format both --qaqc-filter hitl
 ```
 
 Output naming:
 
 ```
-<site>_profiles_<start>_<end>[_qf<flags>][_HITL][_phadv].<ext>
+<site>_profiles_<start>_<end>[_<level>].<ext>
 ```
 
 | Component | Description |
 |-----------|-------------|
 | `<site>` | Site key (e.g. `axial_base`) |
 | `<start>` / `<end>` | Date range of profiles in the file (`YYYYMMDD`) |
-| `_qf<flags>` | QARTOD flags removed (`49` = fail + missing); omitted when `--qaqc-filter none` |
-| `_HITL` | Approved HITL ledger masks applied; present only with `--qaqc-filter highest` |
-| `_phadv` | Advanced pH masking applied; present only with `--ph-advanced` |
+| `_<level>` | QC level: `_ooi`, `_qartod`, `_hitl`, `_advanced` or `_deploymentcorrected` |
 | `<ext>` | `zarr` or `nc` |
 
 Examples:
 
 ```
 axial_base_profiles_20150107_20260604.zarr
-axial_base_profiles_20150107_20260604_qf49.nc
-axial_base_profiles_20150107_20260604_qf49_HITL.zarr
+axial_base_profiles_20150107_20260604_qartod.nc
+axial_base_profiles_20150107_20260604_hitl.zarr
 ```
 
 See `regrid-profiler --help` for full options.
 
 ## Fixed Instrument Time Series
 
-Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same QAQC as the regridded profiler product (QARTOD flag masking + HITL ledger masking, plus optional advanced pH masking) is applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
+Time-series datasets from fixed (non-profiling) instruments: the shallow profiler mooring 200 m platforms (PC nodes) and the seafloor Benthic Experiment Packages (BEP / LJ nodes). The same [QC levels](#qc-levels-and-adjustments) as the regridded profiler product are applied at native resolution, then each instrument is resampled to a common time grid (hourly means by default) and merged into one dataset per site.
 
 ### Sites and Instruments
 
@@ -180,17 +177,17 @@ Same working directory, prerequisites and QC options as the [profiler build](#bu
 
 ```bash
 # PC platforms (200 m)
-fixed-instruments slope_base --format both --qaqc-filter highest
-fixed-instruments oregon_offshore --format both --qaqc-filter highest
-fixed-instruments axial_base --format both --qaqc-filter highest
+fixed-instruments slope_base --format both --qaqc-filter hitl
+fixed-instruments oregon_offshore --format both --qaqc-filter hitl
+fixed-instruments axial_base --format both --qaqc-filter hitl
 
 # Oregon seafloor BEPs (CTD + pH; pCO₂ excluded pending offset review)
-fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter highest --ph-advanced
-fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter highest --ph-advanced
+fixed-instruments oregon_offshore_seafloor --format both --qaqc-filter hitl
+fixed-instruments oregon_shelf_seafloor --format both --qaqc-filter hitl
 
 # deep cabled seafloor BEPs (CTD only)
-fixed-instruments slope_base_seafloor --format both --qaqc-filter highest --ph-advanced
-fixed-instruments axial_base_seafloor --format both --qaqc-filter highest --ph-advanced
+fixed-instruments slope_base_seafloor --format both --qaqc-filter hitl
+fixed-instruments axial_base_seafloor --format both --qaqc-filter hitl
 
 # custom bin width or year range
 fixed-instruments axial_base --resample 30min --start-year 2020 --end-year 2024
@@ -199,23 +196,44 @@ fixed-instruments axial_base --resample 30min --start-year 2020 --end-year 2024
 Output naming:
 
 ```
-<site>_fixed_<start>_<end>_<freq>[_qf<flags>][_HITL][_phadv].<ext>
+<site>_fixed_<start>_<end>_<freq>[_<level>].<ext>
 ```
 
-`<freq>` is the `--resample` bin width; the other components match the [profiler naming](#building-the-profiler-product-regrid-profiler). Example: `slope_base_fixed_20150101_20260630_1h_qf49_HITL_phadv.nc`
+`<freq>` is the `--resample` bin width; the other components match the [profiler naming](#building-the-profiler-product-regrid-profiler). Example: `slope_base_fixed_20150101_20260630_1h_hitl.nc`
 
 See `fixed-instruments --help` for full options.
 
-## QC Steps and Adjustments
+## QC Levels and Adjustments
 
-Both pipelines apply the same QC steps in the same order, at native resolution, before gridding or resampling. Each product records the order in its `qc_steps` attribute.
+`--qaqc-filter` picks one of five cumulative levels: each applies every step of the levels before it. The level is in the filename and in the product's `qc_level` attribute.
 
-1. **Adjustments**: rows in `config/adjustments.csv` (below), applied to each raw stream.
-2. **Advanced pH**: with `--ph-advanced` (see [Advanced pH QC](#advanced-ph-qc)).
-3. **HITL ledger**: with `--qaqc-filter highest` (see [HITL Annotations](#hitl-annotations)).
-4. **QARTOD**: with `basic` or `highest`, each variable is set to NaN where its own flag is fail (4) or missing (9). The flag variables are not written to products.
+| Level | Adds | Decided by |
+|-------|------|------------|
+| `ooi` | Nothing: OOI's values as served, only gridded or resampled | OOI |
+| `qartod` | QARTOD masks | OOI's automated tests |
+| `hitl` | `config/adjustments.csv`, HITL ledger masks, salinity inheritance | people, reviewed in PRs |
+| `advanced` | Advanced flags (pH so far; fixed products only, see [Advanced pH QC](#advanced-ph-qc)) | rca-data-tools advanced QC |
+| `deploymentcorrected` | Per-deployment discrete-sample corrections (provisional, below) | [calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline) |
 
-The shelf pH stitch combines the archived PHSEND and active PHSENH records after steps 1–2 have run on each source.
+Both pipelines run the steps in this order, at native resolution, before gridding or resampling: value changes first, then masks. The level only decides which steps run. Each product records them in its `qc_steps` attribute.
+
+1. **Adjustments** (`hitl`): rows in `config/adjustments.csv` (below), applied to each raw stream.
+2. **Deployment corrections** (`deploymentcorrected`): see [Deployment corrections](#deployment-corrections-provisional).
+3. **Advanced pH** (`advanced`): see [Advanced pH QC](#advanced-ph-qc).
+4. **HITL ledger** (`hitl`): see [HITL Annotations](#hitl-annotations).
+5. **QARTOD** (`qartod`): each variable is set to NaN where its own flag is fail (4) or missing (9). The flag variables are not written to products.
+
+The shelf pH stitch combines the archived PHSEND and active PHSENH records after steps 1–3 have run on each source.
+
+### Deployment corrections (provisional)
+
+Per-deployment corrections from cruise discrete samples, read from calibrationPipeline's `outputs/deployments.json` at the commit pinned in `common.CALIBRATION_COMMIT`. They cover shallow-profiler salinity (an offset added) and oxygen (a gain multiplied) for 2020–2025. Each is matched to data by the stream's `deployment` number and recorded on the variable's `calibrations` attribute. Deployments rated worse than `common.CALIBRATION_MAX_STATUS` (3, "use with caution") stay uncorrected.
+
+Not yet settled, so `deploymentcorrected` products are not published:
+
+- `sea_water_density` is not recomputed from corrected salinity.
+- Products don't yet mark which deployments were corrected.
+- The status threshold and some large oxygen gains await review with the calibration team.
 
 ### `config/adjustments.csv`
 
@@ -237,7 +255,7 @@ Edit it by hand or with an LLM; the decision rules are in `CLAUDE.md`. Changes t
 
 ## HITL Annotations
 
-OOI's human-in-the-loop (HITL) annotations flag time windows of bad or suspect data. Each annotation gets one reviewed decision in `annotations/ledger.csv`, which `--qaqc-filter highest` applies.
+OOI's human-in-the-loop (HITL) annotations flag time windows of bad or suspect data. Each annotation gets one reviewed decision in `annotations/ledger.csv`, which the `hitl` level and above apply.
 
 | File | Contents |
 |------|----------|
@@ -279,7 +297,7 @@ By hand, in a spreadsheet or text editor:
 2. Set `decision`, `parameters_affected`, `parameters_source` and `rationale`.
 3. Set `decided_by` to `human`, `status` to `approved`, and `reviewed_at` to today.
 4. Leave `id`, `subsite` and `content_hash` alone, and don't add rows by hand. `curate-annotations` creates rows for new annotations.
-5. Check: `curate-annotations --all` reports 0 annotations needing a decision, and a `--qaqc-filter highest` run logs no ledger warnings.
+5. Check: `curate-annotations --all` reports 0 annotations needing a decision, and a `--qaqc-filter hitl` run logs no ledger warnings.
 6. Commit through a PR. The diff shows exactly which decisions changed.
 
 With an LLM (e.g. Claude Code), point it at the rows and at `CLAUDE.md`, which holds the decision rules. For example: *"Review the `proposed` rows in annotations/ledger.csv. For each, read the annotation text, apply the rules in CLAUDE.md, and fill in `decision`, `parameters_affected`, `parameters_source` and `rationale`. Leave `status` as `proposed` for me to approve."* Keep approval with a person.
@@ -298,7 +316,7 @@ Both commands also take single sites, e.g. `harvest-annotations oregon_offshore`
 
 ## Advanced pH QC
 
-An optional extra masking layer for pH, driven by the precomputed advanced pH flags
+The `advanced` level's masking layer for pH, driven by the precomputed advanced pH flags
 in the `rca-advanced-qaqc` S3 bucket (from `rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags`).
 Each raw sample carries a positional flag string, one digit per test (`1` pass / `3` fail):
 
@@ -311,15 +329,19 @@ Each raw sample carries a positional flag string, one digit per test (`1` pass /
 | `failed_intensity` | signal intensity saturated or too low |
 | `flat_intensity` | flat signal intensity (pump not working / flow cell obstructed) |
 
-Passing `--ph-advanced` NaNs `ph_seawater` wherever **any** test fails (the flag string
-contains a `3`), per science-lead guidance. This is aggressive — the `low_indicator_signal`
-test alone fires on a large fraction of samples — so expect substantial pH data loss; it is
-opt-in for that reason.
+The `advanced` level NaNs `ph_seawater` wherever **any** test fails, per science-lead guidance.
+Only `3` (fail) masks; any other code is kept. This is aggressive: pH from these sensors is rough,
+and the `low_indicator_signal` test alone fires on a large fraction of samples (46% at the Axial
+shallow profiler), so expect substantial pH data loss.
+
+**Not applied to profiler products.** `regrid_profiler.ADVANCED_PH = False` is a hard-coded rule
+(science lead, 2026-11-04): the any-test rule would remove most profiler pH (74% of Axial shallow
+profiler samples). Profiler products at `advanced` and above therefore carry the same pH as at
+`hitl`, and their `qc_steps` say so. Fixed products (200 m platforms and seafloor) apply the flags.
 
 Flag products exist for the PC-platform and profiler PHSEN sensors and the archived Oregon Shelf
 PHSEND (the pre-2025 part of the stitched shelf record). There are none for the Oregon Offshore
-BEP or the active shelf PHSENH, so the option does nothing there. Works on both `fixed-instruments` and `regrid-profiler`; the
-output filename gets a `_phadv` suffix.
+BEP or the active shelf PHSENH, so their pH passes through this level unfiltered.
 
 ## Binned Profiles (`bin-dataset`)
 
@@ -332,17 +354,56 @@ Bin a pressure-gridded profiler dataset along the time axis:
 Example:
 
 ```
-axial_base_profiles_20150107_20260604_qf49_HITL_binned_24h.zarr
+axial_base_profiles_20150107_20260604_hitl_binned_24h.zarr
 ```
 
 ```bash
-bin-dataset data/cresst/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24
-bin-dataset data/cresst/axial_base_profiles_20150107_20260604_qf49_HITL.zarr --bin 24 --format both
+bin-dataset data/cresst/axial_base_profiles_20150107_20260604_hitl.zarr --bin 24
+bin-dataset data/cresst/axial_base_profiles_20150107_20260604_hitl.zarr --bin 24 --format both
 ```
 
 Output is written next to the input file. See `bin-dataset --help` for full options.
 
+## Releases (`release-cresst`)
+
+Products are published as versioned, never-changed releases under `s3://rca-advanced-qaqc/cresst-one-easy-rca/` ([spec](docs/spec.md) sections 7 and 10). Consumers start from `catalog.json`, then read a release's `manifest.json`:
+
+```
+cresst-one-easy-rca/
+  catalog.json  CHANGELOG.md
+  releases/vYYYY.MM/
+    manifest.json  RELEASE_NOTES.md  build_report.json
+    annotations.csv  ledger.csv  adjustments.csv
+    <product>/<level>.zarr  <product>/<level>.nc      e.g. slope_base_profiles/hitl.zarr
+```
+
+`release-cresst` builds nothing: it packages whatever products and levels are in a build directory, so a release can carry any subset of levels. Product names drop the dates (`<site>_profiles`, `<site>_profiles_binned_24h`, `<site>_fixed_1h`); time coverage is in the manifest.
+
+```bash
+# 1. build the products and levels this release carries (from a clean, committed tree)
+regrid-profiler axial_base --grid 0 200 1 --format both --qaqc-filter hitl --output-dir data/build
+bin-dataset data/build/axial_base_profiles_<start>_<end>_hitl.zarr --bin 24 --format both
+fixed-instruments axial_base_seafloor --format both --qaqc-filter advanced --output-dir data/build
+# 2. note what changed under Unreleased in CHANGELOG.md, with at least one Highlights entry
+# 3. package
+release-cresst v2026.11 --from data/build
+# 4. commit CHANGELOG.md, upload, push the tag
+sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11 --apply
+git push origin v2026.11
+```
+
+`release-cresst` refuses to run if the changelog has no `Unreleased` highlights, if the version already exists, or if the products were built from a different or uncommitted commit (override with `--allow-dirty`, which also skips the tag). It writes `data/cresst-one-easy-rca/releases/<version>/`, adds the release to `catalog.json`, moves the changelog's `Unreleased` section under the version, and tags the build commit locally. `RELEASE_NOTES.md` diffs the release against the previous one: ledger decisions, adjustments, products and time coverage, and masking (`build_report.json`). `--legacy-from` packaged the 2026-10-23 flat build as `v2026.10`.
+
 ## Syncing Products (`sync-cresst`)
+
+Upload a packaged release with `--release`; a release already in the bucket is never overwritten:
+
+```bash
+sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11          # preview
+sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11 --apply  # upload release, catalog, changelog
+```
+
+Without `--release`, it syncs flat, dated product files:
 
 Push local products in `data/<prefix>` up to the matching S3 prefix (default `rca-advanced-qaqc/cresst` from `data/cresst`; change with `--bucket`, override the local directory with `--data-dir`), matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
 

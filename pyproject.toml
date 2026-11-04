@@ -29,6 +29,7 @@ regrid-profiler = "rca_cicoes_cresst.regrid_profiler:main"
 fixed-instruments = "rca_cicoes_cresst.fixed_instruments:main"
 bin-dataset = "rca_cicoes_cresst.bin_dataset:main"
 sync-cresst = "rca_cicoes_cresst.sync_products:main"
+release-cresst = "rca_cicoes_cresst.release:main"
 harvest-annotations = "rca_cicoes_cresst.harvest_annotations:main"
 curate-annotations = "rca_cicoes_cresst.curate:main"
 
