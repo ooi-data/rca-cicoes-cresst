@@ -111,6 +111,8 @@ def main(data_dir: str | None, bucket: str, apply_: bool, delete_remote_only: bo
     fs = read_fs(bucket)
     if release:
         return sync_release(Path(data_dir), bucket, release, fs, apply_)
+    if fs.exists(f"{bucket}/catalog.json"):
+        raise click.ClickException(f"{bucket} holds versioned releases; upload one with --release")
     logger.info(f"syncing {data_dir} -> {bucket}")
     local = local_products(Path(data_dir))
     remote = bucket_products(fs, bucket)

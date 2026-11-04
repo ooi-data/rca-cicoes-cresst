@@ -35,7 +35,7 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
 | `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
 | `release-cresst` | Package built products as a versioned release (manifest, notes, build report) |
-| `sync-cresst` | Upload a packaged release, or push flat products in `data/<prefix>` to the matching S3 prefix |
+| `sync-cresst` | Upload a packaged release, or push flat products in `data/cresst` to `rca-advanced-qaqc/cresst` |
 
 > **Before building `hitl` or higher products,** run `harvest-annotations --all` and `curate-annotations --all`, then approve any proposals. OOI edits annotations after the fact, so stale or unreviewed annotations mask the wrong data. See [HITL Annotations](#hitl-annotations).
 
@@ -403,7 +403,7 @@ sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11   
 sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11 --apply  # upload release, catalog, changelog
 ```
 
-Without `--release`, it syncs flat, dated product files:
+Without `--release`, it syncs flat, dated product files to a prefix without releases (`cresst/`); it refuses a prefix that holds releases:
 
 Push local products in `data/<prefix>` up to the matching S3 prefix (default `rca-advanced-qaqc/cresst` from `data/cresst`; change with `--bucket`, override the local directory with `--data-dir`), matching by product identity (uploads when the local end date is newer or the same-range content changed). Dry-run by default; `--apply` writes (needs AWS credentials), `--delete-remote-only-data` also removes bucket files with no local counterpart.
 
@@ -411,5 +411,4 @@ Push local products in `data/<prefix>` up to the matching S3 prefix (default `rc
 sync-cresst                                   # preview the plan
 sync-cresst --apply                           # upload + remove superseded same-identity copies
 sync-cresst --apply --delete-remote-only-data # also delete bucket-only files
-sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca  # sync data/cresst-one-easy-rca
 ```

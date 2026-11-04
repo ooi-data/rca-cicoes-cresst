@@ -228,9 +228,9 @@ s3://rca-advanced-qaqc/cresst-one-easy-rca/
 - **R28.** A published release is never changed: files are not replaced or deleted. Fixes go in a
   new release.
 
-The flat files at the top of `cresst-one-easy-rca/` are the 2026-10-23 build (`_qf49_HITL` =
-`hitl`, `_qf49_HITL_phadv` = `advanced`), kept until consumers read the manifest. They are the same
-data as release `v2026.10`.
+The 2026-10-23 build was published as flat files at the top of `cresst-one-easy-rca/`
+(`_qf49_HITL` = `hitl`, `_qf49_HITL_phadv` = `advanced`) until 2026-11-04, and is now release
+`v2026.10`. The top level holds only `catalog.json`, `CHANGELOG.md` and `releases/`.
 
 ### 7.2 Dimensions and coordinates
 
