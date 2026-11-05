@@ -15,11 +15,8 @@ from loguru import logger
 
 RCA_S3_BUCKET = "ooi-data/"
 RCA_ADVANCED_BUCKET = "rca-advanced-qaqc/"
-START_YEAR = 2015
+START_YEAR = 2014  # cabled array data begin late 2014
 
-# Advanced pH QC (rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags): positional
-# test string, '1' pass / '3' fail. Per science lead (2026-07-20), a point is
-# masked if ANY test reads 3 (all six tests are disqualifying, not just the hard ones).
 PARAMS_URL = "https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params"
 
 fs = s3fs.S3FileSystem(anon=True, config_kwargs={"read_timeout": 300, "connect_timeout": 60})
@@ -57,6 +54,7 @@ PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
     "partial_pressure_co2_ssw":      "pco2",
     "xco2_atm":                      "pco2",
     "fluorometric_chlorophyll_a":    "fluoro",
+    "flntu_x_mmp_cds_fluorometric_chlorophyll_a":  "fluoro",  # deep profiler FLNTU
     "fluorometric_cdom":             "fluoro",
     "optical_backscatter":           "fluoro",
     "par":                           "par",
@@ -340,9 +338,10 @@ def mask_ph_advanced(ds: xr.Dataset, ph_stream: str) -> xr.Dataset:
     """NaN out ph_seawater where any advanced pH QC test failed.
 
     Loads the precomputed advanced_qc_flags for this pH stream from the
-    rca-advanced-qaqc bucket, aligns to ds by time, and masks any point whose
-    flag string contains a 3 (failed test). Only 3 masks: any other code is kept, as are
-    points with no matching flag.
+    rca-advanced-qaqc bucket (rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags: one
+    character per test, 1 pass / 3 fail), aligns to ds by time, and masks any point whose
+    flag string contains a 3: every test is disqualifying (science lead, 2026-07-20). Only 3
+    masks: any other code is kept, as are points with no matching flag.
     """
     if "ph_seawater" not in ds:
         return ds

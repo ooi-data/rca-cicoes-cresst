@@ -29,7 +29,7 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 
 | Command | Purpose |
 |---------|---------|
-| `regrid-profiler` | Regrid shallow/deep profiler data onto a uniform pressure grid |
+| `regrid-profiler` | Grid shallow/deep profiler casts onto a uniform pressure grid |
 | `fixed-instruments` | Resample fixed-instrument (PC platform + seafloor BEP) data to a common time grid |
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
@@ -41,7 +41,12 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 
 ## Regridded Profiler Mooring Profiles
 
-A multi-instrument, pressure-gridded dataset derived from RCA profiler mooring data. Time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), deduplicated on pressure, and interpolated onto a uniform pressure grid.
+A multi-instrument, pressure-gridded dataset derived from RCA profiler mooring data. Time-series data from the OOI S3 zarr store is sliced into individual profiles using the [OOI profile index](https://github.com/OOI-CabledArray/profileIndices), from 2014 where an index exists, and put on a uniform pressure grid:
+
+- **Dense sensors** (CTD, and the deep profilers' oxygen, chlorophyll and CDOM; 4–22 samples per dbar) are bin-averaged, as Argo and Sea-Bird processing do. Upcast samples deeper than the shallowest point already reached are dropped (loop edit), then the rest are averaged in 1 dbar bins centred on each grid level.
+- **Sparse sensors** (pH, pCO₂, nitrate; under 1 sample per dbar) are linearly interpolated, keeping the first sample at a repeated pressure.
+
+Each year's data are read with one extra day, so casts crossing midnight on 31 December are whole.
 
 ### Sites
 
@@ -96,7 +101,7 @@ All variables are sampled on the upcast except `ph_seawater` and `pco2_seawater`
 | `salinity_corrected_nitrate` | Nitrate (NUTNRA) | — |
 | `ph_seawater` | pH (PHSENA) | — |
 | `pco2_seawater` | pCO₂ (PCO2WA) | — |
-| `fluorometric_chlorophyll_a` | — | Fluorometer (FLNTUA) |
+| `flntu_x_mmp_cds_fluorometric_chlorophyll_a` | — | Fluorometer (FLNTUA) |
 | `flcdr_x_mmp_cds_fluorometric_cdom` | — | CDOM (FLCDRA) |
 
 ### Building the profiler product (`regrid-profiler`)
@@ -125,7 +130,7 @@ regrid-profiler axial_base_deep --grid 150 2600 1 --format both --qaqc-filter hi
 Output naming:
 
 ```
-<site>_profiles_<start>_<end>[_<level>].<ext>
+<site>_profiles_<start>_<end>_<level>.<ext>
 ```
 
 | Component | Description |
@@ -138,7 +143,7 @@ Output naming:
 Examples:
 
 ```
-axial_base_profiles_20150107_20260604.zarr
+axial_base_profiles_20150107_20260604_ooi.zarr
 axial_base_profiles_20150107_20260604_qartod.nc
 axial_base_profiles_20150107_20260604_hitl.zarr
 ```
@@ -287,7 +292,7 @@ Each row is one decision about one OOI annotation. To read the annotation itself
 | `reviewed_at` | Date the decision was last checked by a person or review session. | `YYYY-MM-DD`; empty if never reviewed | Yes, set to today |
 | `content_hash` | Fingerprint of OOI's annotation (text, qcFlag, parameters, refdes) at the time of the decision. If OOI edits the annotation, the fingerprint stops matching and the row comes back for review. It fingerprints OOI's annotation, not your decision. | 10 hex characters | Never |
 
-Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical_salinity`, `sea_water_density`, `corrected_dissolved_oxygen`, `ph_seawater`, `ph_total`, `pco2_seawater`, `partial_pressure_co2_ssw`, `xco2_atm`, `salinity_corrected_nitrate`, `nitrate_concentration`, `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`, `flcdr_x_mmp_cds_fluorometric_cdom` (full list: `PARAM_TO_INSTRUMENT` in `common.py`). The pipelines warn about any other name.
+Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical_salinity`, `sea_water_density`, `corrected_dissolved_oxygen`, `ph_seawater`, `ph_total`, `pco2_seawater`, `partial_pressure_co2_ssw`, `xco2_atm`, `salinity_corrected_nitrate`, `nitrate_concentration`, `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`, `flntu_x_mmp_cds_fluorometric_chlorophyll_a`, `flcdr_x_mmp_cds_fluorometric_cdom` (full list: `PARAM_TO_INSTRUMENT` in `common.py`). The pipelines warn about any other name.
 
 ### Editing the ledger
 
