@@ -340,12 +340,18 @@ All are publicly readable without credentials.
 ## 9. Known limitations
 
 - Global attributes describe a source stream, not the product (7.3).
-- Sparse variables (pH, pCO₂, nitrate) are interpolated across gaps of any size within a cast;
-  Axial pH has ~13 samples per downcast, so many grid values are interpolated.
+- Sparse variables (pH, pCO₂, nitrate) are interpolated across gaps of any size within a cast.
+  pH and pCO₂ have 12–13 samples per downcast, at profiler stops about 10 dbar apart above
+  ~110 dbar and 22 dbar apart below (largest gap per cast: pH 34 dbar, pCO₂ 22, median since
+  2017); most 2014–2016 casts have 2 samples. So most of their grid values are interpolated. A gap
+  limit (e.g. 40 dbar) or a distance-to-nearest-sample variable awaits the science lead.
 - Bins built from very few samples look the same as full bins.
-- Deep-profiler sensors are read on the upcast only (R4), so casts that only descend come out empty
-  or nearly so (a quarter of Oregon Offshore deep casts sampled in June 2022). In `v2026.10`, 25–41%
-  of deep-profiler casts have 5 or fewer levels.
+- Deep-profiler sensors are read on the upcast only (R4). In `v2026.10`, 25–41% of deep-profiler
+  casts have 5 or fewer levels, for two reasons. At Axial (2017, 2018, 2021) and Slope Base (2015,
+  2018, 2020) the profile index rows run top to bottom and the ascents fall between rows, so those
+  years have almost no profiles (Axial 2018: 17.9 M CTD samples, 2 profiles). At Oregon Offshore,
+  some casts logged descents only (spring 2022) or are short near-bottom cycles (2025, 522–578
+  dbar). Fixing the index or finding casts from pressure is planned.
 - Deep-profiler chlorophyll and CDOM are not despiked; a spike is averaged into its bin. They keep
   OOI's profiler-specific names (`flntu_x_mmp_cds_…`, `flcdr_x_mmp_cds_…`).
 - Shelf pH: possible offset at the stitch seam (R14). OOI labels both sources total scale, so the
