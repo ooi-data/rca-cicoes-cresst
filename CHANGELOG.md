@@ -22,6 +22,7 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 - `annotations.csv`, `ledger.csv` and `adjustments.csv` in each release (R31).
 - `release`, `spec_version` and `git_commit` attributes on every file (R29).
 - `deploymentcorrected` level: per-deployment corrections from cruise samples (R24). Provisional; not published.
+  Covers salinity, oxygen and nitrate, 2015–2025; a deployment spanning two cruises is interpolated between them.
 - Deep-profiler chlorophyll, `flntu_x_mmp_cds_fluorometric_chlorophyll_a` (section 4). Ledger decision 5882 now
   names it, masking Axial deep chlorophyll from 2024-08-30 to 2025-08-07 (negative values).
 - 2014 data (R2): fixed series from August–October 2014, and profiles where a 2014 profile index exists

@@ -232,7 +232,7 @@ The shelf pH stitch combines the archived PHSEND and active PHSENH records after
 
 ### Deployment corrections (provisional)
 
-Per-deployment corrections from cruise discrete samples, read from calibrationPipeline's `outputs/deployments.json` at the commit pinned in `common.CALIBRATION_COMMIT`. They cover shallow-profiler salinity (an offset added) and oxygen (a gain multiplied) for 2020–2025. Each is matched to data by the stream's `deployment` number and recorded on the variable's `calibrations` attribute. Deployments rated worse than `common.CALIBRATION_MAX_STATUS` (3, "use with caution") stay uncorrected.
+Per-deployment corrections from cruise discrete samples, read from calibrationPipeline's `outputs/deployments.json` at the commit pinned in `common.CALIBRATION_COMMIT`. They cover shallow-profiler salinity and nitrate (an offset added) and oxygen (a gain multiplied) for 2015–2025, one correction per cruise. Each is matched to data by the stream's `deployment` number and recorded on the variable's `calibrations` attribute. A deployment with one correction gets it throughout. A deployment that spans two cruises is interpolated linearly between their cast times and held beyond them, as the [OOI BGC Best Practices](https://doi.org/10.25607/OBP-1865.2) recommend for drift (sections 2.5.4 and 3.5.3). Deployments rated worse than `common.CALIBRATION_MAX_STATUS` (3, "use with caution") stay uncorrected.
 
 Not yet settled, so `deploymentcorrected` products are not published:
 

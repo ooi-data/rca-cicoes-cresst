@@ -195,8 +195,10 @@ attribute.
   (correctable, not bad).
 - **R24.** Deployment corrections (`deploymentcorrected` level, provisional): per-deployment corrections from cruise
   discrete samples ([calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline),
-  pinned commit). Shallow-profiler salinity gets an offset added and oxygen a gain multiplied,
-  2020–2025, matched on the stream's `deployment` number. Deployments rated worse than status 3
+  pinned commit), one per cruise. Shallow-profiler salinity and nitrate get an offset added and
+  oxygen a gain multiplied, 2015–2025, matched on the stream's `deployment` number. A deployment
+  spanning two cruises is interpolated linearly between their casts and held beyond them (OOI BGC
+  Best Practices, Palevsky et al. 2023, 2.5.4 and 3.5.3). Deployments rated worse than status 3
   stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Open:
   density is not yet recomputed, and products don't yet mark corrected deployments.
 - **R25.** At `hitl` and above, every variable has a `hitl_masks` attribute: a JSON list with one
