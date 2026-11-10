@@ -1144,7 +1144,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 5436,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2f670de79b
 5458,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c4f3cd22c3
 5839,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6df61ae408
-5882,RS03AXPD,mask,"['fluorometric_chlorophyll_a', 'optical_backscatter']",llm,"qcFlag=fail with HITL/automated review finding negative chlorophyll-a and abnormally low backscatter, and the annotation explicitly says to avoid using the data in analyses.",llm (pre-ledger),approved,,5224d18fe1
+5882,RS03AXPD,mask,"['flntu_x_mmp_cds_fluorometric_chlorophyll_a']",llm,"qcFlag=fail with HITL/automated review finding negative chlorophyll-a and abnormally low backscatter, and the annotation explicitly says to avoid using the data in analyses. Chlorophyll named as in the deep FLNTU stream; its backscatter is not in the products.",claude (in-session review),approved,2026-11-05,5224d18fe1
 5954,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,31ab2f0ae2
 5977,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ab301e6a9
 5993,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,18a810efde

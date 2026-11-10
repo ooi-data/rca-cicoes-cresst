@@ -35,6 +35,8 @@ from rca_cicoes_cresst.common import (
 PROFILER_SITES = product_sites("profiler")
 
 DOWNCAST_INSTRUMENTS: set[str] = {"ph", "pco2"}
+# Under 1 sample per dbar, so interpolated onto the grid; the rest (4-22 per dbar) are bin-averaged
+SPARSE_INSTRUMENTS: set[str] = {"ph", "pco2", "nutrients"}
 # Advanced pH flags are not applied to profiler products (science lead, 2026-11-04): profiler pH
 # is rough and the any-test rule would remove most of it. Fixed products apply them at advanced.
 ADVANCED_PH = False
@@ -54,7 +56,7 @@ DEFAULT_PARAMS: dict[str, list[str]] = {
         "sea_water_practical_salinity",
         "corrected_dissolved_oxygen",
         "sea_water_density",
-        "fluorometric_chlorophyll_a",
+        "flntu_x_mmp_cds_fluorometric_chlorophyll_a",
         "flcdr_x_mmp_cds_fluorometric_cdom",
     ],
 }
@@ -83,6 +85,7 @@ def load_regridding_inputs(
             "ds": ds[available],
             "params": [p for p in instr_params if p in ds],
             "is_downcast": instr_key in DOWNCAST_INSTRUMENTS,
+            "is_sparse": instr_key in SPARSE_INSTRUMENTS,
             "sensors": {refdes.split("-", 2)[2]},
             "hitl_masks": {},
         })
@@ -102,6 +105,32 @@ def load_regridding_inputs(
     return instrument_datasets, all_indices
 
 
+def interpolate_cast(ds_cast: xr.Dataset, pres_var: str, new_grid: np.ndarray) -> xr.Dataset:
+    """Linear interpolation in pressure; a repeated pressure keeps its first sample."""
+    _, first = np.unique(ds_cast[pres_var].values, return_index=True)
+    ds_cast = ds_cast.isel(time=np.sort(first)).swap_dims({"time": pres_var}).drop_vars("time")
+    return ds_cast.interp({pres_var: new_grid}).rename({pres_var: "sea_water_pressure"})
+
+
+def bin_average_cast(ds_cast: xr.Dataset, pres_var: str, new_grid: np.ndarray) -> xr.Dataset | None:
+    """Loop edit then bin average, as Sea-Bird processing and Argo do: drop samples deeper than the
+    shallowest point already reached on the upcast, then average each bin centred on a grid level.
+    None if no sample falls in the grid."""
+    pres = ds_cast[pres_var].values
+    level = np.floor((pres - new_grid[0]) / (new_grid[1] - new_grid[0]) + 0.5)  # index of the sample's bin
+    keep = (pres <= np.fmin.accumulate(pres)) & (level >= 0) & (level < len(new_grid))
+    if not keep.any():
+        return None
+    ds_cast = ds_cast.isel(time=keep).drop_vars(["time", pres_var])
+    ds_cast["sea_water_pressure"] = ("time", new_grid[level[keep].astype(int)])
+    # pandas groupby: ~50x faster per cast than xarray's without flox, over ~40k casts per site
+    means = ds_cast.to_dataframe().groupby("sea_water_pressure").mean()
+    binned = xr.Dataset.from_dataframe(means).reindex(sea_water_pressure=new_grid)
+    for v in binned.data_vars:
+        binned[v].attrs = ds_cast[v].attrs
+    return binned
+
+
 def regrid_profiles(
     instrument_datasets: list[dict],
     indices: pd.DataFrame,
@@ -116,7 +145,8 @@ def regrid_profiles(
     for year, year_indices in subset.groupby(pd.to_datetime(subset["start"]).dt.year):
         year_datasets = []
         for instr in instrument_datasets:
-            ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year}-12-31")).compute()
+            # one day past the year so casts crossing midnight on 31 December are whole
+            ds_year = instr["ds"].sel(time=slice(f"{year}-01-01", f"{year + 1}-01-01")).compute()
             if annotations is not None:
                 ds_year = mask_annotation_windows(ds_year, instr["params"], annotations, instr["sensors"], instr["hitl_masks"])
             ds_year = mask_qartod(ds_year, instr["params"], QARTOD_EXCLUDE if qc_at(qaqc_filter, "qartod") else set())
@@ -141,16 +171,10 @@ def regrid_profiles(
                 if pres_var is None:
                     continue
 
-                _, uniq_idx = np.unique(ds_cast[pres_var].values, return_index=True)
-                ds_cast = ds_cast.isel(time=np.sort(uniq_idx))
-                ds_cast = ds_cast.swap_dims({"time": pres_var})
-                ds_cast = ds_cast.drop_vars("time")
-                ds_int = ds_cast.interp({pres_var: new_grid})
-
-                if pres_var != "sea_water_pressure":
-                    ds_int = ds_int.rename({pres_var: "sea_water_pressure"})
-
-                profile_parts.append(ds_int)
+                to_grid = interpolate_cast if instr["is_sparse"] else bin_average_cast
+                ds_grid = to_grid(ds_cast, pres_var, new_grid)
+                if ds_grid is not None:
+                    profile_parts.append(ds_grid)
 
             if not profile_parts:
                 skipped += 1
@@ -226,7 +250,8 @@ def main(
     annotations_dir: str,
     output_dir: str,
 ) -> None:
-    """Regrid RCA shallow profiler data to a uniform pressure grid.
+    """Grid RCA shallow and deep profiler casts onto a uniform pressure grid: dense sensors are
+    bin-averaged, sparse ones (pH, pCO2, nitrate) interpolated.
 
     Output is saved to <output-dir>/<site>_profiles_<start>_<end>_<level>.<ext>.
     Example: oregon_offshore_profiles_20150101_20260508_hitl.zarr

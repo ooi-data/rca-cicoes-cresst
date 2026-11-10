@@ -15,11 +15,8 @@ from loguru import logger
 
 RCA_S3_BUCKET = "ooi-data/"
 RCA_ADVANCED_BUCKET = "rca-advanced-qaqc/"
-START_YEAR = 2015
+START_YEAR = 2014  # cabled array data begin late 2014
 
-# Advanced pH QC (rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags): positional
-# test string, '1' pass / '3' fail. Per science lead (2026-07-20), a point is
-# masked if ANY test reads 3 (all six tests are disqualifying, not just the hard ones).
 PARAMS_URL = "https://raw.githubusercontent.com/OOI-CabledArray/rca-data-tools/refs/heads/main/rca_data_tools/qaqc/params"
 
 fs = s3fs.S3FileSystem(anon=True, config_kwargs={"read_timeout": 300, "connect_timeout": 60})
@@ -57,6 +54,7 @@ PARAM_TO_INSTRUMENT: dict[str, str | list[str]] = {
     "partial_pressure_co2_ssw":      "pco2",
     "xco2_atm":                      "pco2",
     "fluorometric_chlorophyll_a":    "fluoro",
+    "flntu_x_mmp_cds_fluorometric_chlorophyll_a":  "fluoro",  # deep profiler FLNTU
     "fluorometric_cdom":             "fluoro",
     "optical_backscatter":           "fluoro",
     "par":                           "par",
@@ -114,14 +112,15 @@ OUTPUT_DIR = str(DATA_DIR / "cresst")
 ADJUSTMENTS_FILE = REPO_ROOT / "config" / "adjustments.csv"
 SITES_FILE = REPO_ROOT / "config" / "sites.csv"
 
-# Discrete-sample calibrations (OOI-CabledArray/calibrationPipeline), pinned. Ready per Ada
-# (2026-11-02): shallow-profiler salinity and oxygen. Nitrate and fixed instruments in progress.
-CALIBRATION_COMMIT = "a02841bcfd6d87d16470f5e498c198ec7088cfb6"
-CALIBRATION_URL = (
-    "https://raw.githubusercontent.com/OOI-CabledArray/calibrationPipeline/"
-    f"{CALIBRATION_COMMIT}/outputs/deployments.json"
-)
-CALIBRATION_VARIABLES = {"salinity": "sea_water_practical_salinity", "oxygen": "corrected_dissolved_oxygen"}
+# Discrete-sample calibrations (OOI-CabledArray/calibrationPipeline), pinned: shallow-profiler salinity,
+# oxygen and nitrate, 2015-2025 (2026-11-06). Fixed instruments in progress.
+CALIBRATION_COMMIT = "7d2e7781842effd926f4743206fd47e595a48525"
+CALIBRATION_URL = f"https://raw.githubusercontent.com/OOI-CabledArray/calibrationPipeline/{CALIBRATION_COMMIT}/outputs"
+CALIBRATION_VARIABLES = {
+    "salinity": "sea_water_practical_salinity",
+    "oxygen": "corrected_dissolved_oxygen",
+    "nitrate": "salinity_corrected_nitrate",
+}
 CALIBRATION_MAX_STATUS = 3  # provisional: worst status level (1 good to 4 not recommended) applied
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
@@ -340,9 +339,10 @@ def mask_ph_advanced(ds: xr.Dataset, ph_stream: str) -> xr.Dataset:
     """NaN out ph_seawater where any advanced pH QC test failed.
 
     Loads the precomputed advanced_qc_flags for this pH stream from the
-    rca-advanced-qaqc bucket, aligns to ds by time, and masks any point whose
-    flag string contains a 3 (failed test). Only 3 masks: any other code is kept, as are
-    points with no matching flag.
+    rca-advanced-qaqc bucket (rca_data_tools.qaqc.advanced_qaqc.ph_advanced_flags: one
+    character per test, 1 pass / 3 fail), aligns to ds by time, and masks any point whose
+    flag string contains a 3: every test is disqualifying (science lead, 2026-07-20). Only 3
+    masks: any other code is kept, as are points with no matching flag.
     """
     if "ph_seawater" not in ds:
         return ds
@@ -401,10 +401,10 @@ def apply_adjustments(ds: xr.Dataset, refdes: str) -> xr.Dataset:
 
 @cache
 def read_calibrations() -> pd.DataFrame:
-    """Per-deployment discrete-sample corrections from calibrationPipeline: one row per product
-    refdes, variable and deployment, with kind (offset: add, scale: multiply), value and status
-    level (1 good to 4 not recommended)."""
-    cal = requests.get(CALIBRATION_URL).json()
+    """Discrete-sample corrections from calibrationPipeline: one row per product refdes, variable and
+    cruise, with deployment, kind (offset: add, scale: multiply), value, status level (1 good to 4 not
+    recommended) and the cruise's cast time. A deployment spanning two cruises has two rows."""
+    cal = requests.get(f"{CALIBRATION_URL}/deployments.json").json()
     # oxygen is calibrated on the DOFSTA refdes but served in the CTD stream on the same port
     ctd = {r.rsplit("-", 1)[0]: r for r in read_sites()["refdes"] if "-CTD" in r}
     rows = []
@@ -413,6 +413,8 @@ def read_calibrations() -> pd.DataFrame:
             continue
         for d in filter(lambda d: d["calibrated"], inst["deployments"]):
             gain = (d["function_offset"] or {}).get("gain")
+            sub = "" if inst["variable"] == "salinity" else f"{inst['variable']}/"
+            record = requests.get(f"{CALIBRATION_URL}/{d['run']}/{sub}calibration_record.json").json()
             rows.append({
                 "refdes": ctd.get(inst["refdes"].rsplit("-", 1)[0], inst["refdes"]),
                 "variable": CALIBRATION_VARIABLES[inst["variable"]],
@@ -421,24 +423,34 @@ def read_calibrations() -> pd.DataFrame:
                 "value": d["flat_offset"]["value"] if gain is None else gain,
                 "status": d["status"]["level"],
                 "record_id": d["record_id"],
+                "cast_time": pd.Timestamp(record["rca:cruise"]["cast_time_utc"]).tz_convert(None),
             })
     return pd.DataFrame(rows)
 
 
 def apply_calibrations(ds: xr.Dataset, refdes: str, max_status: int) -> xr.Dataset:
     """Apply read_calibrations rows for this instrument, matched on the stream's deployment number.
-    Deployments rated above max_status stay uncorrected. Runs on the raw stream, after adjustments."""
+    One correction applies to the whole deployment; a deployment spanning two cruises is interpolated
+    linearly between their casts and held beyond them (OOI BGC Best Practices, Palevsky et al. 2023,
+    2.5.4 and 3.5.3). Deployments rated above max_status stay uncorrected. Runs on the raw stream,
+    after adjustments."""
     cal = read_calibrations()
-    for row in cal[(cal["refdes"] == refdes) & (cal["status"] <= max_status)].itertuples():
-        if row.variable not in ds:
-            continue
-        var = ds[row.variable]
-        corrected = var + row.value if row.kind == "offset" else var * row.value
-        ds[row.variable] = var.where(ds["deployment"] != row.deployment, corrected)
-        note = f"deployment {row.deployment}: {row.kind} {row.value} (status {row.status}, {row.record_id})"
-        ds[row.variable].attrs["calibrations"] = "; ".join(filter(None, [var.attrs.get("calibrations"), note]))
-        logger.info(f"{refdes} {row.variable} calibration, {note}")
-    if "sea_water_practical_salinity" in cal[cal["refdes"] == refdes]["variable"].values:
+    cal = cal[(cal["refdes"] == refdes) & (cal["status"] <= max_status) & cal["variable"].isin(list(ds.data_vars))]
+    for (variable, deployment), rows in cal.sort_values("cast_time").groupby(["variable", "deployment"]):
+        var = ds[variable]
+        # np.interp holds the end values, and a single cast gives a constant
+        value = xr.apply_ufunc(
+            np.interp, var["time"].astype("datetime64[ns]").astype("int64"),
+            kwargs={"xp": rows["cast_time"].values.astype("datetime64[ns]").astype("int64"), "fp": rows["value"].values},
+        )
+        corrected = var + value if rows["kind"].iloc[0] == "offset" else var * value
+        ds[variable] = var.where(ds["deployment"] != deployment, corrected)
+        for row in rows.itertuples():
+            note = (f"deployment {deployment}: {row.kind} {row.value} at cast {row.cast_time:%Y-%m-%d} "
+                    f"(status {row.status}, {row.record_id})")
+            ds[variable].attrs["calibrations"] = "; ".join(filter(None, [ds[variable].attrs.get("calibrations"), note]))
+            logger.info(f"{refdes} {variable} calibration, {note}")
+    if "sea_water_practical_salinity" in cal["variable"].values:
         logger.warning(f"{refdes}: sea_water_density not recomputed from calibrated salinity")  # TODO: gsw
     return ds
 
@@ -479,8 +491,8 @@ def qc_steps(level: str, advanced_ph: bool = True) -> str:
     if qc_at(level, "hitl"):
         steps.append("adjustments: config/adjustments.csv (mask/substitute/offset windows)")
     if qc_at(level, "deploymentcorrected"):
-        steps.append(f"deployment corrections: calibrationPipeline {CALIBRATION_COMMIT[:7]} per-deployment "
-                     f"offsets and gains, status <= {CALIBRATION_MAX_STATUS}")
+        steps.append(f"deployment corrections: calibrationPipeline {CALIBRATION_COMMIT[:7]} per-cruise "
+                     f"offsets and gains, interpolated within a deployment, status <= {CALIBRATION_MAX_STATUS}")
     if qc_at(level, "advanced"):
         steps.append("advanced pH: ph_seawater masked where any advanced test failed (3)" if advanced_ph
                      else "advanced pH: not applied to profiler products")

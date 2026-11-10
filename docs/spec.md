@@ -1,6 +1,6 @@
 # RCA-CRESST Data Products: Product Specification
 
-**Version 0.2 (draft), 2026-11-04.** Describes the products published as versioned releases under
+**Version 0.2 (draft), 2026-11-05.** Describes the products published as versioned releases under
 `s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/` (section 10). Rules are numbered (R1, R2, …)
 so they can be cited, and each is meant to become a test. Version 0.1 (2026-10-28) described the
 2026-10-23 build, published as release `v2026.10`.
@@ -19,7 +19,7 @@ flag. These products are a curated, gridded layer on top of it.
 
 | Product | Name | What it is | Sites |
 |---|---|---|---|
-| Profiler profiles | `<site>_profiles` | Each profiler cast interpolated onto a fixed pressure grid | 6 |
+| Profiler profiles | `<site>_profiles` | Each profiler cast bin-averaged or interpolated onto a fixed pressure grid | 6 |
 | Profiler daily bins | `<site>_profiles_binned_24h` | Profiler profiles averaged into 24 h time bins | 6 |
 | Fixed time series | `<site>_fixed_1h` | Fixed-depth instruments averaged into 1 h time bins | 7 |
 
@@ -65,7 +65,8 @@ fails if a refdes there is missing from the rca-data-tools params.
 
 - **R1.** Seafloor pCO₂ (CE04OSBP-LJ01C-09-PCO2WB104, CE02SHBP-LJ01D-09-PCO2WB103) is excluded
   until it has been offset and reviewed by a subject-matter expert.
-- **R2.** Data start on 2015-01-01. Earlier data, where they exist, are not included.
+- **R2.** Data start on 2014-01-01, before the first cabled-array data. Profiler products have 2014
+  data only where a 2014 profile index exists: `oregon_offshore`, `axial_base` and `axial_base_deep`.
 
 ## 4. Variables
 
@@ -81,7 +82,8 @@ Names, units and `long_name` / `standard_name` attributes are OOI's, carried thr
 | `ph_seawater` | 1 (total scale per OOI's `standard_name`) | PHSEN; PHSENH on the shelf after 2025-08-28 | shallow profilers, fixed |
 | `pco2_seawater` | uatm | PCO2W | shallow profilers, `oregon_offshore` fixed |
 | `salinity_corrected_nitrate` | umol L-1 | NUTNR | shallow profilers |
-| `fluorometric_chlorophyll_a` | ug L-1 | FLORD | PC fixed (missing from deep profilers, section 9) |
+| `fluorometric_chlorophyll_a` | ug L-1 | FLORD | PC fixed |
+| `flntu_x_mmp_cds_fluorometric_chlorophyll_a` | ug L-1 | FLNTU | deep profilers |
 | `fluorometric_cdom` | ppb | FLORD | PC fixed |
 | `flcdr_x_mmp_cds_fluorometric_cdom` | ppb | FLCDR | deep profilers |
 | `optical_backscatter` | m-1 | FLORD | PC fixed |
@@ -94,13 +96,19 @@ A site's file contains only the variables its instruments provide (section 3).
 ### 5.1 Profiler profiles
 
 - **R3.** Casts come from the OOI [profile index](https://github.com/OOI-CabledArray/profileIndices)
-  (`start`, `peak`, `end` times per cast, UTC). `peak` is the shallowest point.
+  (`start`, `peak`, `end` times per cast, UTC). `peak` is the shallowest point. Casts are
+  processed by the year of `start`, reading data through the next 1 January, so a cast crossing
+  midnight on 31 December is whole.
 - **R4.** pH and pCO₂ are taken from the downcast (`peak` to `end`); every other variable from
   the upcast (`start` to `peak`). These sensors sample in that direction.
-- **R5.** Within a cast, repeated pressure values are reduced to the first sample. A cast with
-  fewer than 2 samples is dropped for that instrument.
-- **R6.** Each cast is linearly interpolated in pressure onto the site grid. Grid points outside
-  the cast's observed pressure range are NaN (no extrapolation).
+- **R5.** Dense sensors (4–22 samples per dbar: the CTD, and the deep profilers' oxygen, FLNTU and
+  FLCDR) are loop-edited and bin-averaged, as in Sea-Bird processing and Argo. An upcast sample
+  deeper than the shallowest pressure already reached on that cast is dropped. The rest are
+  averaged in bins one grid step wide, centred on each grid level, lower edge inclusive. Values
+  masked by QC are left out of the average; an empty bin is NaN.
+- **R6.** Sparse sensors (under 1 sample per dbar: pH, pCO₂, nitrate) are linearly interpolated in
+  pressure onto the grid; a repeated pressure keeps its first sample. Grid points outside the
+  cast's observed pressure range are NaN (no extrapolation).
 - **R7.** Grids are uniform, 1 dbar spacing, start inclusive and stop exclusive:
 
   | Site | Grid (dbar) |
@@ -110,7 +118,8 @@ A site's file contains only the variables its instruments provide (section 3).
   | `slope_base_deep` | 150–2899 |
   | `axial_base_deep` | 150–2599 |
 
-- **R8.** Instruments are merged per cast; a cast is kept if at least one instrument has data.
+- **R8.** Instruments are merged per cast; an instrument with fewer than 2 samples in a cast is left
+  out of it, and a cast is kept if at least one instrument has data.
 
 ### 5.2 Profiler daily bins
 
@@ -186,8 +195,10 @@ attribute.
   (correctable, not bad).
 - **R24.** Deployment corrections (`deploymentcorrected` level, provisional): per-deployment corrections from cruise
   discrete samples ([calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline),
-  pinned commit). Shallow-profiler salinity gets an offset added and oxygen a gain multiplied,
-  2020–2025, matched on the stream's `deployment` number. Deployments rated worse than status 3
+  pinned commit), one per cruise. Shallow-profiler salinity and nitrate get an offset added and
+  oxygen a gain multiplied, 2015–2025, matched on the stream's `deployment` number. A deployment
+  spanning two cruises is interpolated linearly between their casts and held beyond them (OOI BGC
+  Best Practices, Palevsky et al. 2023, 2.5.4 and 3.5.3). Deployments rated worse than status 3
   stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Open:
   density is not yet recomputed, and products don't yet mark corrected deployments.
 - **R25.** At `hitl` and above, every variable has a `hitl_masks` attribute: a JSON list with one
@@ -328,14 +339,21 @@ All are publicly readable without credentials.
 
 ## 9. Known limitations
 
-- Deep profilers have no chlorophyll: their FLNTU stream names it
-  `flntu_x_mmp_cds_fluorometric_chlorophyll_a`, which the build doesn't request.
 - Global attributes describe a source stream, not the product (7.3).
-- Profiles crossing midnight on 31 December are cut at the year boundary.
-- Sparse variables (pH, pCO₂, nitrate) are interpolated across gaps of any size within a cast;
-  Axial pH has ~13 samples per downcast, so many grid values are interpolated.
-- Dense CTD data are interpolated from the two nearest samples, not averaged within each level.
+- Sparse variables (pH, pCO₂, nitrate) are interpolated across gaps of any size within a cast.
+  pH and pCO₂ have 12–13 samples per downcast, at profiler stops about 10 dbar apart above
+  ~110 dbar and 22 dbar apart below (largest gap per cast: pH 34 dbar, pCO₂ 22, median since
+  2017); most 2014–2016 casts have 2 samples. So most of their grid values are interpolated. A gap
+  limit (e.g. 40 dbar) or a distance-to-nearest-sample variable awaits the science lead.
 - Bins built from very few samples look the same as full bins.
+- Deep-profiler sensors are read on the upcast only (R4). In `v2026.10`, 25–41% of deep-profiler
+  casts have 5 or fewer levels, for two reasons. At Axial (2017, 2018, 2021) and Slope Base (2015,
+  2018, 2020) the profile index rows run top to bottom and the ascents fall between rows, so those
+  years have almost no profiles (Axial 2018: 17.9 M CTD samples, 2 profiles). At Oregon Offshore,
+  some casts logged descents only (spring 2022) or are short near-bottom cycles (2025, 522–578
+  dbar). Fixing the index or finding casts from pressure is planned.
+- Deep-profiler chlorophyll and CDOM are not despiked; a spike is averaged into its bin. They keep
+  OOI's profiler-specific names (`flntu_x_mmp_cds_…`, `flcdr_x_mmp_cds_…`).
 - Shelf pH: possible offset at the stitch seam (R14). OOI labels both sources total scale, so the
   scale caveat in `source_note` may be unnecessary.
 - About 718 annotation decisions made by an LLM before the ledger have not been reviewed by a
