@@ -23,7 +23,7 @@ pip install -e .
 
 Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, loguru) install automatically; LLM curation additionally needs `anthropic` (`pip install -e ".[curate]"`). Reading OOI/RCA S3 data is anonymous — no credentials needed. Credentials are required only for: harvesting/curating annotations (`OOI_USERNAME`, `OOI_TOKEN`, and `ANTHROPIC_API_KEY` for LLM curation, in a local `.env`) and writing with `sync-cresst` (AWS credentials).
 
-**Outputs & layout.** Each S3 prefix has a matching local directory under `data/`: `data/cresst` ↔ `rca-advanced-qaqc/cresst` (the default) and `data/cresst-one-easy-rca` ↔ `rca-advanced-qaqc/cresst-one-easy-rca`. `regrid-profiler` and `fixed-instruments` write to `--output-dir` (default `data/cresst`) and logs to `logs/`; `bin-dataset` writes next to its input. `sync-cresst --bucket` syncs the matching directory.
+**Outputs & layout.** Each S3 prefix has a matching local directory under `data/`: `data/cresst` ↔ `rca-advanced-qaqc/cresst` (the default) and `data/cresst-easy-one-rca` ↔ `rca-advanced-qaqc/cresst-easy-one-rca`. `regrid-profiler` and `fixed-instruments` write to `--output-dir` (default `data/cresst`) and logs to `logs/`; `bin-dataset` writes next to its input. `sync-cresst --bucket` syncs the matching directory.
 
 ## Command overview
 
@@ -371,10 +371,10 @@ Output is written next to the input file. See `bin-dataset --help` for full opti
 
 ## Releases (`release-cresst`)
 
-Products are published as versioned, never-changed releases under `s3://rca-advanced-qaqc/cresst-one-easy-rca/` ([spec](docs/spec.md) sections 7 and 10). Consumers start from `catalog.json`, then read a release's `manifest.json`:
+Products are published as versioned, never-changed releases under `s3://rca-advanced-qaqc/cresst-easy-one-rca/` ([spec](docs/spec.md) sections 7 and 10). Consumers start from `catalog.json`, then read a release's `manifest.json`:
 
 ```
-cresst-one-easy-rca/
+cresst-easy-one-rca/
   catalog.json  CHANGELOG.md
   releases/vYYYY.MM/
     manifest.json  RELEASE_NOTES.md  build_report.json
@@ -393,19 +393,19 @@ fixed-instruments axial_base_seafloor --format both --qaqc-filter advanced --out
 # 3. package
 release-cresst v2026.11 --from data/build
 # 4. commit CHANGELOG.md, upload, push the tag
-sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11 --apply
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11 --apply
 git push origin v2026.11
 ```
 
-`release-cresst` refuses to run if the changelog has no `Unreleased` highlights, if the version already exists, or if the products were built from a different or uncommitted commit (override with `--allow-dirty`, which also skips the tag). It writes `data/cresst-one-easy-rca/releases/<version>/`, adds the release to `catalog.json`, moves the changelog's `Unreleased` section under the version, and tags the build commit locally. `RELEASE_NOTES.md` diffs the release against the previous one: ledger decisions, adjustments, products and time coverage, and masking (`build_report.json`). `--legacy-from` packaged the 2026-10-23 flat build as `v2026.10`.
+`release-cresst` refuses to run if the changelog has no `Unreleased` highlights, if the version already exists, or if the products were built from a different or uncommitted commit (override with `--allow-dirty`, which also skips the tag). It writes `data/cresst-easy-one-rca/releases/<version>/`, adds the release to `catalog.json`, moves the changelog's `Unreleased` section under the version, and tags the build commit locally. `RELEASE_NOTES.md` diffs the release against the previous one: ledger decisions, adjustments, products and time coverage, and masking (`build_report.json`). `--legacy-from` packaged the 2026-10-23 flat build as `v2026.10`.
 
 ## Syncing Products (`sync-cresst`)
 
 Upload a packaged release with `--release`; a release already in the bucket is never overwritten:
 
 ```bash
-sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11          # preview
-sync-cresst --bucket rca-advanced-qaqc/cresst-one-easy-rca --release v2026.11 --apply  # upload release, catalog, changelog
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11          # preview
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11 --apply  # upload release, catalog, changelog
 ```
 
 Without `--release`, it syncs flat, dated product files to a prefix without releases (`cresst/`); it refuses a prefix that holds releases:

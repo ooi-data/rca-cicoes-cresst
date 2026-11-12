@@ -8,7 +8,7 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Highlights
 
-- Products are published as versioned releases under `cresst-one-easy-rca/releases/`, each with a manifest,
+- Products are published as versioned releases under `cresst-easy-one-rca/releases/`, each with a manifest,
   release notes and a build report (R26–R37).
 - QC levels replace the `_qf49_HITL` and `_phadv` suffixes: `ooi`, `qartod`, `hitl`, `advanced`,
   `deploymentcorrected` (section 6). A release can carry any subset of levels.
@@ -30,6 +30,7 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Changed
 
+- The release prefix is `cresst-easy-one-rca/`, matching Easy OneArgo. It was `cresst-one-easy-rca/`.
 - Advanced pH flags are the `advanced` level, applied to every fixed product whose pH stream has flags, and not to
   profiler products (R17).
 - `qartod` (formerly `basic`) no longer applies `config/adjustments.csv`; adjustments start at `hitl` (section 6).

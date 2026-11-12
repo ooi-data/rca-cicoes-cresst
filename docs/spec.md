@@ -1,7 +1,7 @@
 # RCA-CRESST Data Products: Product Specification
 
 **Version 0.2 (draft), 2026-11-05.** Describes the products published as versioned releases under
-`s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/` (section 10). Rules are numbered (R1, R2, …)
+`s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/` (section 10). Rules are numbered (R1, R2, …)
 so they can be cited, and each is meant to become a test. Version 0.1 (2026-10-28) described the
 2026-10-23 build, published as release `v2026.10`.
 
@@ -219,7 +219,7 @@ attribute.
 ### 7.1 Layout
 
 ```
-s3://rca-advanced-qaqc/cresst-one-easy-rca/
+s3://rca-advanced-qaqc/cresst-easy-one-rca/
   catalog.json                    releases, newest first (R33)
   CHANGELOG.md                    changes in every release
   releases/vYYYY.MM/
@@ -239,9 +239,10 @@ s3://rca-advanced-qaqc/cresst-one-easy-rca/
 - **R28.** A published release is never changed: files are not replaced or deleted. Fixes go in a
   new release.
 
-The 2026-10-23 build was published as flat files at the top of `cresst-one-easy-rca/`
+The 2026-10-23 build was published as flat files at the top of the prefix
 (`_qf49_HITL` = `hitl`, `_qf49_HITL_phadv` = `advanced`) until 2026-11-04, and is now release
-`v2026.10`. The top level holds only `catalog.json`, `CHANGELOG.md` and `releases/`.
+`v2026.10`. The prefix was named `cresst-one-easy-rca/` until 2026-11-12; `v2026.10` was copied
+here unchanged except for `base_url` in its manifest. The top level holds only `catalog.json`, `CHANGELOG.md` and `releases/`.
 
 ### 7.2 Dimensions and coordinates
 
@@ -298,7 +299,7 @@ of the OOI source streams and describe that stream, not the product. See section
     "date": "2026-11-30",
     "spec_version": "0.2",
     "git_commit": "<40 hex>",
-    "base_url": "s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/v2026.11/",
+    "base_url": "s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/v2026.11/",
     "products": [
       {
         "product": "slope_base_profiles",
@@ -331,8 +332,8 @@ of the OOI source streams and describe that stream, not the product. See section
 
 | Location | Contents |
 |---|---|
-| `s3://rca-advanced-qaqc/cresst-one-easy-rca/catalog.json` | Index of releases; start here |
-| `s3://rca-advanced-qaqc/cresst-one-easy-rca/releases/vYYYY.MM/` | One release (section 7) |
+| `s3://rca-advanced-qaqc/cresst-easy-one-rca/catalog.json` | Index of releases; start here |
+| `s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/vYYYY.MM/` | One release (section 7) |
 | `s3://rca-advanced-qaqc/cresst/` | July 2026 build, unversioned; not maintained |
 
 All are publicly readable without credentials.

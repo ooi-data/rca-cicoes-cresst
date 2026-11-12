@@ -240,7 +240,7 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> 
     "--output-dir",
     default=OUTPUT_DIR,
     show_default=True,
-    help="Directory to write products to (one per S3 prefix under data/, e.g. data/cresst-one-easy-rca).",
+    help="Directory to write products to (one per S3 prefix under data/, e.g. data/cresst-easy-one-rca).",
 )
 def main(
     site: str,
