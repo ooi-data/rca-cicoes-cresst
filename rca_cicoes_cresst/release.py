@@ -9,7 +9,7 @@ Unreleased section under the version, and tags the build commit. Builds nothing;
 
 Usage:
     release-cresst v2026.11 --from data/build
-    release-cresst v2026.10 --legacy-from data/cresst-one-easy-rca   # migrate the 2026-10-23 flat build
+    release-cresst v2026.10 --legacy-from data/cresst-easy-one-rca   # migrate the 2026-10-23 flat build
 """
 import hashlib
 import json
@@ -42,8 +42,8 @@ from rca_cicoes_cresst.common import (
     read_sites,
 )
 
-DEFAULT_DATA_DIR = DATA_DIR / "cresst-one-easy-rca"
-BUCKET = "rca-advanced-qaqc/cresst-one-easy-rca"
+DEFAULT_DATA_DIR = DATA_DIR / "cresst-easy-one-rca"
+BUCKET = "rca-advanced-qaqc/cresst-easy-one-rca"
 CHANGELOG = REPO_ROOT / "CHANGELOG.md"
 VERSION = re.compile(r"^v\d{4}\.(0[1-9]|1[0-2])$")
 LEVEL = "|".join(QC_LEVELS)
