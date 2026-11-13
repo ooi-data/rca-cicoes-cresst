@@ -11,6 +11,7 @@ __pycache__/
 
 # ai/vibe
 .claude
+.agents
 
 # credentials
 .env
@@ -23,3 +24,6 @@ __pycache__/
 .ipynb_checkpoints
 # packaging
 *.egg-info/
+
+# local app config
+.streamlit/
