@@ -5,7 +5,7 @@ Reads harvested annotations from annotations/raw/<SUBSITE>.csv and adds `propose
 rows to annotations/ledger.csv for every annotation that is not yet in the
 ledger or whose content (text, qcFlag, parameters, refdes) changed since its
 decision. Approved rows are never overwritten. A reviewer approves proposals by
-setting status=approved (and reviewed_at) in a PR.
+setting status=approved (and reviewed_at, reviewed_by) in a PR.
 
 - Annotations on instruments outside the products are ignored by rule (no LLM).
 - Claude judges data-quality relevance for the rest. When OOI lists official
@@ -42,7 +42,7 @@ load_dotenv()
 
 MODEL = "claude-haiku-4-5"
 LEDGER_COLUMNS = ["id", "subsite", "decision", "parameters_affected", "parameters_source", "rationale",
-                  "decided_by", "status", "reviewed_at", "content_hash"]
+                  "decided_by", "status", "reviewed_at", "reviewed_by", "flag", "content_hash"]
 
 # refdes (subsite-node-sensor) of every instrument feeding a product
 PRODUCT_REFDES = set(read_sites()["refdes"]) | set(read_sites()["stitch_from"].dropna())
@@ -147,7 +147,8 @@ def classify_annotation(client, row: pd.Series, default_params: list[str], offic
 
 def propose(client, row: pd.Series, netcdf_names: dict[int, str]) -> dict:
     """One proposed ledger row for a harvested annotation."""
-    base = {"id": row["id"], "subsite": row["subsite"], "content_hash": content_hash(row), "reviewed_at": ""}
+    base = {"id": row["id"], "subsite": row["subsite"], "content_hash": content_hash(row), "reviewed_at": "",
+            "reviewed_by": "", "flag": ""}
     refdes = f"{row['subsite']}-{row['node']}-{row['sensor']}"
     if pd.notna(row["sensor"]) and refdes not in PRODUCT_REFDES:
         return {**base, "decision": "ignore", "parameters_affected": "", "parameters_source": "",

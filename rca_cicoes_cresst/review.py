@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Streamlit app to review and approve decisions in annotations/ledger.csv.
 
-Shows each decision next to its harvested annotation. Edits and approvals are written to
-the ledger; commit it through a PR as usual. Decision rules are in CLAUDE.md.
+Shows each decision next to its harvested annotation, flagged rows first. Approving or editing a row
+marks it reviewed_by=human and clears its flag; decided_by keeps the initial assessor. Commit the
+ledger through a PR as usual. Decision rules are in CLAUDE.md.
 
 Usage:
     review-annotations
@@ -16,14 +17,15 @@ import pandas as pd
 import streamlit as st
 
 from rca_cicoes_cresst.common import ANNOTATIONS_DIR, LEDGER_FILE, PARAM_TO_INSTRUMENT, RAW_DIR, read_preload
-from rca_cicoes_cresst.curate import LEDGER_COLUMNS, PRODUCT_REFDES, official_params
+from rca_cicoes_cresst.curate import LEDGER_COLUMNS, official_params
 from rca_cicoes_cresst.harvest_annotations import SITES
 
 LEDGER = Path(ANNOTATIONS_DIR) / LEDGER_FILE
 DECISIONS = ["mask", "ignore", "superseded"]
 EDITABLE = ["decision", "parameters_affected", "parameters_source", "rationale"]
-SHOWN = ["approve", "id", "subsite", "sensor", "window", "qcFlag", "annotation", "ooi_parameters",
-         *EDITABLE, "decided_by", "status", "reviewed_at"]
+SHOWN = ["approve", "id", "flag", "subsite", "sensor", "window", "qcFlag", "annotation", "ooi_parameters",
+         *EDITABLE, "decided_by", "status", "reviewed_by", "reviewed_at"]
+APPROVE_ALL_MAX = 100  # "Approve all shown" is for a filtered handful, not a bulk sign-off
 
 
 @st.cache_data(show_spinner=False)
@@ -40,7 +42,6 @@ def load_raw(mtime: float) -> pd.DataFrame:
         "qcFlag": raw["qcFlag"].fillna(""),
         "annotation": raw["annotation"],
         "ooi_parameters": raw["parameters"].map(lambda p: ", ".join(sorted(official_params(p, netcdf_names)))),
-        "product": raw["sensor"].isna() | (raw["subsite"] + "-" + raw["node"] + "-" + raw["sensor"]).isin(PRODUCT_REFDES),
     })
 
 
@@ -57,7 +58,8 @@ def bad_params(value: str) -> str | None:
 
 
 def save(ledger: pd.DataFrame, view: pd.DataFrame, edited: pd.DataFrame) -> str:
-    """Write edited and approved rows to the ledger. Edited rows become decided_by=human (README)."""
+    """Write edited and approved rows: both become reviewed_by=human with today's reviewed_at and no flag;
+    approved rows also get status=approved."""
     edited = edited.fillna("")
     changed = edited[EDITABLE].ne(view[EDITABLE]).any(axis=1)
     rows = edited[changed | edited["approve"]]
@@ -69,9 +71,9 @@ def save(ledger: pd.DataFrame, view: pd.DataFrame, edited: pd.DataFrame) -> str:
     ledger = ledger.set_index("id")
     ids = rows["id"]
     ledger.loc[ids, EDITABLE] = rows.set_index("id")[EDITABLE]
-    ledger.loc[edited.loc[changed, "id"], "decided_by"] = "human"
+    ledger.loc[ids, ["reviewed_by", "reviewed_at", "flag"]] = ["human", date.today().isoformat(), ""]
     approved = rows.loc[rows["approve"], "id"]
-    ledger.loc[approved, ["status", "reviewed_at"]] = ["approved", date.today().isoformat()]
+    ledger.loc[approved, "status"] = "approved"
     ledger = ledger.reset_index()
     ledger = ledger.assign(_id=ledger["id"].astype(int)).sort_values(["subsite", "_id"])
     ledger[LEDGER_COLUMNS].to_csv(LEDGER, index=False)
@@ -85,29 +87,35 @@ def app() -> None:
                       on=["id", "subsite"], how="left")
 
     with st.sidebar:
-        status = st.segmented_control("Status", ["proposed", "approved", "all"], default="proposed", required=True)
+        unreviewed = st.toggle("Not yet reviewed by a person", value=True)
+        flagged = st.toggle("Flagged only", help="Borderline judgements; they also sort to the top.")
+        status = st.segmented_control("Status", ["proposed", "approved", "all"], default="all", required=True)
         subsites = st.multiselect("Subsite", sorted(df["subsite"].unique()))
         decisions = st.multiselect("Decision", DECISIONS)
         flags = st.multiselect("qcFlag", sorted(df["qcFlag"].dropna().unique()))
+        deciders = st.multiselect("Decided by", sorted(df["decided_by"].unique()))
         search = st.text_input("Search annotation text")
-        odd = st.toggle("Fail/suspect ignored on a product sensor",
-                        help="Usually blowdowns, corrected calibrations or discrete-sample offsets; anything else is worth a look.")
 
     keep = pd.Series(True, index=df.index)
     if status != "all":
         keep &= df["status"] == status
-    for col, chosen in (("subsite", subsites), ("decision", decisions), ("qcFlag", flags)):
+    for col, chosen in (("subsite", subsites), ("decision", decisions), ("qcFlag", flags), ("decided_by", deciders)):
         if chosen:
             keep &= df[col].isin(chosen)
     if search:
         keep &= df["annotation"].str.contains(search, case=False, na=False)
-    if odd:
-        keep &= df["qcFlag"].isin(["fail", "suspect"]) & (df["decision"] == "ignore") & df["product"].fillna(False)
-    view = df[keep].assign(approve=False)[SHOWN].reset_index(drop=True)
+    if unreviewed:
+        keep &= df["reviewed_by"] != "human"
+    if flagged:
+        keep &= df["flag"] != ""
+    view = df[keep]
+    view = view.assign(approve=False, _unflagged=view["flag"] == "", _id=view["id"].astype(int))
+    view = view.sort_values(["_unflagged", "subsite", "_id"])[SHOWN].reset_index(drop=True)
 
     st.title("Annotation review")
-    st.caption(f"{(df['status'] == 'proposed').sum()} proposed of {len(df)} decisions in `annotations/ledger.csv`. "
-               "Edit a decision or tick **approve**, then save; edited rows become `decided_by=human`. "
+    st.caption(f"{(df['reviewed_by'] != 'human').sum()} of {len(df)} decisions in `annotations/ledger.csv` not yet "
+               f"reviewed by a person, {(df['flag'] != '').sum()} flagged, {(df['status'] == 'proposed').sum()} proposed. "
+               "Edit a decision or tick **approve**, then save; both mark the row `reviewed_by=human` and clear its flag. "
                "Commit the ledger through a PR. Decision rules are in `CLAUDE.md`.")
     if msg := st.session_state.pop("saved", None):
         st.success(msg, icon=":material/check_circle:")
@@ -120,6 +128,7 @@ def app() -> None:
             "id": st.column_config.TextColumn("id", pinned=True),
             "annotation": st.column_config.TextColumn("annotation", width="large"),
             "ooi_parameters": st.column_config.TextColumn("OOI parameters", help="Official parameters; they take precedence"),
+            "flag": st.column_config.TextColumn("flag", width="medium", help="Borderline judgement worth a person's look"),
             "decision": st.column_config.SelectboxColumn("decision", options=DECISIONS, required=True),
             "parameters_affected": st.column_config.TextColumn(
                 "parameters_affected", help="Python list of product variables, e.g. ['ph_seawater']; base CTD parameters only"),
@@ -131,7 +140,8 @@ def app() -> None:
 
     with st.container(horizontal=True, vertical_alignment="center"):
         save_clicked = st.button("Save", type="primary", icon=":material/save:")
-        all_clicked = st.button("Approve all shown", icon=":material/done_all:", help="Save edits and approve every row in the table")
+        all_clicked = st.button("Approve all shown", icon=":material/done_all:", disabled=len(view) > APPROVE_ALL_MAX,
+                                help=f"Save edits and approve every row in the table (up to {APPROVE_ALL_MAX})")
         st.space("stretch")
         st.caption(f"{len(view)} rows shown")
     if save_clicked or all_clicked:
@@ -149,6 +159,8 @@ def app() -> None:
                         f"OOI parameters: {row['ooi_parameters'] or 'none (whole stream)'}")
             st.write(row["annotation"])
             st.markdown(f"**{row['decision']}** {row['parameters_affected']}  ·  {row['rationale']}  ·  _{row['decided_by']}_")
+            if row["flag"]:
+                st.warning(row["flag"], icon=":material/flag:")
 
 
 def main() -> None:

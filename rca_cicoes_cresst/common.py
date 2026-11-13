@@ -215,7 +215,7 @@ def read_raw_annotations(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -
 
 
 def read_ledger(annotations_dir: str = ANNOTATIONS_DIR) -> pd.DataFrame:
-    return pd.read_csv(Path(annotations_dir) / LEDGER_FILE, dtype={"reviewed_at": str, "content_hash": str})
+    return pd.read_csv(Path(annotations_dir) / LEDGER_FILE, dtype={"reviewed_at": str, "reviewed_by": str, "flag": str, "content_hash": str})
 
 
 def harvest_time(subsite: str, annotations_dir: str = ANNOTATIONS_DIR) -> pd.Timestamp | None:

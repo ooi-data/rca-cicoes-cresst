@@ -286,9 +286,11 @@ Each row is one decision about one OOI annotation. To read the annotation itself
 | `parameters_affected` | Variables to mask when `decision` is `mask`; empty otherwise. List only the directly affected variables: products OOI computes from a masked salinity (DO, nitrate, shelf pH) are added automatically. | Python-style list, e.g. `['sea_water_practical_salinity', 'sea_water_density']` (spreadsheets add the surrounding CSV quotes). Valid names below. | Yes |
 | `parameters_source` | Where the parameter list came from. | `official`: OOI's own `parameters` field<br>`llm`: chosen from the annotation text<br>`human`: chosen by a reviewer<br>`+inherited` suffix: the list already includes salinity-derived products<br>empty for `ignore` / `superseded` | Yes, when you change the list |
 | `rationale` | One sentence explaining the decision. The first thing a reviewer reads. | free text | Yes |
-| `decided_by` | Who made the decision. | `human`, `rule` (instrument not in any product), `llm:<model>` (`curate-annotations`), `claude (in-session review)`, `llm (pre-ledger)` (made before 2026-10-16, never human-reviewed) | Yes, set to `human` when you decide |
+| `decided_by` | Who made the initial assessment. Review doesn't change it, so each row keeps its LLM or rule label next to the reviewed decision (the pair an LLM benchmark compares). | `human`, `rule` (instrument not in any product), `llm:<model>` (`curate-annotations`), `claude (in-session review)`, `llm (pre-ledger)` (made before 2026-10-16) | Only for a decision a person makes from scratch |
 | `status` | Whether the pipelines apply the row. | `proposed`: waiting for review, not applied<br>`approved`: applied | Yes, to approve |
 | `reviewed_at` | Date the decision was last checked by a person or review session. | `YYYY-MM-DD`; empty if never reviewed | Yes, set to today |
+| `reviewed_by` | Whether a person has confirmed or changed the row. | `human`, or empty if not yet | Yes, set to `human` when you review |
+| `flag` | A borderline judgement worth a person's look, in a few words. The review app sorts flagged rows first. | free text, or empty | Clear it when you review; add one when you're unsure |
 | `content_hash` | Fingerprint of OOI's annotation (text, qcFlag, parameters, refdes) at the time of the decision. If OOI edits the annotation, the fingerprint stops matching and the row comes back for review. It fingerprints OOI's annotation, not your decision. | 10 hex characters | Never |
 
 Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical_salinity`, `sea_water_density`, `corrected_dissolved_oxygen`, `ph_seawater`, `ph_total`, `pco2_seawater`, `partial_pressure_co2_ssw`, `xco2_atm`, `salinity_corrected_nitrate`, `nitrate_concentration`, `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`, `flntu_x_mmp_cds_fluorometric_chlorophyll_a`, `flcdr_x_mmp_cds_fluorometric_cdom` (full list: `PARAM_TO_INSTRUMENT` in `common.py`). The pipelines warn about any other name.
@@ -296,21 +298,22 @@ Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical
 ### Editing the ledger
 
 In the review app, `review-annotations` (run from the repo root): each decision sits next to its annotation text,
-window, qcFlag and OOI parameters, filtered by status (default `proposed`), subsite, decision, qcFlag or text. Edit
-`decision`, `parameters_affected`, `parameters_source` or `rationale`, tick **approve**, and save. Approved rows get
-`status=approved` and today's `reviewed_at`; edited rows get `decided_by=human`. Parameters are checked against the
-product variables. Then continue from step 5 below.
+window, qcFlag and OOI parameters. By default it shows rows not yet reviewed by a person, flagged rows first; filter
+by status, subsite, decision, qcFlag, `decided_by` or text. Edit `decision`, `parameters_affected`,
+`parameters_source` or `rationale`, or tick **approve**, and save. Either marks the row `reviewed_by=human` with
+today's `reviewed_at` and clears its `flag`; approving also sets `status=approved`. `decided_by` is left as it was.
+Parameters are checked against the product variables. Then continue from step 5 below.
 
 By hand, in a spreadsheet or text editor:
 
 1. Find the row by `id` and read the annotation in `annotations/raw/<subsite>.csv`.
 2. Set `decision`, `parameters_affected`, `parameters_source` and `rationale`.
-3. Set `decided_by` to `human`, `status` to `approved`, and `reviewed_at` to today.
+3. Set `reviewed_by` to `human`, `status` to `approved`, `reviewed_at` to today, and clear `flag`. Leave `decided_by` as it is.
 4. Leave `id`, `subsite` and `content_hash` alone, and don't add rows by hand. `curate-annotations` creates rows for new annotations.
 5. Check: `curate-annotations --all` reports 0 annotations needing a decision, and a `--qaqc-filter hitl` run logs no ledger warnings.
 6. Commit through a PR. The diff shows exactly which decisions changed.
 
-With an LLM (e.g. Claude Code), point it at the rows and at `CLAUDE.md`, which holds the decision rules. For example: *"Review the `proposed` rows in annotations/ledger.csv. For each, read the annotation text, apply the rules in CLAUDE.md, and fill in `decision`, `parameters_affected`, `parameters_source` and `rationale`. Leave `status` as `proposed` for me to approve."* Keep approval with a person.
+With an LLM (e.g. Claude Code), point it at the rows and at `CLAUDE.md`, which holds the decision rules. For example: *"Review the `proposed` rows in annotations/ledger.csv. For each, read the annotation text, apply the rules in CLAUDE.md, and fill in `decision`, `parameters_affected`, `parameters_source` and `rationale`. Put a short reason in `flag` for any borderline call. Leave `status` as `proposed` and `reviewed_by` empty for me."* Keep approval with a person.
 
 ### Before every product build
 
@@ -320,7 +323,7 @@ curate-annotations --all           # proposes decisions for new or OOI-edited an
 git diff annotations/ledger.csv    # review the proposals
 ```
 
-Approve a proposal by setting `status=approved` and `reviewed_at`, then commit through a PR. `curate-annotations` ignores annotations on non-product instruments by rule and asks Claude to judge the rest. OOI's official `parameters` (mapped through the preload `netcdf_name`) override Claude's parameter choice. Approved rows are never overwritten; an annotation OOI edits comes back as `proposed`.
+Approve proposals in `review-annotations` (or set `status=approved`, `reviewed_by=human` and `reviewed_at` by hand), then commit through a PR. `curate-annotations` ignores annotations on non-product instruments by rule and asks Claude to judge the rest. OOI's official `parameters` (mapped through the preload `netcdf_name`) override Claude's parameter choice. Approved rows are never overwritten; an annotation OOI edits comes back as `proposed`.
 
 Both commands also take single sites, e.g. `harvest-annotations oregon_offshore` or `curate-annotations CE04OSPS`. Decision rules (corrected calibrations, blowdowns, parameter inheritance) are in `CLAUDE.md`.
 

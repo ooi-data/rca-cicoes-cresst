@@ -173,7 +173,7 @@ def annotations_table(subsites: list[str], ledger: pd.DataFrame, raw: dict[str, 
     for c in ["beginDT", "endDT"]:
         harvest[c] = pd.to_datetime(harvest[c], format="ISO8601", utc=True).map(iso_utc)
     decided = ledger[["id", "decision", "status", "parameters_affected", "parameters_source", "rationale",
-                      "decided_by", "reviewed_at"]]
+                      "decided_by", "reviewed_at", "reviewed_by"]]
     return harvest.merge(decided, on="id", how="left").sort_values(["subsite", "beginDT", "id"])
 
 
