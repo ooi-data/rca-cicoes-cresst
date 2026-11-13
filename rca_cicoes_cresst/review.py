@@ -12,20 +12,23 @@ import ast
 import sys
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlencode
 
 import pandas as pd
 import streamlit as st
 
-from rca_cicoes_cresst.common import ANNOTATIONS_DIR, LEDGER_FILE, PARAM_TO_INSTRUMENT, RAW_DIR, read_preload
+from rca_cicoes_cresst.common import (ANNOTATIONS_DIR, LEDGER_FILE, PARAM_ALIASES, PARAM_TO_INSTRUMENT, RAW_DIR,
+                                      read_preload, read_sites)
 from rca_cicoes_cresst.curate import LEDGER_COLUMNS, official_params
 from rca_cicoes_cresst.harvest_annotations import SITES
 
 LEDGER = Path(ANNOTATIONS_DIR) / LEDGER_FILE
 DECISIONS = ["mask", "ignore", "superseded"]
 EDITABLE = ["decision", "parameters_affected", "parameters_source", "rationale"]
-SHOWN = ["approve", "id", "flag", "subsite", "sensor", "window", "qcFlag", "annotation", "ooi_parameters",
+SHOWN = ["approve", "id", "neptunea", "flag", "subsite", "sensor", "window", "qcFlag", "annotation", "ooi_parameters",
          *EDITABLE, "decided_by", "status", "reviewed_by", "reviewed_at"]
 APPROVE_ALL_MAX = 100  # "Approve all shown" is for a filtered handful, not a bulk sign-off
+NEPTUNEA = "https://neptunea.ooi-rca.net/neptunea"
 
 
 @st.cache_data(show_spinner=False)
@@ -39,10 +42,36 @@ def load_raw(mtime: float) -> pd.DataFrame:
         "subsite": raw["subsite"],
         "sensor": (raw["node"].fillna("*") + "-" + raw["sensor"].fillna("*")).where(raw["node"].notna(), "*"),
         "window": raw["beginDT"].str[:16] + " → " + raw["endDT"].str[:16].fillna("open"),
+        "begin": raw["beginDT"], "end": raw["endDT"].fillna(""),
         "qcFlag": raw["qcFlag"].fillna(""),
         "annotation": raw["annotation"],
         "ooi_parameters": raw["parameters"].map(lambda p: ", ".join(sorted(official_params(p, netcdf_names)))),
     })
+
+
+def neptunea_link(r: pd.Series, sites: pd.DataFrame) -> str | None:
+    """Neptunea's curated product for the annotated sensor, zoomed around the window. A sensor outside the products
+    links to its node's product sensors when they carry its parameter, since masks match node + parameter."""
+    prefix = f"{r['subsite']}-{r['sensor']}".rstrip("*-")
+    on = lambda p: sites[sites["refdes"].str.startswith(p) | sites["stitch_from"].fillna("").str.startswith(p)]
+    params = ast.literal_eval(r["parameters_affected"]) if r["parameters_affected"] else \
+        r["ooi_parameters"].split(", ") if r["ooi_parameters"] else []
+    params = [PARAM_ALIASES.get(p, p) for p in params]
+    instruments = lambda p: {PARAM_TO_INSTRUMENT[p]} if isinstance(PARAM_TO_INSTRUMENT[p], str) else set(PARAM_TO_INSTRUMENT[p])
+    fits = lambda hit, p: p in PARAM_TO_INSTRUMENT and hit["instrument"].isin(instruments(p)).any()
+    hit = on(prefix)
+    var = next((p for p in [*params, *PARAM_TO_INSTRUMENT] if fits(hit, p)), None)
+    if var is None:
+        hit = on("-".join(prefix.split("-")[:2]))
+        var = next((p for p in params if fits(hit, p)), None)
+    if var is None:
+        return None
+    site = hit[hit["instrument"].isin(instruments(var))].iloc[0]
+    begin, end = pd.Timestamp(r["begin"]), pd.Timestamp(r["end"] or pd.Timestamp.now("UTC"))
+    pad = max((end - begin) / 4, pd.Timedelta(days=2))
+    return f"{NEPTUNEA}?" + urlencode({
+        "product": f"{site['site']}_profiles" if site["product"] == "profiler" else f"{site['site']}_fixed_1h",
+        "var": var, "start": f"{begin - pad:%Y-%m-%d}", "end": f"{end + pad:%Y-%m-%d}"})
 
 
 def bad_params(value: str) -> str | None:
@@ -109,7 +138,8 @@ def app() -> None:
     if flagged:
         keep &= df["flag"] != ""
     view = df[keep]
-    view = view.assign(approve=False, _unflagged=view["flag"] == "", _id=view["id"].astype(int))
+    sites = read_sites()
+    view = view.assign(neptunea=view.apply(neptunea_link, axis=1, sites=sites) if len(view) else None, approve=False, _unflagged=view["flag"] == "", _id=view["id"].astype(int))
     view = view.sort_values(["_unflagged", "subsite", "_id"])[SHOWN].reset_index(drop=True)
 
     st.title("Annotation review")
@@ -126,6 +156,8 @@ def app() -> None:
         column_config={
             "approve": st.column_config.CheckboxColumn("approve", pinned=True),
             "id": st.column_config.TextColumn("id", pinned=True),
+            "neptunea": st.column_config.LinkColumn(
+                "neptunea", display_text="open", help="Curated product around the window; none if no product uses the sensor"),
             "annotation": st.column_config.TextColumn("annotation", width="large"),
             "ooi_parameters": st.column_config.TextColumn("OOI parameters", help="Official parameters; they take precedence"),
             "flag": st.column_config.TextColumn("flag", width="medium", help="Borderline judgement worth a person's look"),
@@ -158,6 +190,8 @@ def app() -> None:
             st.markdown(f"**{row['subsite']} {row['sensor']}**  ·  {row['window']}  ·  qcFlag `{row['qcFlag'] or 'null'}`  ·  "
                         f"OOI parameters: {row['ooi_parameters'] or 'none (whole stream)'}")
             st.write(row["annotation"])
+            if row["neptunea"]:
+                st.link_button("Open in Neptunea", row["neptunea"], icon=":material/open_in_new:")
             st.markdown(f"**{row['decision']}** {row['parameters_affected']}  ·  {row['rationale']}  ·  _{row['decided_by']}_")
             if row["flag"]:
                 st.warning(row["flag"], icon=":material/flag:")
