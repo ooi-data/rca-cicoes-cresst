@@ -235,11 +235,9 @@ The shelf pH stitch combines the archived PHSEND and active PHSENH records after
 
 Per-deployment corrections from cruise discrete samples, read from calibrationPipeline's `outputs/deployments.json` at the commit pinned in `common.CALIBRATION_COMMIT`. They cover shallow-profiler salinity and nitrate (an offset added) and oxygen (a gain multiplied) for 2015–2025, one correction per cruise. Each is matched to data by the stream's `deployment` number and recorded on the variable's `calibrations` attribute. A deployment with one correction gets it throughout. A deployment that spans two cruises is interpolated linearly between their cast times and held beyond them, as the [OOI BGC Best Practices](https://doi.org/10.25607/OBP-1865.2) recommend for drift (sections 2.5.4 and 3.5.3). Deployments rated worse than `common.CALIBRATION_MAX_STATUS` (3, "use with caution") stay uncorrected.
 
-Not yet settled, so `deploymentcorrected` products are not published:
+Where salinity is corrected, `sea_water_density` is shifted by the change in TEOS-10 density (`gsw.rho`, which reproduces OOI's values), so uncorrected deployments keep OOI's density.
 
-- `sea_water_density` is not recomputed from corrected salinity.
-- Products don't yet mark which deployments were corrected.
-- The status threshold and some large oxygen gains await review with the calibration team.
+Published as provisional: the status threshold and some large oxygen gains await review with the calibration team.
 
 ### `config/adjustments.csv`
 
@@ -383,7 +381,7 @@ Products are published as versioned, never-changed releases under `s3://rca-adva
 ```
 cresst-easy-one-rca/
   catalog.json  CHANGELOG.md
-  releases/vYYYY.MM/
+  releases/vYYYY.MM.N/
     manifest.json  RELEASE_NOTES.md  build_report.json
     annotations.csv  ledger.csv  adjustments.csv
     <product>/<level>.zarr  <product>/<level>.nc      e.g. slope_base_profiles/hitl.zarr
@@ -398,10 +396,10 @@ bin-dataset data/build/axial_base_profiles_<start>_<end>_hitl.zarr --bin 24 --fo
 fixed-instruments axial_base_seafloor --format both --qaqc-filter advanced --output-dir data/build
 # 2. note what changed under Unreleased in CHANGELOG.md, with at least one Highlights entry
 # 3. package
-release-cresst v2026.11 --from data/build
+release-cresst v2026.11.0 --from data/build
 # 4. commit CHANGELOG.md, upload, push the tag
-sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11 --apply
-git push origin v2026.11
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11.0 --apply
+git push origin v2026.11.0
 ```
 
 `release-cresst` refuses to run if the changelog has no `Unreleased` highlights, if the version already exists, or if the products were built from a different or uncommitted commit (override with `--allow-dirty`, which also skips the tag). It writes `data/cresst-easy-one-rca/releases/<version>/`, adds the release to `catalog.json`, moves the changelog's `Unreleased` section under the version, and tags the build commit locally. `RELEASE_NOTES.md` diffs the release against the previous one: ledger decisions, adjustments, products and time coverage, and masking (`build_report.json`). `--legacy-from` packaged the 2026-10-23 flat build as `v2026.10`.
@@ -411,8 +409,8 @@ git push origin v2026.11
 Upload a packaged release with `--release`; a release already in the bucket is never overwritten:
 
 ```bash
-sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11          # preview
-sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11 --apply  # upload release, catalog, changelog
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11.0        # preview
+sync-cresst --bucket rca-advanced-qaqc/cresst-easy-one-rca --release v2026.11.0 --apply  # upload release, catalog, changelog
 ```
 
 Without `--release`, it syncs flat, dated product files to a prefix without releases (`cresst/`); it refuses a prefix that holds releases:

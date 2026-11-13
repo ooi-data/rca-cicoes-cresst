@@ -6,6 +6,7 @@ import subprocess
 from functools import cache
 from pathlib import Path
 
+import gsw
 import numpy as np
 import pandas as pd
 import requests
@@ -436,6 +437,7 @@ def apply_calibrations(ds: xr.Dataset, refdes: str, max_status: int) -> xr.Datas
     after adjustments."""
     cal = read_calibrations()
     cal = cal[(cal["refdes"] == refdes) & (cal["status"] <= max_status) & cal["variable"].isin(list(ds.data_vars))]
+    raw_salinity = ds.get("sea_water_practical_salinity")
     for (variable, deployment), rows in cal.sort_values("cast_time").groupby(["variable", "deployment"]):
         var = ds[variable]
         # np.interp holds the end values, and a single cast gives a constant
@@ -450,9 +452,20 @@ def apply_calibrations(ds: xr.Dataset, refdes: str, max_status: int) -> xr.Datas
                     f"(status {row.status}, {row.record_id})")
             ds[variable].attrs["calibrations"] = "; ".join(filter(None, [ds[variable].attrs.get("calibrations"), note]))
             logger.info(f"{refdes} {variable} calibration, {note}")
-    if "sea_water_practical_salinity" in cal["variable"].values:
-        logger.warning(f"{refdes}: sea_water_density not recomputed from calibrated salinity")  # TODO: gsw
+    if "sea_water_practical_salinity" in cal["variable"].values and "sea_water_density" in ds:
+        # OOI density plus the change calibrated salinity makes; uncalibrated deployments keep OOI's values
+        change = in_situ_density(ds, ds["sea_water_practical_salinity"]) - in_situ_density(ds, raw_salinity)
+        ds["sea_water_density"] = (ds["sea_water_density"] + change).assign_attrs(
+            ds["sea_water_density"].attrs, calibrations="shifted for calibrated salinity (TEOS-10, gsw.rho)")
+        logger.info(f"{refdes} sea_water_density adjusted for calibrated salinity")
     return ds
+
+
+def in_situ_density(ds: xr.Dataset, salinity: xr.DataArray) -> xr.DataArray:
+    """TEOS-10 in situ density, as OOI computes sea_water_density."""
+    p = ds[next(v for v in PRES_PARAMS if v in ds)]
+    sa = gsw.SA_from_SP(salinity, p, ds.attrs["geospatial_lon_min"], ds.attrs["geospatial_lat_min"])
+    return gsw.rho(sa, gsw.CT_from_t(sa, ds["sea_water_temperature"], p), p)
 
 
 def mask_qartod(ds: xr.Dataset, params: list[str], exclude_flags: set[int]) -> xr.Dataset:

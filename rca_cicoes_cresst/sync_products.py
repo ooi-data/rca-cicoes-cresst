@@ -9,7 +9,7 @@ Local supersedes the bucket when its end date is newer, or (same end date) its
 size differs (a same-range re-QAQC). On upload, older-end-date copies of the
 same identity are removed. Nothing else in the bucket is touched.
 
-With --release vYYYY.MM, uploads <data-dir>/releases/vYYYY.MM (from release-cresst) instead,
+With --release vYYYY.MM.N, uploads <data-dir>/releases/vYYYY.MM.N (from release-cresst) instead,
 then catalog.json and CHANGELOG.md. A release already in the bucket is never overwritten (spec R28).
 
 Dry-run by default; pass --apply to write. Writing needs AWS credentials; listing
@@ -103,7 +103,7 @@ def sync_release(data_dir: Path, bucket: str, release: str, fs: s3fs.S3FileSyste
 @click.option("--apply", "apply_", is_flag=True, help="Actually upload/delete (default is dry-run).")
 @click.option("--delete-remote-only-data", "delete_remote_only", is_flag=True,
               help="Also delete bucket files that have no local counterpart.")
-@click.option("--release", default=None, metavar="vYYYY.MM", help="Upload this packaged release instead.")
+@click.option("--release", default=None, metavar="vYYYY.MM.N", help="Upload this packaged release instead.")
 def main(data_dir: str | None, bucket: str, apply_: bool, delete_remote_only: bool, release: str | None) -> None:
     """Sync local data products up to an S3 bucket/prefix."""
     bucket = bucket.removeprefix("s3://").rstrip("/")

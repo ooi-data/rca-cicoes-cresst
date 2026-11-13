@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Package built products into a versioned release (docs/spec.md sections 7 and 10).
 
-Copies product files from a build directory into <data-dir>/releases/vYYYY.MM/<product>/<level>.<ext>,
+Copies product files from a build directory into <data-dir>/releases/vYYYY.MM.N/<product>/<level>.<ext>,
 stamps each with its release, and writes manifest.json, build_report.json, annotations.csv, the
 ledger and adjustments snapshots and RELEASE_NOTES.md. Updates catalog.json, moves CHANGELOG.md's
 Unreleased section under the version, and tags the build commit. Builds nothing; upload with
-`sync-cresst --release vYYYY.MM --apply`.
+`sync-cresst --release vYYYY.MM.N --apply`.
 
 Usage:
-    release-cresst v2026.11 --from data/build
+    release-cresst v2026.11.0 --from data/build
     release-cresst v2026.10 --legacy-from data/cresst-easy-one-rca   # migrate the 2026-10-23 flat build
 """
 import hashlib
@@ -45,7 +45,7 @@ from rca_cicoes_cresst.common import (
 DEFAULT_DATA_DIR = DATA_DIR / "cresst-easy-one-rca"
 BUCKET = "rca-advanced-qaqc/cresst-easy-one-rca"
 CHANGELOG = REPO_ROOT / "CHANGELOG.md"
-VERSION = re.compile(r"^v\d{4}\.(0[1-9]|1[0-2])$")
+VERSION = re.compile(r"^v\d{4}\.(0[1-9]|1[0-2])\.\d+$")  # v2026.10 predates the release number
 LEVEL = "|".join(QC_LEVELS)
 PRODUCT_FILE = re.compile(
     rf"^(?P<site>.+?)_(?P<kind>profiles|fixed)_\d{{8}}_\d{{8}}(?:_(?P<freq>[^_]+))?_(?P<level>{LEVEL})"
@@ -57,6 +57,11 @@ LEGACY_FILE = re.compile(
     r"(?P<binned>_binned_\d+h)?\.(?P<ext>zarr|nc)$"
 )
 CHANGELOG_TEMPLATE = "## [Unreleased]\n\n### Highlights\n\n"
+
+
+def version_key(version: str) -> tuple[int, ...]:
+    """v2026.11.2 -> (2026, 11, 2), so v2026.11.10 sorts after v2026.11.2."""
+    return tuple(int(n) for n in version[1:].split("."))
 
 
 def find_products(build_dir: Path, legacy: bool = False) -> dict[tuple[str, str], dict]:
@@ -331,9 +336,9 @@ Released {manifest['date']}. Specification version {manifest['spec_version']}, b
 @click.option("--no-tag", is_flag=True, help="Don't create the git tag.")
 def main(version: str, build_dir: Path | None, legacy_dir: Path | None, data_dir: Path, changelog: Path,
          allow_dirty: bool, no_tag: bool) -> None:
-    """Package built products as release VERSION (vYYYY.MM)."""
-    if not VERSION.match(version):
-        raise click.UsageError("VERSION must be vYYYY.MM, e.g. v2026.11")
+    """Package built products as release VERSION (vYYYY.MM.N)."""
+    if not (VERSION.match(version) or legacy_dir):
+        raise click.UsageError("VERSION must be vYYYY.MM.N, e.g. v2026.11.0")
     if (build_dir is None) == (legacy_dir is None):
         raise click.UsageError("Give exactly one of --from or --legacy-from.")
     legacy = legacy_dir is not None
@@ -344,7 +349,8 @@ def main(version: str, build_dir: Path | None, legacy_dir: Path | None, data_dir
                else {"latest": None, "releases": []})
     if release_dir.exists() or version in {r["id"] for r in catalog["releases"]} or fs.exists(f"{BUCKET}/releases/{version}"):
         raise click.ClickException(f"{version} already exists; releases are never changed (R28)")
-    previous = max((r["id"] for r in catalog["releases"] if r["id"] < version), default=None)
+    previous = max((r["id"] for r in catalog["releases"] if version_key(r["id"]) < version_key(version)),
+                   key=version_key, default=None)
 
     products = find_products(legacy_dir or build_dir, legacy)
     if not products:
@@ -430,7 +436,7 @@ def main(version: str, build_dir: Path | None, legacy_dir: Path | None, data_dir
 
     catalog["releases"] = sorted([*catalog["releases"], {"id": version, "date": date, "git_commit": commit,
                                                          "spec_version": spec_version}],
-                                 key=lambda r: r["id"], reverse=True)
+                                 key=lambda r: version_key(r["id"]), reverse=True)
     catalog["latest"] = catalog["releases"][0]["id"]
     catalog_path.write_text(json.dumps(catalog, indent=2) + "\n")
     if changelog_text is not None:

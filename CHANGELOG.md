@@ -21,8 +21,9 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 - `hitl_masks` attribute on every variable at `hitl` and above, listing the annotations that masked it (R25).
 - `annotations.csv`, `ledger.csv` and `adjustments.csv` in each release (R31).
 - `release`, `spec_version` and `git_commit` attributes on every file (R29).
-- `deploymentcorrected` level: per-deployment corrections from cruise samples (R24). Provisional; not published.
+- `deploymentcorrected` level: per-deployment corrections from cruise samples (R24). Provisional.
   Covers salinity, oxygen and nitrate, 2015–2025; a deployment spanning two cruises is interpolated between them.
+  Density is shifted for corrected salinity (TEOS-10).
 - Deep-profiler chlorophyll, `flntu_x_mmp_cds_fluorometric_chlorophyll_a` (section 4). Ledger decision 5882 now
   names it, masking Axial deep chlorophyll from 2024-08-30 to 2025-08-07 (negative values).
 - 2014 data (R2): fixed series from August–October 2014, and profiles where a 2014 profile index exists
@@ -30,6 +31,7 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Changed
 
+- Releases are numbered `vYYYY.MM.N`, from `v2026.11.0` (R34).
 - The release prefix is `cresst-easy-one-rca/`, matching Easy OneArgo. It was `cresst-one-easy-rca/`.
 - Advanced pH flags are the `advanced` level, applied to every fixed product whose pH stream has flags, and not to
   profiler products (R17).
@@ -37,6 +39,8 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 - The salinity inheritance list is read from the OOI preload database (R20); the masks it produces are unchanged.
 - Sites and instruments are read from `config/sites.csv` (section 3).
 - Casts crossing midnight on 31 December are whole, not cut at the year boundary (R3).
+- `oregon_shelf_seafloor` pH at `hitl` and above masks the 47 HITL fail/suspect windows on the archived
+  `PHSEND103` sensor (2014–2025, about half its record) (R14).
 
 ## [v2026.10] - 2026-10-23
 

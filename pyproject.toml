@@ -18,6 +18,7 @@ dependencies = [
     "click",
     "requests",
     "python-dotenv",
+    "gsw",
 ]
 
 [project.optional-dependencies]

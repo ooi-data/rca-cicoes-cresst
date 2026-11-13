@@ -1,6 +1,6 @@
 # RCA-CRESST Data Products: Product Specification
 
-**Version 0.2 (draft), 2026-11-05.** Describes the products published as versioned releases under
+**Version 0.2 (draft), 2026-11-13.** Describes the products published as versioned releases under
 `s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/` (section 10). Rules are numbered (R1, R2, …)
 so they can be cited, and each is meant to become a test. Version 0.1 (2026-10-28) described the
 2026-10-23 build, published as release `v2026.10`.
@@ -199,8 +199,10 @@ attribute.
   oxygen a gain multiplied, 2015–2025, matched on the stream's `deployment` number. A deployment
   spanning two cruises is interpolated linearly between their casts and held beyond them (OOI BGC
   Best Practices, Palevsky et al. 2023, 2.5.4 and 3.5.3). Deployments rated worse than status 3
-  stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Open:
-  density is not yet recomputed, and products don't yet mark corrected deployments.
+  stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Where
+  salinity is corrected, `sea_water_density` is shifted by the TEOS-10 change (`gsw.rho`, as OOI
+  computes it), so uncorrected deployments keep OOI's values. Open: the status threshold, and some
+  large oxygen gains, await review with the calibration team.
 - **R25.** At `hitl` and above, every variable has a `hitl_masks` attribute: a JSON list with one
   entry per approved mask annotation that matched the variable's data, after R19 and R20 are
   applied. Each entry has `annotation_id` (integer), `begin` and `end` (ISO 8601 UTC; `end` is null
@@ -222,7 +224,7 @@ attribute.
 s3://rca-advanced-qaqc/cresst-easy-one-rca/
   catalog.json                    releases, newest first (R33)
   CHANGELOG.md                    changes in every release
-  releases/vYYYY.MM/
+  releases/vYYYY.MM.N/
     manifest.json                 every product and level in the release (R32)
     RELEASE_NOTES.md              highlights and diffs against the previous release (R36)
     build_report.json             values kept and removed by variable, level and year (R37)
@@ -259,7 +261,7 @@ here unchanged except for `base_url` in its manifest. The top level holds only `
 
 | Attribute | Meaning |
 |---|---|
-| `release` | Release the file belongs to, e.g. `v2026.11` |
+| `release` | Release the file belongs to, e.g. `v2026.11.0` |
 | `spec_version` | Version of this specification the build implements |
 | `git_commit` | Commit of this repository the file was built from; `-dirty` if it had uncommitted changes |
 | `qc_level` | QC level (section 6) |
@@ -295,11 +297,11 @@ of the OOI source streams and describe that stream, not the product. See section
 
   ```json
   {
-    "release": "v2026.11",
+    "release": "v2026.11.0",
     "date": "2026-11-30",
     "spec_version": "0.2",
     "git_commit": "<40 hex>",
-    "base_url": "s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/v2026.11/",
+    "base_url": "s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/v2026.11.0/",
     "products": [
       {
         "product": "slope_base_profiles",
@@ -325,7 +327,7 @@ of the OOI source streams and describe that stream, not the product. See section
   `hitl_*` are null below `hitl`. A field may be added in a later spec version; none is removed or
   renamed without a major version change.
 - **R33.** `catalog.json` lists every release, newest first:
-  `{"latest": "v2026.11", "releases": [{"id": "v2026.11", "date": "2026-11-30", "git_commit": "<40 hex>",
+  `{"latest": "v2026.11.0", "releases": [{"id": "v2026.11.0", "date": "2026-11-30", "git_commit": "<40 hex>",
   "spec_version": "0.2"}]}`.
 
 ## 8. Access
@@ -333,7 +335,7 @@ of the OOI source streams and describe that stream, not the product. See section
 | Location | Contents |
 |---|---|
 | `s3://rca-advanced-qaqc/cresst-easy-one-rca/catalog.json` | Index of releases; start here |
-| `s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/vYYYY.MM/` | One release (section 7) |
+| `s3://rca-advanced-qaqc/cresst-easy-one-rca/releases/vYYYY.MM.N/` | One release (section 7) |
 | `s3://rca-advanced-qaqc/cresst/` | July 2026 build, unversioned; not maintained |
 
 All are publicly readable without credentials.
@@ -366,7 +368,8 @@ Products are built with `regrid-profiler`, `bin-dataset` and `fixed-instruments`
 levels are wanted, then packaged and published as a release with `release-cresst` and
 `sync-cresst`.
 
-- **R34.** Releases are named `vYYYY.MM`, at most one per month. Each is tagged `vYYYY.MM` in this
+- **R34.** Releases are named `vYYYY.MM.N`, numbered from 0 within a month and compared as numbers
+  (`v2026.10` predates the number). Each is tagged with its name in this
   repository on the commit its products were built from.
 - **R35.** `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). A
   release needs a non-empty `Unreleased` section with at least one entry under `Highlights`.
