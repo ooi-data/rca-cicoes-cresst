@@ -250,13 +250,13 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 1483,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,ab12234e2a
 2334,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,e774cde433
 2355,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,5659bae8b3
-2469,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,Borderline: PHSEN ground fault before going unresponsive; check for bad data before the window.,7725cfae58
+2469,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,2026-11-13,human,,7725cfae58
 2528,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,cbf39bd455
 2631,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,10aef90a53
 3267,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,15184f8bac
 3306,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,3ffcb2d547
 3768,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,958105dac5
-3769,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,Borderline: PHSEN ground fault; unclear whether pH was still recorded after 2015-12-21.,0e759edf05
+3769,CE04OSBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,2026-11-13,human,,0e759edf05
 3831,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,,,a52c189e3f
 3832,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,,,a52c189e3f
 3833,CE04OSBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,,,a52c189e3f
