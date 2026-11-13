@@ -108,7 +108,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4553,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,,,43147a293f
 4554,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,,,43147a293f
 4606,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,,,e37afd3705
-4607,CE02SHBP,mask,['corrected_dissolved_oxygen'],llm,Phase-derived (analog) DO suspect due to CTD ground fault; onboard good but phase product masked here.,llm (pre-ledger),approved,,,"Only analog phase DO suspect, onboard DO good; add substitute dissolved_oxygen row in adjustments.csv instead of masking. Suggest: ignore",5ae5bba1a7
+4607,CE02SHBP,ignore,,,Only the analog phase DO is suspect; onboard DO substituted by adjustments.csv row 8.,llm (pre-ledger),approved,2026-11-13,human,,5ae5bba1a7
 4618,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,0550a9f21c
 4619,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,,,e6d3162c7b
 4622,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,,,23642c03cb
