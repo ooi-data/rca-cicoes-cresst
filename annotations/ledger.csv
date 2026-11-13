@@ -45,34 +45,34 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 3266,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1d51a89d55
 3304,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,95f8f6154f
 3305,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,d7abb339e3
-3780,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3781,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3782,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3783,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3784,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3785,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3786,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3787,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3788,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3789,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3790,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3791,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3792,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3793,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3794,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3795,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3796,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3797,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3798,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3799,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3800,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3801,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3802,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3803,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3804,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3805,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3806,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-3807,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+3780,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3781,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3782,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3783,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3784,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3785,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3786,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3787,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3788,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3789,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3790,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3791,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3792,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3793,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3794,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3795,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3796,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3797,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3798,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3799,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3800,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3801,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3802,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3803,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3804,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3805,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3806,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+3807,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
 3808,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
 3809,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
 3810,CE02SHBP,mask,['pco2_seawater'],llm,HITL review and automated QC determined data are inaccurate during this period.,llm (pre-ledger),approved,,57ddbdf586
@@ -118,28 +118,28 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 4764,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,1c8f334564
 4791,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d603a61d90
 4814,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,7b517e6eac
-4837,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4838,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4839,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4840,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4841,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4842,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4843,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4844,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4845,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4846,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4847,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4848,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4849,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4850,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
-4851,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+4837,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4838,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4839,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4840,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4841,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4842,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4843,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4844,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4845,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4846,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4847,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4848,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4849,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4850,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
+4851,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
 4866,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,fdff39cbd0
 4867,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b237e19397
 4868,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,9b78801a91
 4869,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d366ba02a4
 4874,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,faecba7924
 4889,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,52bc58742f
-4890,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ce3d1f9b33
+4890,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,ce3d1f9b33
 4965,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,f4f6ea8a7d
 5133,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,bb873d37ab
 5205,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,bebe09bd4c
@@ -151,10 +151,10 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 5401,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,c12b47ef09
 5419,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,a5733984df
 5449,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,fd52b1a2f4
-5468,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+5468,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
 5475,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,b4e829926d
 5478,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,203a5aaf4f
-5501,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b44abcc457
+5501,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,b44abcc457
 5556,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,ba21819f83
 5608,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,16767add97
 5609,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,d31982ebd9
@@ -181,7 +181,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 5826,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6f78e42c01
 5878,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,4e4a9db874
 5933,CE02SHBP,ignore,,,Not a product instrument.,rule,approved,,cd4b201cbe
-5938,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2c0b11836a
+5938,CE02SHBP,mask,['ph_seawater'],llm,"HITL fail/suspect on the archived shelf pH sensor, stitched into the product (R14).",claude (in-session review),approved,2026-11-13,2c0b11836a
 5966,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,923b20fd3c
 5982,CE02SHBP,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,0862d13ffd
 6174,CE02SHBP,mask,"['sea_water_practical_salinity', 'sea_water_density', 'corrected_dissolved_oxygen']",llm,"Conductivity drop/clog makes conductivity-derived salinity, density, and DO suspect.",llm (pre-ledger),approved,,009f451b62
@@ -645,6 +645,8 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6927,CE04OSPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,7a828b99a3
 6928,CE04OSPS,ignore,,,Not data-affecting.,claude (in-session review),approved,2026-10-16,0d334de6b4
 6930,CE04OSPS,ignore,,,Not a product instrument.,rule,approved,,a474ad48ad
+7000,CE04OSPS,mask,"['partial_pressure_co2_ssw', 'pco2_seawater', 'xco2_atm']",llm,HITL suspect: elevated pCO2 outside normal ranges.,claude (in-session review),approved,2026-11-13,8e41307d56
+7003,CE04OSPS,ignore,,,Platform blowdown: real ocean event.,claude (in-session review),approved,2026-11-13,2cfea360aa
 18,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5aff0d5f53
 2329,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,4fa50ed2b2
 2331,RS01SBPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,a4a2e3f3d1
@@ -950,6 +952,8 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6966,RS01SBPS,ignore,,,Not a product instrument.,rule,approved,,7e2cec8d82
 6974,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,697588338f
 6975,RS01SBPS,ignore,,,"Platform blowdown: real ocean event, not a data-quality problem.",human,approved,2026-10-16,53fc3e3f00
+7001,RS01SBPS,ignore,,,Platform blowdown: real ocean event.,claude (in-session review),approved,2026-11-13,597d12c79d
+7004,RS01SBPS,ignore,,,Platform blowdown: real ocean event.,claude (in-session review),approved,2026-11-13,8d4e3d31f2
 202,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e5d8d73aa0
 211,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,9a5c43fbd0
 327,RS01SLBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,e595b1f95f
@@ -1040,6 +1044,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6976,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
 6977,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
 6990,RS01SLBS,ignore,,,Not a product instrument.,rule,approved,,89450c6877
+7013,RS01SLBS,mask,"['sea_water_density', 'sea_water_practical_salinity']",official,"Conductivity clog; salinity/density bad, DO inherits CTD salinity.",claude (in-session review),approved,2026-11-13,7b0a052a8d
 3,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,b01707d162
 213,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,5dc7969146
 326,RS03AXBS,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,644e7d0bd5
@@ -1144,7 +1149,7 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 5436,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,2f670de79b
 5458,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,c4f3cd22c3
 5839,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,6df61ae408
-5882,RS03AXPD,mask,"['flntu_x_mmp_cds_fluorometric_chlorophyll_a']",llm,"qcFlag=fail with HITL/automated review finding negative chlorophyll-a and abnormally low backscatter, and the annotation explicitly says to avoid using the data in analyses. Chlorophyll named as in the deep FLNTU stream; its backscatter is not in the products.",claude (in-session review),approved,2026-11-05,5224d18fe1
+5882,RS03AXPD,mask,['flntu_x_mmp_cds_fluorometric_chlorophyll_a'],llm,"qcFlag=fail with HITL/automated review finding negative chlorophyll-a and abnormally low backscatter, and the annotation explicitly says to avoid using the data in analyses. Chlorophyll named as in the deep FLNTU stream; its backscatter is not in the products.",claude (in-session review),approved,2026-11-05,5224d18fe1
 5954,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,31ab2f0ae2
 5977,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,8ab301e6a9
 5993,RS03AXPD,ignore,,,Not data-affecting (pre-ledger curation).,llm (pre-ledger),approved,,18a810efde
@@ -1425,3 +1430,9 @@ id,subsite,decision,parameters_affected,parameters_source,rationale,decided_by,s
 6973,RS03AXPS,ignore,,,Not a product instrument.,rule,approved,,c062deee48
 6979,RS03AXPS,mask,['ph_seawater'],llm,"Noisy pH (suspect), open-ended.",claude (in-session review),approved,2026-10-16,a19af5527f
 6980,RS03AXPS,mask,"['nitrate_concentration', 'salinity_corrected_nitrate']",llm,"Nitrate lamp error; instrument stops mid-profile (suspect), open-ended.",claude (in-session review),approved,2026-10-16,1f36a55cdd
+6996,RS03AXPS,ignore,,,"Not operational: missing data, not bad data.",claude (in-session review),approved,2026-11-13,ea4504a286
+6997,RS03AXPS,ignore,,,"Not operational: missing data, not bad data.",claude (in-session review),approved,2026-11-13,b0bd7e0e1f
+6998,RS03AXPS,ignore,,,"Not operational: missing data, not bad data.",claude (in-session review),approved,2026-11-13,8f44f79c8e
+7005,RS03AXPS,ignore,,,Not data-affecting (GUI restart).,claude (in-session review),approved,2026-11-13,9b5d462015
+7011,RS03AXPS,ignore,,,Not data-affecting (GUI restart).,claude (in-session review),approved,2026-11-13,428afa6816
+7014,RS03AXPS,mask,['ph_seawater'],llm,HITL suspect: unusually noisy pH.,claude (in-session review),approved,2026-11-13,a3bb8d58fc

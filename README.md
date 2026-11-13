@@ -21,7 +21,7 @@ Curated data products from OOI Regional Cabled Array (RCA) profiler moorings and
 pip install -e .
 ```
 
-Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, loguru) install automatically; LLM curation additionally needs `anthropic` (`pip install -e ".[curate]"`). Reading OOI/RCA S3 data is anonymous — no credentials needed. Credentials are required only for: harvesting/curating annotations (`OOI_USERNAME`, `OOI_TOKEN`, and `ANTHROPIC_API_KEY` for LLM curation, in a local `.env`) and writing with `sync-cresst` (AWS credentials).
+Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, loguru) install automatically; LLM curation additionally needs `anthropic` (`pip install -e ".[curate]"`), the review app `streamlit` (`pip install -e ".[review]"`). Reading OOI/RCA S3 data is anonymous — no credentials needed. Credentials are required only for: harvesting/curating annotations (`OOI_USERNAME`, `OOI_TOKEN`, and `ANTHROPIC_API_KEY` for LLM curation, in a local `.env`) and writing with `sync-cresst` (AWS credentials).
 
 **Outputs & layout.** Each S3 prefix has a matching local directory under `data/`: `data/cresst` ↔ `rca-advanced-qaqc/cresst` (the default) and `data/cresst-easy-one-rca` ↔ `rca-advanced-qaqc/cresst-easy-one-rca`. `regrid-profiler` and `fixed-instruments` write to `--output-dir` (default `data/cresst`) and logs to `logs/`; `bin-dataset` writes next to its input. `sync-cresst --bucket` syncs the matching directory.
 
@@ -34,6 +34,7 @@ Python ≥3.10. Core dependencies (xarray, zarr, s3fs, numpy, pandas, click, log
 | `bin-dataset` | Bin a regridded profiler dataset along the time axis |
 | `harvest-annotations` | Fetch raw HITL annotations from the OOI M2M API |
 | `curate-annotations` | Propose ledger decisions for new or OOI-edited annotations |
+| `review-annotations` | Review and approve ledger decisions in a local Streamlit app |
 | `release-cresst` | Package built products as a versioned release (manifest, notes, build report) |
 | `sync-cresst` | Upload a packaged release, or push flat products in `data/cresst` to `rca-advanced-qaqc/cresst` |
 
@@ -295,6 +296,12 @@ Each row is one decision about one OOI annotation. To read the annotation itself
 Valid `parameters_affected` names: `sea_water_temperature`, `sea_water_practical_salinity`, `sea_water_density`, `corrected_dissolved_oxygen`, `ph_seawater`, `ph_total`, `pco2_seawater`, `partial_pressure_co2_ssw`, `xco2_atm`, `salinity_corrected_nitrate`, `nitrate_concentration`, `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`, `flntu_x_mmp_cds_fluorometric_chlorophyll_a`, `flcdr_x_mmp_cds_fluorometric_cdom` (full list: `PARAM_TO_INSTRUMENT` in `common.py`). The pipelines warn about any other name.
 
 ### Editing the ledger
+
+In the review app, `review-annotations` (run from the repo root): each decision sits next to its annotation text,
+window, qcFlag and OOI parameters, filtered by status (default `proposed`), subsite, decision, qcFlag or text. Edit
+`decision`, `parameters_affected`, `parameters_source` or `rationale`, tick **approve**, and save. Approved rows get
+`status=approved` and today's `reviewed_at`; edited rows get `decided_by=human`. Parameters are checked against the
+product variables. Then continue from step 5 below.
 
 By hand, in a spreadsheet or text editor:
 
