@@ -303,8 +303,8 @@ by status, subsite, decision, qcFlag, `decided_by` or text. Edit `decision`, `pa
 `parameters_source` or `rationale`, or tick **approve**, and save. Either marks the row `reviewed_by=human` with
 today's `reviewed_at` and clears its `flag`; approving also sets `status=approved`. `decided_by` is left as it was.
 Parameters are checked against the product variables. The **neptunea** link opens the curated product around the
-annotation window in [Neptunea](https://neptunea.ooi-rca.net), with the curation overlay on; rows on sensors outside
-the products have none. Then continue from step 5 below.
+annotation window in [Neptunea](https://neptunea.ooi-rca.net), at the lowest QC level in the latest release (so
+masked data still show) with the curation overlay on; rows on sensors outside the products have none. Then continue from step 5 below.
 
 By hand, in a spreadsheet or text editor:
 
