@@ -8,6 +8,10 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Highlights
 
+- Test release: the full build at every QC level, and the first with calibrationPipeline corrections. HITL ledger
+  decisions are approved but not yet all reviewed by a person; `v2026.11.1` will be the reviewed release.
+  Levels per product: profilers `ooi`, `qartod`, `hitl`, plus `deploymentcorrected` for the shallow profilers;
+  fixed products `ooi` to `advanced`.
 - Products are published as versioned releases under `cresst-easy-one-rca/releases/`, each with a manifest,
   release notes and a build report (R26–R37).
 - QC levels replace the `_qf49_HITL` and `_phadv` suffixes: `ooi`, `qartod`, `hitl`, `advanced`,

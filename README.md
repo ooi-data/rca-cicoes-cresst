@@ -395,7 +395,8 @@ cresst-easy-one-rca/
 `release-cresst` builds nothing: it packages whatever products and levels are in a build directory, so a release can carry any subset of levels. Product names drop the dates (`<site>_profiles`, `<site>_profiles_binned_24h`, `<site>_fixed_1h`); time coverage is in the manifest.
 
 ```bash
-# 1. build the products and levels this release carries (from a clean, committed tree)
+# 1. build the products and levels this release carries (from a clean, committed tree);
+#    scripts/build_release.sh builds them all into data/build, or one at a time:
 regrid-profiler axial_base --grid 0 200 1 --format both --qaqc-filter hitl --output-dir data/build
 bin-dataset data/build/axial_base_profiles_<start>_<end>_hitl.zarr --bin 24 --format both
 fixed-instruments axial_base_seafloor --format both --qaqc-filter advanced --output-dir data/build

@@ -115,7 +115,7 @@ SITES_FILE = REPO_ROOT / "config" / "sites.csv"
 
 # Discrete-sample calibrations (OOI-CabledArray/calibrationPipeline), pinned: shallow-profiler salinity,
 # oxygen and nitrate, 2015-2025 (2026-11-06). Fixed instruments in progress.
-CALIBRATION_COMMIT = "7d2e7781842effd926f4743206fd47e595a48525"
+CALIBRATION_COMMIT = "c0e401fbd9258143e1478a6bd4edb07b2a52792b"
 CALIBRATION_URL = f"https://raw.githubusercontent.com/OOI-CabledArray/calibrationPipeline/{CALIBRATION_COMMIT}/outputs"
 CALIBRATION_VARIABLES = {
     "salinity": "sea_water_practical_salinity",
