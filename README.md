@@ -173,7 +173,7 @@ All four `*_seafloor` sites are Benthic Experiment Packages (BEPs). The two Oreg
 
 ### Data Variables
 
-CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (at Oregon Shelf, the archived PHSEND record followed by the active PHSENH `ph_total`, stitched without scale conversion; see the variable's `source_note`) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
+CTD: `sea_water_temperature`, `sea_water_practical_salinity`, `corrected_dissolved_oxygen`, `sea_water_density`, `sea_water_pressure` · pH: `ph_seawater` (at Oregon Shelf, the archived PHSEND record followed by the active PHSENH `ph_total`, both total scale; see the variable's `source_note`) · pCO₂: `pco2_seawater` · Fluorometer: `fluorometric_chlorophyll_a`, `fluorometric_cdom`, `optical_backscatter`. Only the instruments present at a site (see table) appear in its output. All variables share a single `time` dimension (bin left edges); empty bins are NaN.
 
 **Dissolved oxygen splice:** during the optode DAC firmware-noise windows (~2017–2021; exact per-site windows are the `substitute` rows in `config/adjustments.csv`), the onboard-calculated `dissolved_oxygen` product and its QARTOD flags are substituted into `corrected_dissolved_oxygen` per OOI annotation guidance, keeping the DO record continuous. Documented on the variable's `adjustments` attribute. Applies to the PC platforms and the BEP/seafloor CTDs (every fixed site with the integrated optode).
 
@@ -219,25 +219,23 @@ See `fixed-instruments --help` for full options.
 | `qartod` | QARTOD masks | OOI's automated tests |
 | `hitl` | `config/adjustments.csv`, HITL ledger masks, salinity inheritance | people, reviewed in PRs |
 | `advanced` | Advanced flags (pH so far; fixed products only, see [Advanced pH QC](#advanced-ph-qc)) | rca-data-tools advanced QC |
-| `deploymentcorrected` | Per-deployment discrete-sample corrections (provisional, below) | [calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline) |
+| `deploymentcorrected` | Per-deployment discrete-sample corrections (below) | [calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline) |
 
 Both pipelines run the steps in this order, at native resolution, before gridding or resampling: value changes first, then masks. The level only decides which steps run. Each product records them in its `qc_steps` attribute.
 
 1. **Adjustments** (`hitl`): rows in `config/adjustments.csv` (below), applied to each raw stream.
-2. **Deployment corrections** (`deploymentcorrected`): see [Deployment corrections](#deployment-corrections-provisional).
+2. **Deployment corrections** (`deploymentcorrected`): see [Deployment corrections](#deployment-corrections).
 3. **Advanced pH** (`advanced`): see [Advanced pH QC](#advanced-ph-qc).
 4. **HITL ledger** (`hitl`): see [HITL Annotations](#hitl-annotations).
 5. **QARTOD** (`qartod`): each variable is set to NaN where its own flag is fail (4) or missing (9). The flag variables are not written to products.
 
 The shelf pH stitch combines the archived PHSEND and active PHSENH records after steps 1–3 have run on each source.
 
-### Deployment corrections (provisional)
+### Deployment corrections
 
 Per-deployment corrections from cruise discrete samples, read from calibrationPipeline's `outputs/deployments.json` at the commit pinned in `common.CALIBRATION_COMMIT`. They cover shallow-profiler salinity and nitrate (an offset added) and oxygen (a gain multiplied) for 2015–2025, one correction per cruise. Each is matched to data by the stream's `deployment` number and recorded on the variable's `calibrations` attribute. A deployment with one correction gets it throughout. A deployment that spans two cruises is interpolated linearly between their cast times and held beyond them, as the [OOI BGC Best Practices](https://doi.org/10.25607/OBP-1865.2) recommend for drift (sections 2.5.4 and 3.5.3). Deployments rated worse than `common.CALIBRATION_MAX_STATUS` (3, "use with caution") stay uncorrected.
 
 Where salinity is corrected, `sea_water_density` is shifted by the change in TEOS-10 density (`gsw.rho`, which reproduces OOI's values), so uncorrected deployments keep OOI's density.
-
-Published as provisional: the status threshold and some large oxygen gains await review with the calibration team.
 
 ### `config/adjustments.csv`
 
@@ -381,7 +379,7 @@ Output is written next to the input file. See `bin-dataset --help` for full opti
 
 ## Releases (`release-cresst`)
 
-Products are published as versioned, never-changed releases under `s3://rca-advanced-qaqc/cresst-easy-one-rca/` ([spec](docs/spec.md) sections 7 and 10). Consumers start from `catalog.json`, then read a release's `manifest.json`:
+Products are published as versioned, never-changed releases under `s3://rca-advanced-qaqc/cresst-easy-one-rca/` ([spec](docs/spec.md) sections 7 and 10). Consumers start from `catalog.json`, then read a release's `manifest.json`, where each product's `recommended: true` entry is the level to use (the highest in the release, R38):
 
 ```
 cresst-easy-one-rca/

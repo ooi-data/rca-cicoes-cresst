@@ -68,10 +68,9 @@ def stitch_archived_ph(
 ) -> xr.Dataset:
     """Concatenate an archived pH sensor's record ahead of the active sensor's.
 
-    See PH_STITCH: the active sensor reports ph_total (total scale) and the
-    archived sensor ph_seawater (seawater scale). They are concatenated in time
-    WITHOUT scale conversion into a single ph_seawater variable to keep the
-    record continuous -- a small offset is possible at the swap seam.
+    See PH_STITCH: the active sensor reports ph_total and the archived sensor
+    ph_seawater, both OOI PHWATER_L2 on the total scale, so they are concatenated
+    in time into a single ph_seawater variable without conversion.
 
     Advanced pH flags are keyed per stream, so at the advanced level each
     source is masked with its OWN stream before the concat (the archived PHSEND
@@ -93,8 +92,8 @@ def stitch_archived_ph(
 
     ph = xr.concat([archive_ds["ph_seawater"], active_ds["ph_seawater"]], dim="time").sortby("time").drop_duplicates("time")
     ph.attrs["source_note"] = (
-        f"stitched without scale conversion: {archive_refdes} (ph_seawater, seawater scale) "
-        f"then the active PHSENH sensor (ph_total, total scale); small offset possible at the seam"
+        f"stitched: {archive_refdes} (ph_seawater) then the active PHSENH sensor (ph_total); "
+        "both OOI PHWATER_L2, total scale"
     )
     out = ph.to_dataset()
 
@@ -224,7 +223,7 @@ def build_output_path(site: str, ds: xr.Dataset, resample: str, qaqc_filter: str
         "QC level; each includes the ones before it. 'ooi': OOI values as served. 'qartod': + QARTOD fail (4) "
         "and missing (9) masks. 'hitl': + config/adjustments.csv and approved HITL ledger masks. 'advanced': "
         "+ advanced pH flags (fixed products only). 'deploymentcorrected': + per-deployment discrete-sample "
-        "corrections (provisional)."
+        "corrections."
     ),
 )
 @click.option(

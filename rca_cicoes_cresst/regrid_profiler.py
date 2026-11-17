@@ -227,7 +227,7 @@ def build_output_path(site: str, ds: xr.Dataset, qaqc_filter: str, ext: str) -> 
         "QC level; each includes the ones before it. 'ooi': OOI values as served. 'qartod': + QARTOD fail (4) "
         "and missing (9) masks. 'hitl': + config/adjustments.csv and approved HITL ledger masks. 'advanced': "
         "+ advanced pH flags (fixed products only). 'deploymentcorrected': + per-deployment discrete-sample "
-        "corrections (provisional)."
+        "corrections."
     ),
 )
 @click.option(

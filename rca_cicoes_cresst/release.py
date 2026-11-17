@@ -86,6 +86,14 @@ def find_products(build_dir: Path, legacy: bool = False) -> dict[tuple[str, str]
     return products
 
 
+def recommended_levels(keys) -> dict[str, str]:
+    """product -> its recommended level: the highest level in the release (R38)."""
+    levels: dict[str, str] = {}
+    for product, level in keys:
+        levels[product] = max(levels.get(product, level), level, key=QC_LEVELS.index)
+    return levels
+
+
 def open_product(path: Path) -> xr.Dataset:
     return xr.open_zarr(path) if path.suffix == ".zarr" else xr.open_dataset(path)
 
@@ -112,10 +120,11 @@ def harvested_iso(value: str | None) -> str | None:
     return None if value in (None, "None") else iso_utc(pd.Timestamp(value).tz_convert("UTC"))
 
 
-def manifest_entry(rec: dict, ds: xr.Dataset) -> dict:
+def manifest_entry(rec: dict, ds: xr.Dataset, recommended: bool) -> dict:
     start, end = time_range(ds)
     return {
         "product": rec["product"], "site": rec["site"], "type": rec["type"], "level": rec["level"],
+        "recommended": recommended,
         "files": {ext: f"{rec['product']}/{rec['level']}.{ext}" for ext in sorted(rec["sources"])},
         "dims": {k: int(v) for k, v in ds.sizes.items()},
         "time_start": start, "time_end": end,
@@ -290,8 +299,9 @@ def report_diff(rows: list[dict], threshold: float = 5.0) -> str:
 
 
 def release_notes(manifest: dict, previous: str | None, body: str, diffs: dict[str, str]) -> str:
-    coverage = pd.DataFrame([(p["product"], p["level"], f"{p['time_start'][:10]} to {p['time_end'][:10]}")
-                             for p in manifest["products"]], columns=["product", "level", "time coverage"])
+    coverage = pd.DataFrame([(p["product"], p["level"], "✓" if p.get("recommended") else "",
+                              f"{p['time_start'][:10]} to {p['time_end'][:10]}") for p in manifest["products"]],
+                            columns=["product", "level", "recommended", "time coverage"])
     others = re.sub(r"^### Highlights\n.*?(?=^### |\Z)", "", body, flags=re.M | re.S).strip()
     return f"""# RCA-CRESST release {manifest['release']}
 
@@ -400,9 +410,11 @@ def main(version: str, build_dir: Path | None, legacy_dir: Path | None, data_dir
             stamp(src, dst, attrs)
         rec["release_path"] = staging / product / f"{level}.{'zarr' if 'zarr' in rec['sources'] else 'nc'}"
 
+    recommended = recommended_levels(products)
     manifest = {"release": version, "date": date, "spec_version": spec_version, "git_commit": commit,
                 "base_url": f"s3://{BUCKET}/releases/{version}/",
-                "products": [manifest_entry(rec, opened[key]) for key, rec in sorted(products.items())]}
+                "products": [manifest_entry(rec, opened[key], recommended[key[0]] == key[1])
+                             for key, rec in sorted(products.items())]}
     for entry in manifest["products"]:
         entry["spec_version"] = entry["spec_version"] or spec_version
     (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")

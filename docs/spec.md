@@ -144,8 +144,8 @@ Each adjusted variable lists the rows applied in its `adjustments` attribute.
   `corrected_dissolved_oxygen`, per OOI annotation guidance. One row per CTD with an
   integrated optode (7 rows).
 - **R14.** Oregon Shelf pH stitch: the archived PHSEND103 record (`ph_seawater`) is followed by
-  the active PHSENH110 record (`ph_total`) in one `ph_seawater` variable, without scale
-  conversion. A small offset is possible at the 2025-08-28 seam. Documented in the variable's
+  the active PHSENH110 record (`ph_total`) in one `ph_seawater` variable from 2025-08-28. Both are OOI
+  `PHWATER_L2` on the total scale, so no conversion is applied. Documented in the variable's
   `source_note`. Where PHSENH has no QARTOD flags, its period is treated as flag 2 (not evaluated).
 
 ## 6. Quality control
@@ -159,7 +159,7 @@ before it. The level is in the filename and the `qc_level` attribute.
 | `qartod` | QARTOD (R15–R16) |
 | `hitl` | Adjustments (section 5.4), HITL annotation masks (R18–R21) |
 | `advanced` | Advanced pH tests (R17) |
-| `deploymentcorrected` | Per-deployment discrete-sample corrections (R24, provisional) |
+| `deploymentcorrected` | Per-deployment discrete-sample corrections (R24) |
 
 Steps run in this order, at native resolution, before gridding or binning: value changes first,
 then masks. The level only decides which steps run. Each product records them in its `qc_steps`
@@ -193,7 +193,7 @@ attribute.
 - **R21.** Not masked, by rule: platform blowdowns (real ocean events); annotations saying
   calibrations were since corrected; offsets found by discrete samples or calibration casts
   (correctable, not bad).
-- **R24.** Deployment corrections (`deploymentcorrected` level, provisional): per-deployment corrections from cruise
+- **R24.** Deployment corrections (`deploymentcorrected` level): per-deployment corrections from cruise
   discrete samples ([calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline),
   pinned commit), one per cruise. Shallow-profiler salinity and nitrate get an offset added and
   oxygen a gain multiplied, 2015–2025, matched on the stream's `deployment` number. A deployment
@@ -201,8 +201,7 @@ attribute.
   Best Practices, Palevsky et al. 2023, 2.5.4 and 3.5.3). Deployments rated worse than status 3
   stay uncorrected. Each correction is listed in the variable's `calibrations` attribute. Where
   salinity is corrected, `sea_water_density` is shifted by the TEOS-10 change (`gsw.rho`, as OOI
-  computes it), so uncorrected deployments keep OOI's values. Open: the status threshold, and some
-  large oxygen gains, await review with the calibration team.
+  computes it), so uncorrected deployments keep OOI's values.
 - **R25.** At `hitl` and above, every variable has a `hitl_masks` attribute: a JSON list with one
   entry per approved mask annotation that matched the variable's data, after R19 and R20 are
   applied. Each entry has `annotation_id` (integer), `begin` and `end` (ISO 8601 UTC; `end` is null
@@ -308,6 +307,7 @@ of the OOI source streams and describe that stream, not the product. See section
         "site": "slope_base",
         "type": "profiles",
         "level": "hitl",
+        "recommended": true,
         "files": {"zarr": "slope_base_profiles/hitl.zarr", "nc": "slope_base_profiles/hitl.nc"},
         "dims": {"profile_number": 24119, "sea_water_pressure": 200},
         "time_start": "2015-07-09T03:12:00Z",
@@ -329,6 +329,9 @@ of the OOI source streams and describe that stream, not the product. See section
 - **R33.** `catalog.json` lists every release, newest first:
   `{"latest": "v2026.11.0", "releases": [{"id": "v2026.11.0", "date": "2026-11-30", "git_commit": "<40 hex>",
   "spec_version": "0.2"}]}`.
+- **R38.** Each product has one level marked `"recommended": true` in `manifest.json` (and in the
+  release notes): the highest level in the release. Users who want the best data available take the
+  recommended entry for each product and needn't know the levels.
 
 ## 8. Access
 
@@ -357,10 +360,8 @@ All are publicly readable without credentials.
   dbar). Fixing the index or finding casts from pressure is planned.
 - Deep-profiler chlorophyll and CDOM are not despiked; a spike is averaged into its bin. They keep
   OOI's profiler-specific names (`flntu_x_mmp_cds_…`, `flcdr_x_mmp_cds_…`).
-- Shelf pH: possible offset at the stitch seam (R14). OOI labels both sources total scale, so the
-  scale caveat in `source_note` may be unnecessary.
-- About 718 annotation decisions made by an LLM before the ledger have not been reviewed by a
-  person.
+- Most annotation decisions (made by an LLM, approved for use) have not yet been reviewed by a
+  person; `v2026.11.1` is planned as the first release with every decision reviewed.
 
 ## 10. Versioning and release
 

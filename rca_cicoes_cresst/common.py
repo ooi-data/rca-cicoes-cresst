@@ -74,7 +74,7 @@ PARAM_ALIASES: dict[str, str] = {"ph_total": "ph_seawater"}
 #   qartod:              + QARTOD masks
 #   hitl:                + config/adjustments.csv, HITL ledger masks, salinity inheritance
 #   advanced:            + advanced flags (pH so far; fixed products only)
-#   deploymentcorrected: + per-deployment discrete-sample corrections (calibrationPipeline), provisional
+#   deploymentcorrected: + per-deployment discrete-sample corrections (calibrationPipeline)
 QC_LEVELS = ("ooi", "qartod", "hitl", "advanced", "deploymentcorrected")
 QARTOD_EXCLUDE = {4, 9}  # fail, missing
 SPEC_VERSION = "0.2"  # docs/spec.md
@@ -122,7 +122,7 @@ CALIBRATION_VARIABLES = {
     "oxygen": "corrected_dissolved_oxygen",
     "nitrate": "salinity_corrected_nitrate",
 }
-CALIBRATION_MAX_STATUS = 3  # provisional: worst status level (1 good to 4 not recommended) applied
+CALIBRATION_MAX_STATUS = 3  # worst status level (1 good to 4 not recommended) applied
 RAW_DIR = "raw"  # harvested annotations + manifest, under ANNOTATIONS_DIR
 LEDGER_FILE = "ledger.csv"
 HARVEST_MANIFEST = "harvest_manifest.csv"

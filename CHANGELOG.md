@@ -22,10 +22,12 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Added
 
+- `recommended` in `manifest.json` and the release notes: one level per product to use, the highest in the
+  release (R38).
 - `hitl_masks` attribute on every variable at `hitl` and above, listing the annotations that masked it (R25).
 - `annotations.csv`, `ledger.csv` and `adjustments.csv` in each release (R31).
 - `release`, `spec_version` and `git_commit` attributes on every file (R29).
-- `deploymentcorrected` level: per-deployment corrections from cruise samples (R24). Provisional.
+- `deploymentcorrected` level: per-deployment corrections from cruise samples (R24).
   Covers salinity, oxygen and nitrate, 2015–2025; a deployment spanning two cruises is interpolated between them.
   Density is shifted for corrected salinity (TEOS-10).
 - Deep-profiler chlorophyll, `flntu_x_mmp_cds_fluorometric_chlorophyll_a` (section 4). Ledger decision 5882 now
@@ -35,6 +37,8 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Changed
 
+- Oregon Shelf pH `source_note`: both stitched sensors are total scale (OOI `PHWATER_L2`), so the scale and
+  seam caveats are dropped (R14).
 - Releases are numbered `vYYYY.MM.N`, from `v2026.11.0` (R34).
 - The release prefix is `cresst-easy-one-rca/`, matching Easy OneArgo. It was `cresst-one-easy-rca/`.
 - Advanced pH flags are the `advanced` level, applied to every fixed product whose pH stream has flags, and not to
