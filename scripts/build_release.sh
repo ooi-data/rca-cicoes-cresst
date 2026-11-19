@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build every product and QC level of a release into a build directory, from a clean, committed tree.
 # Profilers and fixed series run side by side; per-run durations go to <out>/timings.log.
-# Levels that add nothing are skipped: advanced on profilers (R17), deploymentcorrected outside the
-# shallow profilers (R24 covers only them).
+# Every product gets ooi to advanced (R39); deploymentcorrected only the shallow profilers, the only
+# products with deployment corrections so far (R24).
 #
 #   scripts/build_release.sh [data/build]
 #   release-cresst vYYYY.MM.N --from data/build
@@ -18,13 +18,13 @@ run() {
 }
 
 profilers() {
-    for level in ooi qartod hitl deploymentcorrected; do
+    for level in ooi qartod hitl advanced deploymentcorrected; do
         for s in "oregon_offshore 0 200" "axial_base 0 200" "slope_base 0 200"; do
             read -r site lo hi <<< "$s"
             run regrid-profiler "$site" --grid "$lo" "$hi" 1 --format both --qaqc-filter "$level" --output-dir "$OUT"
         done
     done
-    for level in ooi qartod hitl; do
+    for level in ooi qartod hitl advanced; do
         for s in "oregon_offshore_deep 175 590" "slope_base_deep 150 2900" "axial_base_deep 150 2600"; do
             read -r site lo hi <<< "$s"
             run regrid-profiler "$site" --grid "$lo" "$hi" 1 --format both --qaqc-filter "$level" --output-dir "$OUT"

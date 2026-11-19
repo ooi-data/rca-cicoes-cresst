@@ -8,6 +8,15 @@ cite its number in [docs/spec.md](docs/spec.md) (e.g. R14). `release-cresst` mov
 
 ### Highlights
 
+### Changed
+
+- Profiler products also carry the `advanced` level, so every product has `ooi` to `advanced`. Their pH is as at
+  `hitl` (R17). `deploymentcorrected` stays shallow-profiler only until the corrections cover other products (R39).
+
+## [v2026.11.0] - 2026-11-18
+
+### Highlights
+
 - Test release: the full build at every QC level, and the first with calibrationPipeline corrections. HITL ledger
   decisions are approved but not yet all reviewed by a person; `v2026.11.1` will be the reviewed release.
   Levels per product: profilers `ooi`, `qartod`, `hitl`, plus `deploymentcorrected` for the shallow profilers;

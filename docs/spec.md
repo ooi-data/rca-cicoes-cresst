@@ -161,6 +161,12 @@ before it. The level is in the filename and the `qc_level` attribute.
 | `advanced` | Advanced pH tests (R17) |
 | `deploymentcorrected` | Per-deployment discrete-sample corrections (R24) |
 
+- **R39.** Every product is built at every level whose step it has been assessed for. Where the
+  step changes nothing (advanced pH on profilers, R17; on products without pH), the level equals the
+  one below and its `qc_steps` say why. A level whose step applies but is not yet implemented for a
+  product is left out until it is, so a level never claims a correction that wasn't made: today
+  `deploymentcorrected` exists only for the shallow profilers.
+
 Steps run in this order, at native resolution, before gridding or binning: value changes first,
 then masks. The level only decides which steps run. Each product records them in its `qc_steps`
 attribute.
@@ -174,10 +180,11 @@ attribute.
 - **R15.** QARTOD: each variable is set to NaN where its own QARTOD flag is fail (4) or
   missing (9). Suspect (3) and not evaluated (2) are kept.
 - **R16.** QARTOD flag variables are not written to products.
-- **R17.** Advanced pH (`advanced` level, fixed products only): `ph_seawater` is NaN wherever any
+- **R17.** Advanced pH (`advanced` level, masks fixed products only): `ph_seawater` is NaN wherever any
   of the six rca-data-tools advanced pH tests fails (code 3), using flags from
   `s3://rca-advanced-qaqc/`. Other codes are kept. Not applied to profiler products: their pH is
-  rough and the rule would remove most of it (74% of Axial shallow-profiler samples). Streams
+  rough and the rule would remove most of it (74% of Axial shallow-profiler samples); their
+  `advanced` level keeps pH as at `hitl` (R39). Streams
   without flags (Oregon Offshore BEP, active Oregon Shelf PHSENH) are unaffected. Expect heavy loss
   on sediment-embedded seafloor sensors (~63%).
 - **R18.** HITL annotations: OOI's human-in-the-loop annotations are harvested from the OOI M2M

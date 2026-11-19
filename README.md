@@ -218,8 +218,10 @@ See `fixed-instruments --help` for full options.
 | `ooi` | Nothing: OOI's values as served, only gridded or resampled | OOI |
 | `qartod` | QARTOD masks | OOI's automated tests |
 | `hitl` | `config/adjustments.csv`, HITL ledger masks, salinity inheritance | people, reviewed in PRs |
-| `advanced` | Advanced flags (pH so far; fixed products only, see [Advanced pH QC](#advanced-ph-qc)) | rca-data-tools advanced QC |
+| `advanced` | Advanced flags (pH so far; masks fixed products only, see [Advanced pH QC](#advanced-ph-qc)) | rca-data-tools advanced QC |
 | `deploymentcorrected` | Per-deployment discrete-sample corrections (below) | [calibrationPipeline](https://github.com/OOI-CabledArray/calibrationPipeline) |
+
+Every product is built from `ooi` to `advanced`, even where a step changes nothing (advanced pH on profilers or on products without pH), so the levels are the same across products. A step that applies but isn't implemented yet is left out rather than implied: `deploymentcorrected` exists only for the shallow profilers until the deployment corrections cover the others (spec R39).
 
 Both pipelines run the steps in this order, at native resolution, before gridding or resampling: value changes first, then masks. The level only decides which steps run. Each product records them in its `qc_steps` attribute.
 
